@@ -1,0 +1,154 @@
+body {
+  background-color: #0f111b;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.signUpOpenContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 700px;
+    gap: 50px;
+    
+}
+
+.signup-container {
+  max-width: 500px;
+  margin: 50px auto;
+  color: white;
+  padding: 20px;
+}
+
+.signup-container h2 {
+  font-size: 28px;
+  width: 444px;
+}
+
+.subheading {
+  font-size: 14px;
+  color: #a0a0a0;
+  width: 414px;
+  height: 50px;
+}
+
+.subheading span {
+  color: white;
+  font-weight: 600;
+}
+
+.subheading em {
+  color: #00cdb2;
+  text-decoration: underline;
+}
+
+/* Toggle buttons */
+.role-toggle {
+  display: flex;
+  background-color: #1c1f2c;
+  border-radius: 25px;
+  padding: 4px;
+  margin-bottom: 25px;
+  gap: 10px;
+  width: 230px;
+  height: 44px;
+}
+
+.role-toggle button {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 25px;
+  font-weight: bold;
+  background: transparent;
+  color: #999;
+  cursor: pointer;
+}
+
+.role-toggle .active {
+  background-color: white;
+  color: black;
+}
+
+/* Form */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 444px;
+  width: 364px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.required {
+  color: red;
+}
+
+input, select {
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background-color: #1c1f2c;
+  color: white;
+  font-size: 14px;
+  /* width: 180px; */
+  /* height: 20px; */
+}
+
+input:focus {
+  outline: none;
+  border-color: #00cdb2;
+}
+
+/* Phone */
+.phone-row .phone-inputs {
+  display: flex;
+  gap: 10px;
+}
+
+/* Password field */
+.password-field .password-wrapper {
+  position: relative;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+}
+
+/* Submit Button */
+.create-btn {
+  width: 100%;
+  padding: 14px;
+  background-color: #facc15;
+  border: none;
+  color: black;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.create-btn:hover {
+  background-color: #fcd34d;
+}

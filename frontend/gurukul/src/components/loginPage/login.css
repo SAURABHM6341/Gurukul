@@ -1,0 +1,132 @@
+.loginPage{
+    height: 100vh;
+    display: flex;
+    gap: 80px;
+    justify-content: center;
+    align-items: center;
+     background-color: #0f111b;
+  color: white;
+  padding: 10px;
+}
+.login-left{
+max-width: 450px;
+  width: 100%;
+  padding: 30px;
+  background-color: #161a2a;
+  border-radius: 12px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+
+}
+.welcome-heading h2 {
+  font-size: 28px;
+  margin-bottom: 10px;
+}
+.welcome-heading p {
+  font-size: 14px;
+  color: #bbbbbb;
+  line-height: 1.6;
+}
+
+.welcome-heading span {
+  color: white;
+  font-weight: bold;
+}
+
+.welcome-heading em {
+  color: #00cdb2;
+  text-decoration: underline;
+}
+
+/* Account Type Buttons */
+.login-acctype-buttons {
+  display: flex;
+  background-color: #1c1f2c;
+  border-radius: 30px;
+  padding: 4px;
+  margin: 25px 0;
+  justify-content: space-between;
+}
+
+.login-acctype-buttons button {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  background: transparent;
+  color: #bbbbbb;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Selected Button */
+.login-acctype-buttons button.active {
+  background-color: #ffffff;
+  color: black;
+}
+
+/* Form Elements */
+form label {
+  display: block;
+  margin-bottom: 5px;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+form label span {
+  color: red;
+  margin-left: 4px;
+}
+
+form input {
+  width: 92%;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 1px solid #333;
+  background-color: #1c1f2c;
+  color: white;
+  font-size: 14px;
+}
+
+form input:focus {
+  outline: none;
+  border-color: #00cdb2;
+}
+
+/* Forgot Password */
+.forgot-password {
+  text-align: right;
+  margin-top: 6px;
+}
+
+.forgot-password a {
+  font-size: 13px;
+  color: #00cdb2;
+  text-decoration: none;
+}
+
+/* Submit Button */
+.login-submit-form-button {
+  margin-top: 20px;
+}
+
+.login-submit-form-button button {
+  width: 100%;
+  padding: 12px;
+  background-color: #facc15;
+  color: black;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-submit-form-button button:hover {
+  background-color: #fcd34d;
+}
+.login-right{
+    height: 450px;
+    width: 500px;
+    text-align: center;
+}
