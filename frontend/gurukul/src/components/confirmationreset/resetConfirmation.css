@@ -1,0 +1,27 @@
+.resetconf-container {
+    width: 508px;
+    height: auto;
+    background-color: #000814;
+    color: white;
+    padding: 2rem;
+    text-align: center;
+    margin: 10vh auto;
+    border-radius: 10px;
+}
+
+.return-btn {
+    background-color: #FFD60A;
+    color: black;
+    border: none;
+    border-radius: 10px;
+    width: 100%;
+    padding: 12px;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+.back-link {
+    margin-top: 1rem;
+    color: #A2B2BF;
+    font-size: 14px;
+}

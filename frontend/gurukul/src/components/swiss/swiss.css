@@ -1,0 +1,121 @@
+.lang-section {
+    text-align: center;
+    padding: 4rem;
+    background-color: #f9f9f9;
+    text-align: center;
+    margin: 10px;
+}
+
+.lang-section h2 span {
+    color: #00C7FF;
+}
+
+.lang-section h2 {
+    color: black;
+    font-size: 40px;
+}
+
+.lang-section p {
+    color: black;
+    font-size: 20px;
+    max-width: 800px;
+    margin: auto;
+}
+.progressText{
+    padding: 1px;
+    width: 100%;
+}
+.downcard{
+    padding: 1.5rem;
+}
+.current-league{
+font-size: 14px;
+}
+.lang-cards {
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 250px;
+    /* padding: 1.5rem; */
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    text-align: left;
+    height: 240px;
+    background-color: white;
+    margin-top: 40px;
+}
+
+.blue-card {
+    /* background: #B4DAEC; */
+    color: #0A5A72;
+    transform: rotate(15deg);
+}
+.progressText{
+    background: #B4DAEC;
+    width: 100%;
+    height: 34px;
+    
+}
+
+.pink-card {
+    color: black;
+    transform: rotate(-9deg);
+}
+
+.yellow-card {
+  color: black;  
+  transform: rotate(12deg);
+
+}
+
+.stats {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    gap: 5px;
+}
+
+.yellow-btn {
+    margin-top: 4rem;
+    background: #FFD60A;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+}
+.stats12{
+    border: 1px solid #0A5A72;
+    padding: 4px;
+}
+.headingyellow{
+background: #fbe4eb;
+    color: #4F0A25;
+    height: 34px;
+    padding: 2px;
+}
+.nameofstudents{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+}
+.nameofstudents div{
+    border: 2px solid black;
+    width: 110px;
+    padding: 2px;
+    margin: auto;
+    border-radius: 16px;
+    text-align: center;
+}
+.textyellowcard{
+background: #fff6d1;
+    color: #41260B;
+    height: 34px;
+    padding: 2px;
+}

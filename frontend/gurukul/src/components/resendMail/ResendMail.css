@@ -1,0 +1,67 @@
+.resend-container {
+  width: 508px;
+  background-color: #000814;
+  color: white;
+  padding: 40px;
+  border-radius: 12px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+}
+
+.resend-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.resend-subtitle {
+  color: #a2b2bf;
+  font-size: 15px;
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.email-highlight {
+  color: #ffffff;
+}
+
+.resend-button {
+  width: 100%;
+  background-color: #ffd60a;
+  color: #000;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 14px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease-in-out;
+  margin-bottom: 24px;
+}
+
+.resend-button:hover {
+  background-color: #ffc400;
+}
+
+.resend-navigation {
+  color: #a2b2bf;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s;
+}
+
+.nav-option:hover {
+  color: #ffffff;
+}
+
+.back-arrow {
+  font-weight: bold;
+}
+.resend-container{
+    margin: auto;
+    margin-top: 30px;
+}

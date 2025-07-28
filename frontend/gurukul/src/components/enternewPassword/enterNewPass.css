@@ -1,0 +1,104 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #000814;
+  color: white;
+}
+
+.reset-container {
+  background-color: #000814;
+  width: 500px;
+  padding: 40px;
+  margin: 60px auto;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.reset-container h2 {
+  font-size: 24px;
+  margin-bottom: 0;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #a2b2bf;
+  margin-top: 0;
+}
+
+.input-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.input-block label {
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.input-block label span {
+  color: #ff4d4d;
+}
+
+.input-block input {
+  background-color: #1a1a2e;
+  border: none;
+  border-radius: 8px;
+  padding: 12px;
+  font-size: 14px;
+  color: white;
+  outline: none;
+}
+
+.input-block input::placeholder {
+  color: #cccccc;
+}
+
+.validation-list {
+  list-style: none;
+  padding-left: 0;
+  font-size: 13px;
+  color: #35d993;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.validation-list li {
+  display: flex;
+  align-items: center;
+  color: #808080;
+}
+
+.validation-list li.valid {
+  color: #35d993;
+}
+
+.reset-btn {
+  background-color: #ffd60a;
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.reset-btn:hover {
+  background-color: #ffc400;
+}
+
+.back-link {
+  color: #a2b2bf;
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+.back-link:hover {
+  color: white;
+}

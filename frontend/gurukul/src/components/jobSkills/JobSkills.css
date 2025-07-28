@@ -1,0 +1,59 @@
+.job-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  padding: 4rem;
+  flex-wrap: wrap;
+  background-color: #ffffff;
+  color: black;
+}
+
+.job-left {
+  flex: 1;
+}
+
+.job-left h2 span {
+  color: #00C7FF;
+}
+
+.features {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+
+.job-right {
+  flex: 1;
+  position: relative;
+}
+
+.job-right img {
+  width: 100%;
+  border-radius: 12px;
+}
+
+.job-stats {
+  display: flex;
+  justify-content: space-around;
+  background: #003C2F;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  position: absolute;
+  bottom: -1rem;
+  left: 10%;
+  width: 80%;
+  transform: translateY(50%);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+.yellow-btn {
+  margin-top: 1rem;
+  background: #FFD60A;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+}

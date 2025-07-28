@@ -12,7 +12,6 @@ function Signup() {
         password: "",
         confirmPassword: ""
     });
-
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
 
@@ -30,6 +29,12 @@ function Signup() {
             accountType: accType
         });
     };
+    const handleToggle = ()=>{
+        setShowPassword(!showPassword);
+    }
+    const handleToggleconfirm = ()=>{
+        setShowConfirm(!showConfirm);
+    }
 
     return (
         <>
@@ -129,12 +134,12 @@ function Signup() {
                                             onChange={handleChange}
                                             required
                                         />
-                                        <span
+                                        <div
                                             className="eye-icon"
-                                            onClick={() => setShowPassword(!showPassword)}
+                                            onClick={handleToggle}
                                         >
-                                            👁️
-                                        </span>
+                                            {showPassword?"Hide":"Show"}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -149,12 +154,12 @@ function Signup() {
                                             onChange={handleChange}
                                             required
                                         />
-                                        <span
+                                        <div
                                             className="eye-icon"
-                                            onClick={() => setShowConfirm(!showConfirm)}
+                                            onClick={handleToggleconfirm}
                                         >
-                                            👁️
-                                        </span>
+                                            {showConfirm?"Hide":"Show"}
+                                        </div>
                                     </div>
                                 </div>
                             </div>

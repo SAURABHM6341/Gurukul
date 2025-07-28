@@ -1,0 +1,346 @@
+.hero-container {
+  text-align: center;
+  background-color: #020617;
+  color: white;
+  padding: 4rem 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.instructor-btn {
+  background-color: #1f2937;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  margin-bottom: 1.5rem;
+  cursor: pointer;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+}
+
+.highlight {
+  color: #0ea5e9;
+  /* Tailwind blue-400 */
+}
+
+.hero-description {
+  font-size: 1rem;
+  color: #cbd5e1;
+  max-width: 750px;
+  margin: 0 auto 2rem auto;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 3rem;
+}
+
+.primary-btn {
+  background-color: #facc15;
+  color: black;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  z-index: 3;
+  transition: 0.3s;
+}
+
+.primary-btn:hover {
+  background-color: #eab308;
+}
+
+.secondary-btn {
+  background-color: #1f2937;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  z-index: 3;
+  transition: 0.3s;
+}
+
+.secondary-btn:hover {
+  background-color: #111827;
+}
+
+.hero-image-container {
+  position: relative;
+  width: fit-content;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.hero-image {
+  max-width: 100%;
+  border-radius: 0.75rem;
+  box-shadow: 8px 8px 0 #0f172a;
+  position: relative;
+  z-index: 2;
+}
+
+.HeroGradient {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -80%);
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at center, rgba(14, 165, 233, 0.5), transparent 70%);
+  filter: blur(60px);
+  z-index: 0;
+  border-radius: 50%;
+}
+
+.code-block {
+  background: #0f172a;
+  /* background-color: transparent; */
+  opacity: 80%;
+  padding: 2rem;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: 'Fira Code', 'Courier New', monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  max-width: fit-content;
+  box-shadow: 0 0 80px rgba(255, 102, 204, 0.2),
+    0 0 120px rgba(255, 204, 0, 0.1),
+    0 0 160px rgba(51, 153, 255, 0.08);
+}
+
+/* Syntax highlight colors */
+.white {
+  color: #ffffff;
+}
+
+.gray {
+  color: #cbd5e1;
+}
+
+.green {
+  color: #10b981;
+}
+
+.red {
+  color: #f87171;
+}
+
+.yellow {
+  color: #facc15;
+}
+
+.unlockPotentialContainer {
+  display: flex;
+  margin: auto;
+  justify-content: center;
+  align-items: center;
+  max-width: 1200px;
+  height: fit-content;
+  gap: 20px;
+}
+
+.unlockPotentialTexts {
+  max-width: 600px;
+  font-size: 19px;
+}
+
+.unlockPotential-text-subheading {
+  max-width: 584px;
+  height: 70px;
+  font-size: 17px;
+}
+
+.tryPotentialContainer button {
+  background-color: #facc15;
+  color: black;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  height: 40px;
+  cursor: pointer;
+  transition: 0.3s;
+  max-width: 130px;
+  padding: 4px;
+}
+
+.learnPotentialContainer button {
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  height: 40px;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 130px;
+  background-color: #111827;
+}
+
+.unlockPotential-text-Buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  max-width: 300px;
+}
+
+.ContinueLessonsContainer button {
+  background-color: #facc15;
+  color: black;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  height: 40px;
+  padding: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+  max-width: 150px;
+}
+
+.StartCodingContainer {
+  margin-top: 150px;
+  margin-bottom: 150px;
+}
+
+.learHtml-powerCode {
+  max-width: 290px;
+  background-color: #ffffff;
+  height: 150px;
+  padding: 10px;
+}
+
+.learnHtml-heading {
+  color: black;
+  font-size: medium;
+
+}
+
+.learnHtml-subheading {
+  color: #374151;
+  font-size: small;
+  margin-top: 13px;
+  margin-bottom: 10px;
+}
+
+.LearnHtml-bottom {
+  border-top: 1px dashed #0ea5e9;
+  height: 56px;
+  color: #0ea5e9;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 30px;
+}
+
+.learnCss-powerofCode,
+.responsive-webdesigns-powerofCode {
+  max-width: 290px;
+  background-color: #0f172a;
+  height: 150px;
+  padding: 10px;
+}
+
+.cards-powerodCode {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 50px;
+}
+
+.Learnresponse-bottom,
+.LearnCSS-bottom {
+  border-top: 1px dashed #1f2937;
+  height: 56px;
+  color: #676d77;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-top: 30px
+}
+
+.learncss-heading,
+.learnresponse-heading {
+  color: #ffffff;
+  font-size: medium;
+}
+
+.learnresponse-subheading,
+.learnCss-subheading {
+  color: #676d77;
+  font-size: small;
+  margin-top: 13px;
+  margin-bottom: 10px;
+}
+
+.headingPowerofCode {
+  font-size: 44px;
+  font-weight: 600;
+  margin: 10px;
+  text-align: center;
+}
+.headingPowerofCode span{
+  color: #0ea5e9;
+}
+.subheading-powerofCode {
+  font-size: 24px;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.powerofCode {
+  /* text-align: center; */
+  max-width: 1200px;
+  margin: auto;
+}
+.catalogButton{
+  max-width: 1440px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  align-items: center;
+  background-color: #ffffff;
+  background-image: url('../../assets/mosaic.png');
+  background-repeat: repeat;
+  position: relative;
+  z-index: -1;
+  top: -70px;
+}
+.catalogLearn button{
+  color: #ffffff;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  height: 40px;
+  cursor: pointer;
+  transition: 0.3s;
+  width: 130px;
+  background-color: #111827;
+}
+.explorecatalogbutton button{
+  background-color: #facc15;
+  color: black;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  height: 40px;
+  padding: 4px;
+  cursor: pointer;
+  transition: 0.3s;
+  max-width: 150px;
+}
+.learHtml-powerCode{
+border-right:10px solid #facc15 ;
+border-bottom:10px solid #facc15 ;
+}
+
