@@ -1,0 +1,94 @@
+.footer {
+  background-color: #0f172a;
+  color: #cbd5e1;
+  padding: 3rem 2rem;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.footer-top {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0px;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-col {
+  flex: 1;
+  min-width: 200px;
+}
+
+.brand-col {
+  flex: 1.2;
+}
+
+.footer-col h4 {
+  color: white;
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.footer-col ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+}
+
+.footer-col ul li {
+  margin-bottom: 0.4rem;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.footer-col ul li:hover {
+  color: white;
+}
+
+.brand-name {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.social-icons i {
+  margin-right: 10px;
+  font-size: 1rem;
+  cursor: pointer;
+  color: #94a3b8;
+  transition: color 0.3s;
+}
+
+.social-icons i:hover {
+  color: white;
+}
+
+.footer-bottom {
+  border-top: 1px solid #334155;
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.footer-links span {
+  margin: 0 0.5rem;
+  cursor: pointer;
+  color: #94a3b8;
+}
+
+.footer-links span:hover {
+  color: white;
+}
+
+.footer-made {
+  color: #94a3b8;
+}
+
+.heart {
+  color: red;
+}

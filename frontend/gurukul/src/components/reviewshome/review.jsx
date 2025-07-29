@@ -23,7 +23,7 @@ function ReviewHome() {
                         </div>
 
                         <p className="review-message">
-                            Everyone’s on the same page. Many of our people are not very organized naturally, so Learn codings is a godsend!
+                            Everyone’s on the same page. Many of our people are not very organized naturally, so Learn codings is a godLorem ipsum dolor sit amet consectetur adipisicing elit. Nulla corporis ducimus voluptas error dolore assumenda placeat dolor enim optio temporibus. Consectetur cupiditate quae nobis suscipit magnam minima eaque impedit asperiores praesentium placeat repellat ab rerum maiores doloremque consequatur aperiam blanditiis totam ad at sapiente, obcaecati, commodi animi. Impedit fugit quos dolore molestias error corporis, illo accusantium, odio tempore, corrupti enim aliquid quas quia?
                         </p>
 
                         <div className="review-rating">
