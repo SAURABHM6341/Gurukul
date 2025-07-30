@@ -23,9 +23,11 @@
     margin: auto;
 }
 .progressText{
-    padding: 1px;
+    padding-top: 12px;
+    padding-left: 8px;
     width: 100%;
 }
+
 .downcard{
     padding: 1.5rem;
 }
@@ -98,7 +100,8 @@ font-size: 14px;
 background: #fbe4eb;
     color: #4F0A25;
     height: 34px;
-    padding: 2px;
+    padding-top: 12px;
+    padding-left: 8px;
 }
 .nameofstudents{
     display: flex;
@@ -118,5 +121,6 @@ background: #fbe4eb;
 background: #fff6d1;
     color: #41260B;
     height: 34px;
-    padding: 2px;
+   padding-top: 12px;
+    padding-left: 8px;
 }

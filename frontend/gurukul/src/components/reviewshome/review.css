@@ -69,9 +69,12 @@
   margin-bottom: 12px;
 }
 
-.heading {
+.ReviewConheading {
   text-align: center;
-  font-size: 34px;
+  font-size: 36px;
   font-weight: 500;
   margin: 20px;
+  color: #ffffff;
+  font-weight: 600;
+
 }

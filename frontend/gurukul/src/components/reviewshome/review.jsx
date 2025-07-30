@@ -5,7 +5,7 @@ function ReviewHome() {
     return (
         <>
             <div className="reviewContainer">
-                <div className="heading">
+                <div className="ReviewConheading">
                     Reviews from Other Learners
                 </div>
                 <div className="reviewCards">

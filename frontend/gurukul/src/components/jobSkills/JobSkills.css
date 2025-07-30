@@ -16,11 +16,19 @@
 .job-left h2 span {
   color: #00C7FF;
 }
-
+.job-left h2{
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+.job-left p{
+  font-size: 16px;
+  margin-bottom: 10px;
+}
 .features {
   margin-top: 2rem;
-  display: grid;
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  /* gap: 1rem; */
 }
 
 .job-right {
@@ -44,7 +52,6 @@
   bottom: -1rem;
   left: 10%;
   width: 80%;
-  transform: translateY(50%);
   box-shadow: 0 4px 20px rgba(0,0,0,0.2);
 }
 
@@ -56,4 +63,42 @@
   font-weight: bold;
   border-radius: 8px;
   cursor: pointer;
+}
+
+.imageTimeline{
+width: 24px;
+height: 24px;
+border: 1px solid #00C7FF;
+padding: 6px;
+border-radius: 50%;
+text-align: center;
+}
+.timlineAll{
+  display: flex;
+  /* justify-content: center; */
+  align-items: center;
+  gap: 30px;
+  max-width: 400px;
+  min-height: 50px;
+  /* border: 2px solid #003C2F; */
+}
+.HeadingTimeline{
+  font-size: 21px;
+  font-weight: 600;
+}
+.subHeadingTimeline{
+  font-size: 15px;
+}
+.TextTimeline{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items:flex-start;
+  gap: 2px;
+}
+.dashedLines{
+  border-left: 1px dashed black;
+  height: 35px;
+  width: 50px;
+  margin-left: 17px;
 }

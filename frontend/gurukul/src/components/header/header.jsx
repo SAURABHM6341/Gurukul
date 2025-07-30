@@ -2,21 +2,32 @@ import React from "react";
 import './header.css';
 import searchIcon from '../../assets/search.png';
 import cartIcon from '../../assets/cart.png';
+import { Link } from 'react-router-dom'
 function Header() {
     return (<>
         <div className="header-container">
-            <div className="header-logo"><h1>GuruKul</h1></div>
+            <Link to={"/"} >
+                <button className="header-logo">
+                    <h1>GuruKul</h1>
+                </button>
+            </Link>
             <div className="header-menu">
-                <div className="header-menu-item">Home</div>
-                <div className="header-menu-item">
-                    <select name="" id="">
-                        <option value="">Catalog</option>
-                        <option value="">tag1</option>
-                        <option value="">tag1</option>
-                    </select>
+                <Link to={'/'} >
+                    <button className="header-menu-item">Home</button>
+                </Link>
+                <div className="header-menu-item">   
+                        <div value="">Catalog</div>
                 </div>
-                <div className="header-menu-item">About Us</div>
-                <div className="header-menu-item">Contact Us</div>
+                <Link to={'/aboutus'} >
+                    <button className="header-menu-item">
+                        About Us
+                    </button>
+                </Link>
+                <Link to={'/contactus'} >
+                    <button className="header-menu-item">
+                        Contact Us
+                    </button>
+                </Link>
             </div>
             <div className="header-icons">
                 <div className="header-searchIcon">
@@ -26,7 +37,9 @@ function Header() {
                     <img src={cartIcon} alt="" />
                 </div>
                 <div className="header-signupIconbutton">
-                    <button>Sign Up</button>
+                    <Link to={"/signup"} >
+                        <button>Sign Up</button>
+                    </Link>
                 </div>
             </div>
         </div>
