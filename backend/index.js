@@ -27,7 +27,8 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:5000",
-  "https://0ac9894ef797.ngrok-free.app"
+  "https://0ac9894ef797.ngrok-free.app",
+  "http://localhost:5173"
 ];
 
 app.use(cors({

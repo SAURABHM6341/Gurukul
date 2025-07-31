@@ -9,11 +9,11 @@ function HeroSection() {
     return (
         <>
             <div className="hero-container">
-                <Link to={"/signup"} >
                     <div className="becomeButton">
+                <Link to={"/signup"} >
                         <button className="instructor-btn">Become an Instructor</button>
-                    </div>
                 </Link>
+                    </div>
                 <h1 className="hero-title">
                     Empower Your Future with <span className="highlight">Coding Skills</span>
                 </h1>

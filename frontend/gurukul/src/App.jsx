@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage.jsx';
 import SignUp from './pages/SignUpPage.jsx';
 import Aboutus from './pages/AboutUs.jsx'
 import ContaCtUs from './pages/ContactUS.jsx'
+import LogIn from './pages/LogIn.jsx'
 function App(){
   return (
     <div>
@@ -12,6 +13,7 @@ function App(){
         <Route path='/signup' element={<SignUp/>} />
         <Route path='/aboutus' element={<Aboutus/>} />
         <Route path='/contactus' element={<ContaCtUs/>} />
+        <Route path='/login' element={<LogIn/>} />
       </Routes>
     </div>
   );
