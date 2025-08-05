@@ -46,8 +46,9 @@ exports.createSection = async (req, res) => {
 
 exports.editSection = async (req, res) => {
     try {
-        const {sectionNewName,sectionId} = req.body;
-        if (!sectionId || !sectionNewName) {
+        const {sectionName} = req.body;
+        const {sectionId} = req.params;
+        if (!sectionId || !sectionName) {
             return res.status(400).json({
                 message: "Section ID and new name are required",
                 success: false
@@ -65,7 +66,7 @@ exports.editSection = async (req, res) => {
                 success: false
             });
         }
-        section.sectionName = sectionNewName;   // updating the section name
+        section.sectionName = sectionName;   // updating the section name
         await section.save();  // saving the updated section
         if (!section) {
             return res.status(500).json({

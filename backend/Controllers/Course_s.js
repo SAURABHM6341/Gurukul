@@ -2,10 +2,9 @@ const courseSchema = require('../Models/course');
 const userModel = require('../Models/User');
 const tagModel = require('../Models/tags');
 const mongoose = require('mongoose');
-const {ImageUploader} = require('../Util/imageUploader');
+const { ImageUploader } = require('../Util/imageUploader');
 // create course
 exports.createCourse = async (req, res) => {
-
     try {
         // data fetching
         const { courseName, courseDescription, whatToLearn, price, tag } = req.body;
@@ -25,6 +24,7 @@ exports.createCourse = async (req, res) => {
                 success: false
             });
         }
+        console.log("running")
         //tags validation for testing purpose only as tag is drop down so only valid tag will show
         const tagResponse = await tagModel.findOne({ name: tag });
         if (!tagResponse) {
@@ -54,7 +54,7 @@ exports.createCourse = async (req, res) => {
         const courseCreated = await courseSchema.create({
             courseName,
             courseDescription: courseDescription,
-            instructor: req.user._id,
+            instructor: req.user.id,
             whatToLearn: whatToLearn,
             courseContent: [],
             price,
@@ -68,7 +68,7 @@ exports.createCourse = async (req, res) => {
             { _id: req.user.id },
 
             {
-                $push: { coursesCreated: courseCreated._id }
+                $push: { courses: courseCreated._id }
             },
             { new: true }
         );
@@ -88,7 +88,7 @@ exports.createCourse = async (req, res) => {
             course: courseCreated
         })
     } catch (err) {
-        console.error(err);
+        console.log(err);
         return res.status(500).json({
             message: "Internal server error, please try again later",
             error: "err"
@@ -122,43 +122,185 @@ exports.getAllCourses = async (req, res) => {
 }
 exports.getCourseDetailsById = async (req, res) => {
     try {
-        const courseId = req.params.id;
-        if (!courseId) {
+        const { id: courseId } = req.params;
+
+        // Best practice: Validate the courseId format first
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
             return res.status(400).json({
-                message: "Please provide course ID",
-                success: false
+                success: false,
+                message: `Invalid course ID format: ${courseId}`,
             });
         }
+
+        // Fetch the course and populate all necessary fields
         const course = await courseSchema.findById(courseId)
             .populate({
                 path: "instructor",
-                populate:{
+                populate: {
                     path: "additionalDetails",
                 }
             })
             .populate({
                 path: "courseContent",
                 populate: {
-                    path: "subSection", // 👈 populate the nested object inside Section
+                    path: "subSection",
+                    select: "title timeDuration"
                 }
-            }).populate("ratingandReview").populate("tag").populate("studentEnrolled").exec();
+            })
+            .populate("ratingandReview") // This is required for the calculation
+            .populate("tag")
+            .populate("studentEnrolled")
+            .exec();
+
+        // Handle case where the course doesn't exist
         if (!course) {
             return res.status(404).json({
+                success: false,
                 message: "Course not found",
-                success: false
             });
         }
+
+        // --- RATING CALCULATION LOGIC ---
+        const reviews = course.ratingandReview || [];
+        const totalReviews = reviews.length;
+        let averageRating = 0;
+
+        if (totalReviews > 0) {
+            const totalRatingValue = reviews.reduce(
+                (acc, review) => acc + review.rating,
+                0
+            );
+            averageRating = totalRatingValue / totalReviews;
+        }
+
+        // Create the final response object with the added rating data
+        const courseDataWithRating = {
+            ...course.toObject(), // Convert Mongoose doc to a plain JS object
+            averageRating: parseFloat(averageRating.toFixed(2)),
+            totalReviews: totalReviews,
+        };
+        // --- END OF CALCULATION ---
+
+        // Return the successful response with the enhanced course data
         return res.status(200).json({
-            message: "Course details fetched successfully",
             success: true,
-            course: course
+            message: "Course details fetched successfully",
+            course: courseDataWithRating, // Send the object with the new properties
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error, please try again later",
         });
     }
-    catch (err) {
+}
+exports.getAllEnrolledCourses = async (req, res) => {
+    try {
+        const user_id = req.user.id;
+        const allEnrolled = await userModel.findById(user_id).populate("courses").exec();
+        if (!allEnrolled) {
+            return res.status(404).json({
+                message: "Seems Like You Haven't Bought any Course Yet!"
+                , success: false
+            })
+        }
+        return res.status(200).json({
+            message: "Enrolled courses fetched Successfully!",
+            success: true,
+            allEnrolled
+        })
+
+    } catch (err) {
         console.error(err);
         return res.status(500).json({
             message: "Internal server error, please try again later",
             error: "err"
         });
+    }
+}
+
+exports.getCoursesByIds = async (req, res) => {
+    try {
+        const { ids } = req.body; // array of courseIds
+
+        if (!ids || !Array.isArray(ids) || ids.length === 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide an array of course IDs",
+            });
+        }
+
+        // 1. Fetch courses from the database
+        let courses = await courseSchema.find({ _id: { $in: ids } })
+            .populate({
+                path: "instructor",
+                populate: { path: "additionalDetails" },
+            })
+            .populate({
+                path: "courseContent",
+                populate: { path: "subSection" },
+            })
+            .populate("ratingandReview")
+            .populate("tag")
+            .populate("studentEnrolled")
+            .lean()
+            .exec();
+
+        // 2. VALIDATION: Check if all requested courses were found
+        if (courses.length !== ids.length) {
+            // This block runs if one or more course IDs were not found
+
+            // For a more helpful error, find which IDs were missing
+            const foundIds = new Set(courses.map(course => course._id.toString()));
+            const missingIds = ids.filter(id => !foundIds.has(id));
+
+            return res.status(404).json({
+                success: false,
+                message: `One or more courses not found. Missing IDs: ${missingIds.join(", ")}`,
+            });
+        }
+
+        // 3. Process each course to calculate and add rating details (only if all were found)
+        const coursesWithRatings = courses.map(course => {
+            const totalReviews = (course.ratingandReview || []).length;
+
+            let averageRating = 0;
+            if (totalReviews > 0) {
+                const totalRatingValue = course.ratingandReview.reduce(
+                    (acc, review) => acc + review.rating,
+                    0
+                );
+                averageRating = totalRatingValue / totalReviews;
+            }
+
+            return {
+                ...course,
+                averageRating: parseFloat(averageRating.toFixed(2)),
+                totalReviews: totalReviews,
+            };
+        });
+
+        return res.status(200).json({
+            success: true,
+            message: "Courses with ratings fetched successfully",
+            courses: coursesWithRatings,
+        });
+
+    } catch (err) {
+        console.error("Error fetching multiple courses with ratings:", err);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error",
+            error: err.message
+        });
+    }
+};
+exports.editCourse = async(req,res)=>{
+    try{
+
+    }catch(err){
+        
     }
 }

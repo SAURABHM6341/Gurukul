@@ -1,0 +1,120 @@
+.my-courses-container {
+    padding: 2rem;
+    color: #f1f2ff;
+}
+
+.my-courses-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.my-courses-header h1 {
+    font-size: 1.8rem;
+    color: #f1f2ff;
+}
+
+.new-course-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #ffd60a;
+    color: #000814;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.new-course-btn:hover {
+    background-color: #e8c400;
+}
+
+.courses-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.course-card {
+    display: flex;
+    gap: 1.5rem;
+    background-color: #161d29;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid #2c333f;
+}
+
+.course-card-thumbnail {
+    width: 250px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.course-card-body {
+    flex-grow: 1;
+}
+
+.course-card-body h3 {
+    margin-top: 0;
+    margin-bottom: 0.5rem;
+}
+
+.course-card-body p {
+    font-size: 0.9rem;
+    color: #838894;
+    margin-bottom: 1rem;
+}
+
+.course-card-created {
+    font-size: 0.8rem !important;
+    color: #585d69 !important;
+}
+
+.status-badge {
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.status-badge.published {
+    background-color: rgba(10, 237, 135, 0.2);
+    color: #0aed87;
+}
+
+.status-badge.draft {
+    background-color: rgba(255, 179, 0, 0.2);
+    color: #ffb300;
+}
+
+.course-card-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    min-width: 120px;
+}
+
+.course-card-duration,
+.course-card-price {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.course-card-actions button {
+    background: none;
+    border: none;
+    color: #838894;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-left: 1.2rem;
+}
+
+.course-card-actions button:hover {
+    color: #f1f2ff;
+}

@@ -7,13 +7,15 @@
     margin: 10vh auto;
     border-radius: 10px;
 }
-
+.verify-container h2{
+font-size: 36px;
+margin: 5px;
+}
 .otp-boxes {
     display: flex;
     justify-content: space-between;
     margin: 20px 0;
 }
-
 .otp-boxes input {
     width: 48px;
     height: 48px;
@@ -32,8 +34,11 @@
     padding: 12px 24px;
     width: 100%;
     font-weight: bold;
+    cursor: pointer;
 }
-
+.verify-btn:hover{
+background-color: #8f7807;
+}
 .verify-options {
     margin-top: 1rem;
     display: flex;
@@ -44,5 +49,8 @@
 
 .resend-link {
     color: #38BDF8;
+    cursor: pointer;
+}
+.verify-options span{
     cursor: pointer;
 }

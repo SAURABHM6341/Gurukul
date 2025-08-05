@@ -1,19 +1,22 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import "./Signup.css";
 import groupImage from '../../assets/groupImage.png'
-
+import { useNavigate } from "react-router-dom";
+import { send_otp } from '../../service/apis'
+import { apiConnector } from "../../service/apiconnector";
+import { toast } from "react-hot-toast";
 function Signup() {
+    const navigate = useNavigate();
     const [accType, setAccType] = useState("Student");
+    const [showPassword, setShowPassword] = useState(false);
+    const [showConfirm, setShowConfirm] = useState(false);
     const [formData, setFormData] = useState({
         firstName: "",
         lastName: "",
         email: "",
-        phone: "",
         password: "",
         confirmPassword: ""
     });
-    const [showPassword, setShowPassword] = useState(false);
-    const [showConfirm, setShowConfirm] = useState(false);
 
     const handleChange = (e) => {
         setFormData((prev) => ({
@@ -22,17 +25,30 @@ function Signup() {
         }));
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log("Form Submitted: ", {
+        localStorage.setItem("signupData", JSON.stringify({
             ...formData,
-            accountType: accType
-        });
+            accType: accType
+        }));
+        const payload = {
+            email: formData.email
+        }
+        try {
+            const otp_res = await apiConnector("POST", send_otp.SIGN_OTP_API, {}, payload, null);
+            if (otp_res.data.success) {
+                toast.success("OTP sent successfully");
+            }
+        } catch (err) {
+            toast.error(err.otp_res?.data?.message || "Please wait for atleast 5 min before new request");
+        }
+
+        navigate("/check_email");
     };
-    const handleToggle = ()=>{
+    const handleToggle = () => {
         setShowPassword(!showPassword);
     }
-    const handleToggleconfirm = ()=>{
+    const handleToggleconfirm = () => {
         setShowConfirm(!showConfirm);
     }
 
@@ -104,24 +120,6 @@ function Signup() {
                                 />
                             </div>
 
-                            <div className="form-group phone-row">
-                                <label>Phone Number<span className="required">*</span></label>
-                                <div className="phone-inputs">
-                                    <select>
-                                        <option value="+91">+91</option>
-                                        {/* Add more if needed */}
-                                    </select>
-                                    <input
-                                        type="text"
-                                        name="phone"
-                                        placeholder="12345 67890"
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                            </div>
-
                             <div className="form-row">
                                 <div className="form-group password-field">
                                     <label>Create Password <span className="required">*</span></label>
@@ -138,7 +136,7 @@ function Signup() {
                                             className="eye-icon"
                                             onClick={handleToggle}
                                         >
-                                            {showPassword?"Hide":"Show"}
+                                            {showPassword ? "Hide" : "Show"}
                                         </div>
                                     </div>
                                 </div>
@@ -158,7 +156,7 @@ function Signup() {
                                             className="eye-icon"
                                             onClick={handleToggleconfirm}
                                         >
-                                            {showConfirm?"Hide":"Show"}
+                                            {showConfirm ? "Hide" : "Show"}
                                         </div>
                                     </div>
                                 </div>
@@ -169,7 +167,7 @@ function Signup() {
                     </div>
                 </div>
                 <div className="signup-right">
-                    <img src={groupImage} alt="" height="531px" width="585px"/>
+                    <img src={groupImage} alt="" height="531px" width="585px" />
                 </div>
             </div>
         </>

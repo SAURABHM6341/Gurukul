@@ -1,0 +1,270 @@
+/* === Root Variables === */
+:root {
+    --color-richblack-900: #010B13;
+    --color-richblack-800: #161D29;
+    --color-richblack-700: #2C333F;
+    --color-richblack-200: #99A1B3;
+    --color-richblack-5: #F8F9FA;
+    --color-blue-100: #42A5F5;
+    --color-caribbeangreen-200: #10B981;
+    --border-color: #2C333F;
+}
+
+/* === Main Wrapper & General Styles === */
+.courseContainer {
+    background-color: var(--color-richblack-900);
+    color: var(--color-richblack-5);
+    padding: 2rem;
+    font-family: 'Inter', sans-serif;
+}
+
+/* === Page Header & Tabs === */
+.HeadingEnrolled h1 {
+    font-size: 1.875rem; /* 30px */
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.StatusEnrolled {
+    display: flex;
+    gap: 0.5rem;
+    background-color: var(--color-richblack-800);
+    padding: 0.25rem;
+    border-radius: 9999px;
+    width: fit-content;
+    margin-bottom: 2rem;
+}
+
+.StatusEnrolled > div {
+    padding: 0.5rem 1rem;
+    border-radius: 9999px;
+    cursor: pointer;
+    font-size: 1rem; /* 16px */
+    transition: background-color 0.3s;
+}
+
+.StatusEnrolled > div.active {
+    background-color: var(--color-richblack-900);
+}
+
+/* === Enrolled Courses List Container === */
+.enrolledCoursesContainer {
+    background-color: transparent; /* Changed to transparent, row will have bg */
+    border-radius: 0.5rem;
+    /* Removed padding, as it's on rows now */
+}
+
+/* === Grid Layout for Header and Rows === */
+.courseListHeader,
+.courseRow {
+    display: grid;
+    /* Grid Template: Course Name (flexible), Duration, Progress, Actions */
+    grid-template-columns: minmax(0, 3fr) 1fr 1.5fr auto;
+    align-items: center;
+    gap: 1.5rem; /* Increased gap for better spacing */
+    padding: 1rem 1.5rem;
+}
+
+/* === Header Styling === */
+.courseListHeader {
+    color: var(--color-richblack-200);
+    text-transform: uppercase;
+    font-size: 0.75rem; /* 12px */
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.courseListHeader p {
+    margin: 0;
+}
+
+/* === Course Row Styling === */
+.courseRow {
+    background-color: var(--color-richblack-800);
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem; /* Rounded corners for each row */
+    margin-bottom: 1rem; /* Space between rows */
+}
+.courseListBody .courseRow:last-child {
+    margin-bottom: 0;
+}
+
+.courseInfo {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem; /* 20px */
+    min-width: 0; /* Prevents overflow issues in grid */
+}
+
+.courseInfo img {
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 0.2rem;
+}
+
+.courseInfo > div {
+    min-width: 0;
+}
+
+.courseInfo h4, .courseInfo p {
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.courseInfo h4 {
+    font-weight: 600;
+    font-size: 1.125rem; /* 18px */
+    color: var(--color-richblack-5);
+    margin-bottom: 0.25rem;
+}
+
+.courseInfo p {
+    font-size: 0.875rem; /* 14px */
+    color: var(--color-richblack-200);
+}
+
+.courseDuration {
+    font-size: 0.875rem; /* 14px */
+    color: var(--color-richblack-200);
+    justify-self: start;
+}
+
+.courseProgress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-width: 150px; /* Ensure progress bar has enough space */
+}
+
+.courseProgress > span {
+    font-size: 0.75rem; /* 12px */
+    color: var(--color-richblack-200);
+}
+.courseProgress > span.completed-text {
+    color: var(--color-caribbeangreen-200);
+    font-weight: 500;
+}
+
+
+/* === Progress Bar === */
+.progressBar {
+    width: 100%;
+    height: 8px;
+    background-color: var(--color-richblack-700);
+    border-radius: 9999px;
+    overflow: hidden;
+}
+
+.progressBarFill {
+    height: 100%;
+    background-color: var(--color-blue-100);
+    border-radius: 9999px;
+    transition: width 0.5s ease-in-out;
+}
+
+.progressBarFill.completed {
+    background-color: var(--color-caribbeangreen-200);
+}
+
+/* === Actions Menu & Context Menu === */
+.courseActions {
+    position: relative; /* Crucial for positioning the context menu */
+    justify-self: center;
+}
+
+.menu-trigger-btn {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.context-menu {
+    position: absolute;
+    top: 100%; /* Position right below the button */
+    right: 0;
+    background-color: var(--color-richblack-700);
+    border-radius: 0.375rem; /* 6px */
+    padding: 0.5rem;
+    width: max-content;
+    z-index: 10;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    margin-top: 0.5rem; /* Small gap from the trigger button */
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: none;
+    border: none;
+    padding: 0.6rem 0.75rem;
+    color: var(--color-richblack-200);
+    font-size: 0.875rem;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    text-align: left;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.menu-item svg path {
+    transition: fill 0.2s ease;
+}
+
+.menu-item:hover {
+    background-color: var(--color-richblack-800);
+    color: var(--color-richblack-5);
+}
+
+.menu-item:hover svg path {
+    fill: var(--color-richblack-5);
+}
+
+
+/* === Responsive Design === */
+@media (max-width: 768px) {
+    .courseContainer {
+        padding: 1rem;
+    }
+    .courseListHeader {
+        display: none; /* Hide header on mobile */
+    }
+
+    .courseRow {
+        display: flex; /* Switch back to flex for stacking */
+        flex-direction: column;
+        align-items: stretch; /* Stretch items to full width */
+        gap: 1.5rem;
+        padding: 1.5rem;
+        position: relative; /* Needed for absolute positioning of actions icon */
+    }
+
+    .courseDuration {
+        order: 1; /* Re-order for better flow */
+    }
+    .courseProgress {
+        order: 2; /* Re-order for better flow */
+        min-width: unset;
+    }
+
+    .courseActions {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+    }
+}
+.courseInfo:hover{
+    cursor: pointer;
+}

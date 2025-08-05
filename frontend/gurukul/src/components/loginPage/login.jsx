@@ -1,46 +1,70 @@
 import React, { useState } from "react";
 import girlImage from "../../assets/girlImage.png";
 import './login.css'
+import { apiConnector } from "../../service/apiconnector";
+import { LoGin } from "../../service/apis";
+import { Toaster, toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setToken } from "../../context/slices/authslice";
+import { setUser } from "../../context/slices/profileSlice";
 function Login() {
   const [accType, setAccType] = useState("Student");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+  const dispatch = useDispatch();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const handleToggle = () => {
+    setShowPassword(!showPassword);
+  }
+
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
+  };
 
   //Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = {
+      email: formData.email,
+      password: formData.password,
+      accType
+    };
+    try {
+      toast.loading("Logging in...");
+      const response = await apiConnector("POST", LoGin.LOGIN_API, {}, payload, null);
+      if (response.data.success) {
+        toast.dismiss();
+        toast.success("Logged in successfully!");
+        const userData = response?.data?.user;
+        console.log("userdata line 47 in login.jsx",userData);
+        const token = response?.data?.token;
+        console.log("token line 49 in login.jsx",token);
+        dispatch(setToken(token));
+        dispatch(setUser(userData));
+        localStorage.setItem("user", JSON.stringify(userData));
+        localStorage.setItem("token", token);
+        navigate('/')
 
-//     const payload = {
-//       email,
-//       password,
-//       accType
-//     };
-
-//     try {
-//       const response = await fetch("http://localhost:5000/api/v1/user/login", {
-//         method: "POST",
-//         headers: {
-//           "Content-Type": "application/json"
-//         },
-//         credentials: "include", // only if you are using cookies (optional)
-//         body: JSON.stringify(payload)
-//       });
-
-//       const data = await response.json();
-
-//       if (!response.ok) {
-//         console.error("Login failed:", data.message);
-//         alert("Login failed: " + data.message);
-//         return;
-//       }
-
-//       console.log("Login success:", data);
-//       alert("Login Successful ✅");
-//     } catch (err) {
-//       console.error("Error during login:", err);
-//       alert("An error occurred. See console for details.");
-//     }
+      } else {
+        toast.dismiss();
+        toast.error(response.data.message || "Login failed!");
+      }
+      console.log("login was successfull", response);
+    } catch (err) {
+      console.error("Error during login:", err);
+      toast.dismiss();
+      toast.error(err.response?.data?.message || "Something went wrong");
+    }
   };
+
 
   return (
     <>
@@ -80,9 +104,10 @@ function Login() {
               </label>
               <input
                 type="email"
+                name="email"
                 placeholder="Enter email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -91,12 +116,19 @@ function Login() {
                 Password<span>* </span>
               </label>
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
+                name="password"
                 placeholder="Enter Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 required
               />
+            </div>
+            <div
+              className="eye-icon"
+              onClick={handleToggle}
+            >
+              {showPassword ? "Hide" : "Show"}
             </div>
 
             <div className="forgot-password">
@@ -109,7 +141,7 @@ function Login() {
           </form>
         </div>
         <div className="login-right" >
-            <img src={girlImage} alt="" height="450px" width = "500px" />
+          <img src={girlImage} alt="" height="450px" width="500px" />
         </div>
       </div>
     </>

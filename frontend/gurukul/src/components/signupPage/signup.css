@@ -85,11 +85,7 @@ body {
   gap: 20px;
 }
 
-.form-group {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
+
 
 label {
   font-size: 14px;
@@ -115,13 +111,6 @@ input:focus {
   outline: none;
   border-color: #00cdb2;
 }
-
-/* Phone */
-.phone-row .phone-inputs {
-  display: flex;
-  gap: 10px;
-}
-
 /* Password field */
 .password-field .password-wrapper {
   position: relative;

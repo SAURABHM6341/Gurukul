@@ -50,5 +50,9 @@ const courseSchema = new mongoose.Schema({
         enum: ["draft", "published", "inactive"],
         default: "draft",
     },
+    createdAt:{
+        type:Date,
+        default:Date.now()
+    }
 });
 module.exports = mongoose.model('course', courseSchema);

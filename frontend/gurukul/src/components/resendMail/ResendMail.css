@@ -42,6 +42,10 @@
 .resend-button:hover {
   background-color: #ffc400;
 }
+.nav-option{
+  color: #a2b2bf;
+  text-decoration: underline;
+}
 
 .resend-navigation {
   color: #a2b2bf;

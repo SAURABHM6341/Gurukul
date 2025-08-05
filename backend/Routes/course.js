@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
-const {createCourse, getAllCourses, getCourseDetailsById} = require('../Controllers/Course_s');
+const {createCourse, getAllCourses, getCourseDetailsById,getAllEnrolledCourses,getCoursesByIds} = require('../Controllers/Course_s');
 const {authenticate, isInstructor, isStudent, isAdmin} = require('../Middlewares/auth');
 
 // ************ courses *************
 
 router.post('/create', authenticate, isInstructor, createCourse);
 router.get('/getAllcourses', getAllCourses);
-router.get('/get/:id', getCourseDetailsById);
+router.get('/get_course/:id', getCourseDetailsById);
+router.get('/getenrolled_courses',authenticate, getAllEnrolledCourses);
+router.get('/getcart_courses',authenticate, isStudent, getCoursesByIds);
 
 // *********** for rating and review ***********
 
@@ -28,7 +30,7 @@ const {createSection, editSection, deleteSection, getAllSections} = require('../
 // create section or chapters
 router.post('/section/create', authenticate, isInstructor, createSection);
 // edit sections or chapters
-router.put('/section/edit', authenticate, isInstructor, editSection);
+router.put('/section/edit/:sectionId', authenticate, isInstructor, editSection);
 // delete section or chapters from course
 router.delete('/section/delete/:courseId', authenticate, isInstructor, deleteSection);
 router.delete('/admin/section/delete/:courseId', authenticate, isAdmin, deleteSection); // for admin to delete section

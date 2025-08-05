@@ -1,0 +1,55 @@
+.logOut{
+    font-size: larger;
+    font-weight: 600;
+    padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  cursor: pointer;
+  color: #838894;
+}
+.dashboard {
+  display: flex;
+  min-height: 100vh;
+  min-width: 100%;
+  background-color: #161D29;
+  color: white;
+  font-family: 'Segoe UI', sans-serif;
+}
+.dashboard a{
+    text-decoration: none;
+    color: #838894;
+    font-size: larger;
+    font-weight: 600;
+}
+.Dashboardleft {
+  width: 250px;
+  background-color: #161D29;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border-right: 1px solid #2f2f2f;
+}
+
+.Dashboardleft a {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: background 0.3s ease;
+  cursor: pointer;
+}
+
+.Dashboardleft a:hover, .logOut:hover{
+  background-color: #2a2a2a;
+}
+
+.gapline {
+  /* height: px; */
+  background-color: #333;
+  margin: 1rem 0;
+}
+.dashboardRight {
+  flex-grow: 1;
+  padding: 2rem 3rem;
+  /* background-color: #000814; */
+  background-color: #000814;
+}

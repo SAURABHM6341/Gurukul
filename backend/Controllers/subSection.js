@@ -75,10 +75,11 @@ exports.createSubSection = async (req, res) => {
         return res.status(200).json({
             message: "Sub section created successfully",
             success: true,
-            data: subSectionCreated
+            subSectionCreated
         });
 
     } catch (err) {
+        console.log(err.message)
         return res.status(500).json({
             message: "Internal server error, please try again later",
             success: false,

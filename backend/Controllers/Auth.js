@@ -47,7 +47,7 @@ exports.login = async (req, res) => {
         user = user.toObject(); // Convert Mongoose document to plain object
         user._id = user._id.toString(); // Convert ObjectId to string
         user.token = token; // Add token to user object
-        user.password = null; // Remove password from user object
+        user.password = undefined; // Remove password from user object
         const options = {
             expires: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000), // 3 days expiration
             httpOnly: true,

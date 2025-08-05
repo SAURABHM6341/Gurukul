@@ -1,0 +1,138 @@
+.course-builder-container {
+    background-color: #000814;
+    color: #f1f2ff;
+    padding: 2rem;
+    border-radius: 8px;
+    border: 1px solid #2c333f;
+    font-family: 'Inter', sans-serif;
+}
+
+.course-builder-heading {
+    font-size: 24px;
+    margin-bottom: 2rem;
+}
+
+.sections-list {
+    background-color: #161d29;
+    border: 1px solid #2c333f;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.section-wrapper {
+    background-color: #2c333f;
+    border: 1px solid #585d69;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+}
+
+.section-header, .lecture-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+}
+
+.section-title, .lecture-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    flex-grow: 1;
+}
+
+.section-name-input {
+    background: transparent;
+    border: none;
+    color: #f1f2ff;
+    font-size: 16px;
+    font-weight: 600;
+    outline: none;
+    width: 100%;
+}
+
+.drag-handle {
+    cursor: grab;
+    color: #838894;
+}
+
+.section-actions, .lecture-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    color: #f1f2ff;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.icon-btn:hover {
+    color: black;
+}
+
+.section-divider {
+    color: #585d69;
+}
+
+.lectures-container {
+    padding: 0 1rem 1rem 2rem;
+    border-top: 1px solid #585d69;
+    margin-top: 0.5rem;
+}
+
+.lecture-item {
+    border-bottom: 1px solid #585d69;
+    padding-left: 1rem;
+    margin-left: 1rem;
+}
+
+.lecture-item:last-child {
+    border-bottom: none;
+}
+
+.add-lecture-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.1rem;
+    color: #facc15;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight:  600;
+    margin-top: 1rem;
+    margin-left: 1rem;
+    font-size: 15px;
+
+}
+
+.create-section-btn {
+    width: fit-content;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+.form-btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #585d69;
+    cursor: pointer;
+    font-weight: 600;
+    background-color: #2c333f;
+    color: #f1f2ff;
+}
+
+.form-btn.primary {
+    background-color: #facc15;
+    color: #000814;
+    border: none;
+}

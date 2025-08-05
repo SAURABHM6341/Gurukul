@@ -2,22 +2,24 @@ import React, { useEffect } from "react";
 import './header.css';
 import searchIcon from '../../assets/search.png';
 import cartIcon from '../../assets/cart.png';
-import { Link, matchPath, useLocation } from 'react-router-dom'
+import { Link, matchPath, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import { apiConnector } from '../../service/apiconnector'
 import { categories } from '../../service/apis'
 import { useState } from "react";
 function Header() {
     const [Catalog, setCatalog] = useState([]);
+    const location = useLocation();
+    const navigate = useNavigate();
     const fetchCategories = async () => {
         try {
             const result = await apiConnector("GET", categories.CATEGORIES_API)
             console.log("print result catalog", result)
-           if (result?.data?.tags) {
-            setCatalog(result.data.tags);
-        } else {
-            setCatalog([]);
-        }
+            if (result?.data?.tags) {
+                setCatalog(result.data.tags);
+            } else {
+                setCatalog([]);
+            }
         } catch (err) {
             console.log("could not fetch the lists", err);
         }
@@ -28,11 +30,16 @@ function Header() {
     const token = useSelector((state) => state.auth?.token)
     const user = useSelector((state) => state.profile?.user);
     const totalItems = useSelector((state) => state.cart?.totalItems)
-
     const matchRoute = (route) => {
         return matchPath({ path: route }, location.pathname);
     }
-
+    const handleClickProfile = ()=>{
+        navigate('/dashboard')
+    }
+    const [tagname,setTagname] = useState("");
+    const handleTagPage=()=>{
+        navigate(`/${tagname}`)
+    }
     return (<>
         <div className="header-container">
             <Link to={"/"} >
@@ -45,20 +52,20 @@ function Header() {
                     <button className="header-menu-item" style={matchRoute('/') ? { color: "#facc15" } : {}}>Home</button>
                 </Link>
                 <div className="header-menu-item header-Catalog"  >
-                    <div value="">Catalog</div>
+                    <div >Catalog</div>
                     <div className="Ctaegories">
                         {
                             Catalog.length > 0 ? (
                                 Catalog.map((element, index) =>
 
-                                    <div key={element._id || element.name|| index} className="categoriestags" >
+                                    <div key={element._id || element.name || index} className="categoriestags" onClick={()=>{
+                                        setTagname(element.name);
+                                        handleTagPage();
+                                    }}>
                                         {element.name}
                                     </div>
                                 )
                             ) : (<div className="categoriestags" ></div>)
-                        }
-                        {
-
                         }
 
                     </div>
@@ -80,7 +87,7 @@ function Header() {
                     <img src={searchIcon} alt="" />
                 </div>
                 {
-                    user && user.accType != "Instructor" && (
+                    user && user.accountType != "Instructor" && (
                         <Link to={"/dashboard/cart"} >
                             <div className="header-cartIcon">
                                 <img src={cartIcon} alt="" />
@@ -97,16 +104,28 @@ function Header() {
                 {
                     !user && (
                         <>
+
                             <Link to={"/login"} >
                                 <div className="header-signupIconbutton loginBtnHeader " >
                                     <button style={matchRoute('/login') ? { color: "#facc15" } : {}} >Log In</button>
                                 </div>
                             </Link>
+
+
                             <Link to={"/signup"} >
                                 <div className="header-signupIconbutton" >
                                     <button style={matchRoute('/signup') ? { color: "#facc15" } : {}} >Sign Up</button>
                                 </div>
                             </Link>
+                        </>
+                    )
+                }
+                {
+                    user&&(
+                        <>
+                        <div className="profileDiv" onClick={handleClickProfile} >
+                            <img src={user.image} alt="profile" />
+                        </div>
                         </>
                     )
                 }
