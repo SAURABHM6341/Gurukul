@@ -19,4 +19,7 @@ router.delete('/deleteAccount', authenticate, deleteAccount);
 // get the user details
 router.get('/details',authenticate, getallDetails);
 router.put('/details/edit',authenticate, editDetails);
+// contact
+
+router.post('/contactus/submitform',contactQuery);
 module.exports = router;

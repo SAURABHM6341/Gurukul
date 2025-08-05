@@ -297,10 +297,71 @@ exports.getCoursesByIds = async (req, res) => {
         });
     }
 };
-exports.editCourse = async(req,res)=>{
-    try{
 
-    }catch(err){
-        
+exports.updateCourse = async (req, res) => {
+    try {
+        const { courseId } = req.body;
+
+        if (!courseId) {
+            return res.status(400).json({
+                success: false,
+                message: "Course ID is required.",
+            });
+        }
+
+        const course = await courseSchema.findById(courseId);
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found.",
+            });
+        }
+
+        const allowedFields = [
+            "courseName",
+            "courseDescription",
+            "whatToLearn",
+            "price",
+            "status",
+        ];
+
+        allowedFields.forEach((field) => {
+            if (req.body[field] !== undefined) {
+                course[field] = req.body[field];
+            }
+        });
+
+
+        if (req.files && req.files.thumbnail) {
+            const imageResponse = await ImageUploader(
+                req.files.thumbnail,
+                process.env.CLOUDINARY_COURSE_FOLDER
+            );
+
+            if (!imageResponse?.secure_url) {
+                return res.status(500).json({
+                    success: false,
+                    message: "Thumbnail upload failed.",
+                });
+            }
+
+            course.thumbnail = imageResponse.secure_url;
+        }
+
+        await course.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Course updated successfully.",
+            course,
+        });
+
+    } catch (err) {
+        console.error("Error in course update:", err);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error. " + err.message,
+        });
     }
+
 }

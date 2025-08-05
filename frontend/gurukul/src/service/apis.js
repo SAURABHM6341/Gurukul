@@ -44,3 +44,6 @@ export const createsubsection = {
 export const editsubsection = {
     EDIT_SUBSECTION_API:`${BASE_URL}/api/v1/course/subsection/edit`
 }
+export const submitquery = {
+    SUBMIT_QUERY_API:`${BASE_URL}/api/v1/user/contactus/submitform`
+}

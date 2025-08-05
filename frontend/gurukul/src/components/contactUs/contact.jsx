@@ -1,9 +1,47 @@
-import React from "react";
+
 import './contact.css';
 import globeLogo from '../../assets/globeLogo.png';
 import calllogo from '../../assets/calllogo.png';
 import chatlogo from '../../assets/chatlogo.png';
+import apiConnector from '../../service/apiconnector';
+import {submitquery} from '../../service/apis';
+import {toast} from 'react-hot-toast';
+import React, { useState } from "react";
+
 function ContactUs() {
+     const [formData, setFormData] = useState({
+        Fname: "",
+        Lname: "",
+        email: "",
+        phonenumber: "",
+        userMessage: "",
+    });
+    const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+    }));
+};
+    const handleSubmit = async(e)=>{
+        e.preventDefault();
+        const payload = {...formData};
+        try {
+            const response = await apiConnector("POST",submitquery.SUBMIT_QUERY_API,null,payload);
+        if(response.data.success){
+            toast.dismiss();
+            toast.success("Query Received");
+        }
+        else{
+            toast.dismiss();
+            toast.error("cannot sent the message");
+        }
+        } catch (error) {
+            toast.dismiss();
+            toast.error("failed to sent message");
+         console.log(error);   
+        }
+    }
     return (<>
         <div className="contact">
             <div className="contactleft">
@@ -52,22 +90,22 @@ function ContactUs() {
                     </div>
                 </div>
                 <div className="getintouchForm">
-                    <form>
+                    <form onSubmit={handleSubmit} >
                         <div className="FnameandLname">
                             <div className="FnameForm">
                                 <label htmlFor="">First Name</label>
-                                <input type="text" name="" id="" placeholder="Enter First Name" required/>
+                                <input onChange={handleChange} type="text" name="Fname" value={formData.Fname} placeholder="Enter First Name" required/>
                             </div>
 
                             <div className="LnameForm">
                                 <label htmlFor="">Last Name</label>
-                                <input type="text" name="" id="" placeholder="Enter Last Name" required/>
+                                <input onChange={handleChange} type="text" name="Lname" value={formData.Lname} placeholder="Enter Last Name" required/>
                             </div>
                         </div>
 
                         <div className="EmailAddressForm">
                             <label htmlFor="">Email Address</label>
-                            <input type="text" name="" id="" placeholder="Enter Email Address" required/>
+                            <input onChange={handleChange} type="text" name="email" value={formData.email} placeholder="Enter Email Address" required/>
                         </div>
 
                         <div className="phoneandcodeForm">
@@ -78,19 +116,19 @@ function ContactUs() {
                                 <option value="">+1</option>
                                 <option value="">other to be added</option>
                             </select>
-                            <input type="text" name="" id="" placeholder="Enter Phone Number" required/>
+                            <input type="number" onChange={handleChange} name="phonenumber" value={formData.phonenumber} placeholder="Enter Phone Number" required/>
                             </div>
                         </div>
 
                         <label htmlFor="">Message</label>
                         <div className="messageForm">
-                            <input type="text" name="" id="" placeholder="Enter Your Message" required/>
+                            <input type="text" onChange={handleChange} name="userMessage" value={formData.userMessage} placeholder="Enter Your Message" required/>
                         </div>
                     </form>
 
                 </div>
                 <div className="getintouchButton">
-                    <button>Send Message</button>
+                    <button type='submit' >Send Message</button>
                 </div>
             </div>
             </div>
