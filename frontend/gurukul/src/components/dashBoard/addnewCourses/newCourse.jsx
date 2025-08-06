@@ -28,25 +28,16 @@ const AddCourse = ({onBack}) => {
     const handleNext = () => {
         setStep(prev => prev + 1);
     };
-
-    const handleBack = () => {
-        setStep(prev => prev - 1);
-    };
     
-    const handleSubmit = () => {
-        // This is where you would make your API call to save the data
-        console.log("Submitting final course data:", courseData);
-        alert("Course Published Successfully!");
-    };
 
     const renderStepContent = () => {
         switch (step) {
             case 1:
                 return <CourseInformationForm courseData={courseData} setCourseData={setCourseData} onNext={handleNext} />;
             case 2:
-                return <CourseBuilderForm courseData={courseData} setCourseData={setCourseData} onNext={handleNext} onBack={handleBack} />;
+                return <CourseBuilderForm courseData={courseData} setCourseData={setCourseData} onNext={handleNext}  />;
             case 3:
-                return <PublishCourseForm courseData={courseData} setCourseData={setCourseData} onSubmit={handleSubmit} onBack={handleBack} />;
+                return <PublishCourseForm courseData={courseData} setCourseData={setCourseData}   />;
             default:
                 return <div>Unknown Step</div>;
         }

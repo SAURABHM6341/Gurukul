@@ -1,5 +1,6 @@
 const profileScheme = require('../Models/profle');
 const userSchema = require('../Models/User');
+const { ImageUploader } = require('../Util/imageUploader');
 //tested
 // edit the users additonal details
 exports.editDetails = async (req, res) => {
@@ -54,8 +55,8 @@ exports.editDetails = async (req, res) => {
 exports.getallDetails = async (req,res)=>{
     try{
         const id  = req.user.id;
-        const user = await userSchema.findById(id).populate("additionalDetails").exec();
-        if(!user){
+        const userDetails = await userSchema.findById(id).populate("additionalDetails").exec();
+        if(!userDetails){
             return res.status(400).json({
                 message:"user not found",
                 success:false
@@ -64,7 +65,7 @@ exports.getallDetails = async (req,res)=>{
         return res.status(200).json({
             message:"user details are below",
             success:true,
-            user
+            userDetails
         });
     }catch(err){
         return res.status(500).json({
@@ -73,3 +74,56 @@ exports.getallDetails = async (req,res)=>{
         })
     }
 }
+
+exports.updateProfileImage = async (req, res) => {
+  try {
+    const image = req.files?.image;
+
+    if (!image) {
+      return res.status(400).json({
+        success: false,
+        message: "No image file provided",
+      });
+    }
+
+    const fileType = image.name.split('.').pop().toLowerCase();
+    const supportedFormats = ["jpeg", "jpg", "png"];
+
+    if (!supportedFormats.includes(fileType)) {
+      return res.status(400).json({
+        success: false,
+        message: "File type not supported. Please upload jpeg, jpg, or png",
+      });
+    }
+
+    if (image.size > 5 * 1024 * 1024) {
+      return res.status(400).json({
+        success: false,
+        message: "File is too large. Max size allowed is 5MB",
+      });
+    }
+
+    // Upload image to cloudinary
+    const uploadedImage = await ImageUploader(image, process.env.CLOUDINARY_COURSE_FOLDER);
+
+    // Update user document
+    const updatedUser = await userSchema.findByIdAndUpdate(
+      req.user.id,
+      { image: uploadedImage.secure_url },
+      { new: true }
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Profile image updated successfully",
+      updatedUser
+    });
+
+  } catch (error) {
+    console.error("Image update error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating profile image",
+    });
+  }
+};

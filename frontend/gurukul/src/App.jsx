@@ -20,6 +20,7 @@ import CourseDet from './pages/courseDetail.jsx';
 import MyCourses from './components/dashBoard/MyCorses/myCourses.jsx'
 import AddCourse from './components/dashBoard/addnewCourses/newCourse.jsx'
 import CourseInformationForm from './components/dashBoard/addnewCourses/courseInformation.jsx'
+import PassWordChange from './pages/passChange.jsx'
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -43,6 +44,7 @@ function App() {
         <Route path='/check_email' element={<CheckEmail />} />
         <Route path='/verify_otp' element={<Verify_otp />} />
         <Route path='/course_details/:id' element={<CourseDet/>} />
+        <Route path='/change_password' element={<PassWordChange/>} />
 
         {/* Dashboard Layout with Nested Routes */}
         <Route path='/dashboard' element={<DashLeft />}>

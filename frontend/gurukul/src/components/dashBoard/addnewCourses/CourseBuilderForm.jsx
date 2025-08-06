@@ -25,8 +25,8 @@ const CourseBuilderForm = ({ courseData, setCourseData, onNext }) => {
 
         const method = isNew ? 'POST' : 'PUT';
         console.log("Saving section:", sectionData.sectionName);
-        const payload = { sectionName: sectionData.sectionName, courseId: courseData };
-
+        const payload = { sectionName: sectionData.sectionName, courseId: courseData._id};
+        console.log(courseData);
         try {
             const response = await apiConnector(method, url, `Bearer ${token}`, payload);
             if (response.data.success) {

@@ -47,3 +47,18 @@ export const editsubsection = {
 export const submitquery = {
     SUBMIT_QUERY_API:`${BASE_URL}/api/v1/user/contactus/submitform`
 }
+export const changestatus = {
+    CHANGE_STATUS_API:`${BASE_URL}/api/v1/course/changestatus`
+}
+export const additonalProfileApi = {
+    PROFILE_INFO_API:`${BASE_URL}/api/v1/user/details`
+}
+export const additonalProfileApiUpdate = {
+    PROFILE_INFO_UPDATE_API:`${BASE_URL}/api/v1/user/details/edit`
+}
+export const updateUserImage = {
+    UPDATE_API_USER_IMAGE:`${BASE_URL}/api/v1/user/details/edit/image`
+}
+export const changePassword = {
+    CHANGE_PASSWORD_API:`${BASE_URL}/api/v1/user/changePassword`
+}

@@ -78,14 +78,14 @@
   gap: 2rem;
 }
 
-.FnameDiv, .LnameDiv, .EmailDiv, .phoneDiv {
+.FnameDiv, .LnameDiv, .EmailDiv, .phoneDiv, .contactNumber,.GenderProfile,.dobprofile{
   display: flex;
   flex-direction: column;
   gap: 0.3rem;
   min-width: 200px;
 }
 
-.FnameTitle, .LnameTitle, .EmailTitle, .phoneTitle {
+.FnameTitle, .LnameTitle, .EmailTitle, .PhoneTitle, .GenderTitle,.DOBTitle {
   font-size: 0.9rem;
   color: #999;
 }
@@ -111,13 +111,14 @@
   background-color: #eab308;
 }
 
-.nameProfile{
+.nameProfile,.emailProfile,.genderDob{
     display: flex;
     justify-content: space-between;
     width: 800px;
 }
-.emailProfile{
-    display: flex;
-    justify-content: space-between;
-    width: 800px;
+
+.headingPersonal{
+color: #999;
+font-size: 24px;
+font-weight: 600;
 }

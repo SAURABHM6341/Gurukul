@@ -365,3 +365,28 @@ exports.updateCourse = async (req, res) => {
     }
 
 }
+
+exports.changeStatus =async(req,res)=>{
+    try{
+        const {courseId,status} = req.body;
+        if(!courseId){
+            return res.status(401).json({
+                message:"please provide courseId",
+                success:false,
+            })
+        }
+        const course = await courseSchema.findById(courseId);
+        course.status = "published";
+        course.save();
+        return res.status(200).json({
+            success:true,
+            message:"status changed",
+            course
+        });
+    }catch(err){
+        return res.status(500).json({
+            message:"internal server error",
+            success:false
+        })
+    }
+}

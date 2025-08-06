@@ -4,7 +4,8 @@ const {sendOtpMailVerify, login, verifyOtpanduserCreation, changePassword} = req
 const { authenticate } = require('../Middlewares/auth');
 const {resetPasswordsendOtp, resetPasswordEntry} = require('../Controllers/resetpass');
 const { deleteAccount } = require('../Controllers/deleteAccount');
-const {getallDetails, editDetails} = require('../Controllers/additionalDetails');
+const {getallDetails, editDetails,updateProfileImage} = require('../Controllers/additionalDetails');
+const {contactQuery} = require('../Controllers/contactUs')
 // for login
 router.post('/login', login);
 // for signup
@@ -19,6 +20,7 @@ router.delete('/deleteAccount', authenticate, deleteAccount);
 // get the user details
 router.get('/details',authenticate, getallDetails);
 router.put('/details/edit',authenticate, editDetails);
+router.put('/details/edit/image',authenticate, updateProfileImage);
 // contact
 
 router.post('/contactus/submitform',contactQuery);

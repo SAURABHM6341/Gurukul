@@ -1,11 +1,55 @@
-import React from "react";
+import {React,useState} from "react";
 import ReviewHome from '../reviewshome/review.jsx';
 import About1 from '../../assets/aboutsUs1.png';
 import About2 from '../../assets/aboutUs2.png';
 import About3 from '../../assets/aboutUs3.png';
 import About4 from '../../assets/foundingStory.png'
+import {toast} from 'react-hot-toast'
+import { apiConnector } from "../../service/apiconnector.js";
+import { submitquery } from "../../service/apis.js";
 import './aboutus.css';
 function AboutUs() {
+        const [formData, setFormData] = useState({
+            Fname: "",
+            Lname: "",
+            email: "",
+            countryCode: "+91",
+            phonenumber: "",
+            userMessage: "",
+        });
+        const [loading, setLoading] = useState(false);
+    
+    
+        const handleChange = (e) => {
+            const { name, value } = e.target;
+            setFormData((prevData) => ({
+                ...prevData,
+                [name]: value,
+            }));
+        };
+        const handleSubmit = async (e) => {
+            e.preventDefault();
+            setLoading(true); // Start loading
+    
+            const payload = {
+                ...formData,
+                fullPhone: `${formData.countryCode}${formData.phonenumber}`
+            };
+    
+            try {
+                const response = await apiConnector("POST", submitquery.SUBMIT_QUERY_API, null, payload);
+                if (response.data.success) {
+                    toast.success("Query submitted successfully!");
+                } else {
+                    toast.error("Query submission failed.");
+                }
+            } catch (error) {
+                toast.error("An error occurred while submitting the query.");
+                console.log(error);
+            } finally {
+                setLoading(false); // End loading
+            }
+        }
     return (<>
         <div className="aboutus">
             <div className="aboutUsUpper">
@@ -128,46 +172,50 @@ function AboutUs() {
                     </div>
                 </div>
                 <div className="getintouchForm">
-                    <form>
-                        <div className="FnameandLname">
-                            <div className="FnameForm">
-                                <label htmlFor="">First Name</label>
-                                <input type="text" name="" id="" placeholder="Enter First Name" required/>
+                        <form onSubmit={handleSubmit} >
+                            <div className="FnameandLname">
+                                <div className="FnameForm">
+                                    <label htmlFor="">First Name</label>
+                                    <input onChange={handleChange} type="text" name="Fname" value={formData.Fname} placeholder="Enter First Name" required />
+                                </div>
+
+                                <div className="LnameForm">
+                                    <label htmlFor="">Last Name</label>
+                                    <input onChange={handleChange} type="text" name="Lname" value={formData.Lname} placeholder="Enter Last Name" required />
+                                </div>
                             </div>
 
-                            <div className="LnameForm">
-                                <label htmlFor="">Last Name</label>
-                                <input type="text" name="" id="" placeholder="Enter Last Name" required/>
+                            <div className="EmailAddressForm">
+                                <label htmlFor="">Email Address</label>
+                                <input onChange={handleChange} type="text" name="email" value={formData.email} placeholder="Enter Email Address" required />
                             </div>
-                        </div>
 
-                        <div className="EmailAddressForm">
-                            <label htmlFor="">Email Address</label>
-                            <input type="text" name="" id="" placeholder="Enter Email Address" required/>
-                        </div>
+                            <div className="phoneandcodeForm">
+                                <label htmlFor="">Phone Number</label>
+                                <div className="inputNumberForm">
+                                    <select name="countryCode" onChange={handleChange} value={formData.countryCode}>
+                                        <option value="+91">+91</option>
+                                        <option value="+1">+1</option>
+                                        <option value="custom">Other</option>
+                                    </select>
 
-                        <div className="phoneandcodeForm">
-                            <label htmlFor="">Phone Number</label>
-                            <div className="inputNumberForm">
-                                <select name="" id="" defaultValue={+91}>
-                                <option value="">+91</option>
-                                <option value="">+1</option>
-                                <option value="">other to be added</option>
-                            </select>
-                            <input type="text" name="" id="" placeholder="Enter Phone Number" required/>
+                                    <input type="text" onChange={handleChange} name="phonenumber" value={formData.phonenumber} placeholder="Enter Phone Number" required />
+                                </div>
                             </div>
-                        </div>
 
-                        <label htmlFor="">Message</label>
-                        <div className="messageForm">
-                            <input type="text" name="" id="" placeholder="Enter Your Message" required/>
-                        </div>
-                    </form>
+                            <label htmlFor="">Message</label>
+                            <div className="messageForm">
+                                <input type="text" onChange={handleChange} name="userMessage" value={formData.userMessage} placeholder="Enter Your Message" required />
+                            </div>
+                            <div className="getintouchButton">
+                                <button type='submit' disabled={loading}>
+                                    {loading ? "Submitting..." : "Send Message"}
+                                </button>
+                            </div>
 
-                </div>
-                <div className="getintouchButton">
-                    <button>Send Message</button>
-                </div>
+                        </form>
+
+                    </div>
             </div>
             <ReviewHome />
         </div>
