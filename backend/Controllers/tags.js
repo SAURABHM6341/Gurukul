@@ -42,12 +42,12 @@ exports.getallTag_s = async (req, res) => {
 }
 exports.tagpageDetails = async (req, res) => {
     try {
-        const { tagId } = req.body;
-        if (!tagId) {
+        const { tagid } = req.params;
+        if (!tagid) {
             return res.status(400).json({ message: 'Tag ID is required' });
         }
         // fetch course of this tag
-        const tag = await Tag.findById(tagId).populate(
+        const tag = await Tag.findById(tagid).populate(
             {
                 path: 'course',
                 select: 'courseName courseDescription thumbnail price',
@@ -60,7 +60,7 @@ exports.tagpageDetails = async (req, res) => {
             });
         }
         // now different categories
-        const differentCategories = await Tag.find({ _id: { $ne: tagId } }).populate('course').exec();
+        const differentCategories = await Tag.find({ _id: { $ne: tagid } }).populate('course').exec();
 
         // top selling course
 

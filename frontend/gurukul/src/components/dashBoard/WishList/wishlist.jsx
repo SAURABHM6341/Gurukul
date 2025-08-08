@@ -22,16 +22,18 @@ const Wishlist = () => {
         console.log("Removing course:", courseId);
     };
     const fetchCartCourses = async () => {
-        const payload = {
-            ids: cart
-        }
+        
         try {
-
+            const payload = {
+            ids: cart
+                .map(course => course._id)
+        }
+            console.log(cart);
             const response = await apiConnector("POST", getCartCourses.CART_COURSES_API, `Bearer ${token}`, payload);
-            if (response.data.success) {
+            if (response?.data?.success) {
                 toast.success("cart items fetched");
-                console.log(response.data.courses);
-                setCourses(response.data.courses);
+                console.log(response?.data?.courses);
+                setCourses(response?.data?.courses);
             }
             else {
                 console.log("could not fetch");
@@ -43,7 +45,8 @@ const Wishlist = () => {
     }
     useEffect(() => {
         if (cart.length > 0 && token) fetchCartCourses();
-    }, [cart, token]);
+        if (cart.length == 0 && token) setCourses([]);
+    }, [cart]);
 
     const handleBuyNow = () => {
         setCheckout(true);
@@ -81,7 +84,7 @@ const Wishlist = () => {
                                 <img src={course.thumbnail} alt={course.courseName} className="item-thumbnail" />
                                 <div className="item-details">
                                     <p className="item-title">{course.courseName}</p>
-                                    <p className="item-creator">by {course.instructor}</p>
+                                    <p className="item-creator">by {course.instructor.Fname + " " + course.instructor.Lname}</p>
                                     <div className="item-rating">
                                         <span>
                                             {course.averageRating}

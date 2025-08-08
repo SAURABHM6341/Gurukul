@@ -45,6 +45,7 @@
     padding: 2px;
     border-radius: 8px;
         cursor: pointer;
+        position: relative;
 }
 
 .header-signupIconbutton {
@@ -84,7 +85,7 @@
 .header-Catalog:hover .Ctaegories{
     display: flex;
 }
-.header-Catalog:hover{
+.header-Catalog{
     color: #facc15;
 }
 .Ctaegories{
@@ -134,4 +135,15 @@ width: 40px;
     img{
         border: 1px solid #facc15;
     }
+}
+.itemincart {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background-color: red;
+  color: white;
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 50%;
+  font-weight: bold;
 }

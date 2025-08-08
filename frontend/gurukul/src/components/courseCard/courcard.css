@@ -1,0 +1,46 @@
+.course-card-course {
+  width: 300px;
+  background-color: #424854; /* Lighter shade of dark */
+  border-radius: 8px;
+  overflow: hidden;
+  color: #F1F2FF;
+  flex-shrink: 0; /* Prevents shrinking in flex container */
+  margin-right: 24px;
+  cursor: pointer;
+}
+
+.course-card-image-course {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+
+.course-card-content-course {
+  padding: 16px;
+}
+
+.course-card-title-course {
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 8px 0;
+}
+
+.course-card-author-course {
+  font-size: 0.9rem;
+  color: #99A1B3; /* Lighter text color */
+  margin: 0 0 12px 0;
+}
+
+.course-card-rating-course {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.star-filled-course {
+  color: #FFD60A; /* Yellow for filled stars */
+}
+
+.star-empty-course {
+  color: #7B8290; /* Gray for empty stars */
+}

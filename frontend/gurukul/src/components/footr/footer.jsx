@@ -117,7 +117,7 @@ function Footer() {
           <span>Privacy Policy</span> | <span>Cookie Policy</span> | <span>Terms</span>
         </div>
         <div className="footer-made">
-          Made with <span className="heart">❤️</span> Saurabh Mishra © 2023 GuruKul
+          Made with <span className="heart">❤️</span> Saurabh Mishra © 2025 GuruKul
         </div>
       </div>
     </footer>

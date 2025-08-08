@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import './courseDetail.css';
 import { FaStar, FaRegStar, FaStarHalfAlt, FaInfoCircle, FaCheck, FaPlayCircle, FaChevronDown, FaRegClock, FaSignal, FaCertificate, FaInfinity } from 'react-icons/fa';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { apiConnector } from '../../service/apiconnector';
 import { getCourseByid } from '../../service/apis';
 import {useParams} from 'react-router-dom';
 import {toast} from 'react-hot-toast'
+import { addToCart,removeFromCart,resetCart } from '../../context/slices/cartslice';
 // --- HELPER COMPONENT FOR LESSONS ---
 // This component manages its own state for collapsing/expanding
 const LessonAccordion = ({ lesson }) => {
@@ -22,7 +23,7 @@ const LessonAccordion = ({ lesson }) => {
                     <span>{lesson.sectionName}</span>
                 </div>
                 <div className="header-meta">
-                    <span>{totalLectures} lectures • {totalDuration}</span>
+                    {/* <span>{totalLectures} lectures • {totalDuration}</span> */}
                 </div>
             </div>
             {isOpen && (
@@ -45,9 +46,11 @@ const LessonAccordion = ({ lesson }) => {
 // --- MAIN COURSE DETAILS COMPONENT ---
 const CourseDetails = () => {
     const user = useSelector((state)=>state?.profile?.user);
-const token = useSelector((state)=>state?.auth?.token);
+    const token = useSelector((state)=>state?.auth?.token);
 const { id } = useParams();
 const [courseData, setCourseData] = useState();
+const dispatch = useDispatch();
+const cartItems = useSelector((state)=>state?.cart?.cart);
 const fetchCourse = async()=>{
     const url = getCourseByid.COURSE_ID_API.replace(":id", id);
     try{
@@ -65,24 +68,24 @@ const fetchCourse = async()=>{
     }catch(err){
         toast.dismiss();
             toast.error("course details fetch failed");
-            console.log(res.err);
+            console.log(err);
     }
 }
 useEffect(() => {
-            fetchCourse();
-        }, []);
+    fetchCourse();
+}, []);
     const [isEnrolled,setisEnrolled] = useState(false);
     useEffect(() => {
-    if (user) {
+    if (user?.courses?.includes(id)) {
         setisEnrolled(true);
     }
 }, [user])
-    const renderStars = (rating) => {
-        const stars = [];
+const renderStars = (rating) => {
+    const stars = [];
         const fullStars = Math.floor(rating);
         const halfStar = rating % 1 !== 0;
         const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-
+        
         for (let i = 0; i < fullStars; i++) stars.push(<FaStar key={`full-${i}`} />);
         if (halfStar) stars.push(<FaStarHalfAlt key="half" />);
         for (let i = 0; i < emptyStars; i++) stars.push(<FaRegStar key={`empty-${i}`} />);
@@ -92,6 +95,7 @@ useEffect(() => {
 if (!courseData) {
     return <div className="loader">Loading course details...</div>;
 }
+        const isIncart = cartItems.some(item => item._id === courseData._id);
     return (
         <div className="course-page-container">
             <div className="course-main-content">
@@ -107,7 +111,7 @@ if (!courseData) {
 
                 <div className="author-info">
                     <span>Created by <a href="#author">{courseData.instructor?.Fname} {courseData.instructor?.Lname}</a></span>
-                    <span><FaInfoCircle /> Last updated {courseData.createdAt}</span>
+                    <span><FaInfoCircle /> Last updated {courseData.createdAt.split("T")[0]}</span>
                     <span><FaRegClock /> English</span>
                 </div>
 
@@ -149,7 +153,15 @@ if (!courseData) {
                             <img src={courseData.thumbnail} alt="" />
                         </div>
                         <p className="price">Rs. {courseData.price} /-</p>
-                        <button className="add-to-cart-btn">Add to Cart</button>
+                        { !isIncart&&user?.accountType=="Student"&&
+                            <button className="add-to-cart-btn" onClick={()=>dispatch(addToCart(courseData))} >Add to Cart</button>
+                        
+                        }
+                         { isIncart&&user?.accountType=="Student"&&
+                            <button className="add-to-cart-btn" onClick={()=>dispatch(removeFromCart(courseData._id))} >Remove from Cart</button>
+                        
+                        }
+                        
                         <button className="buy-now-btn">Buy Now</button>
                         <p className="money-back-guarantee">30-Day Money-Back Guarantee</p>
                         

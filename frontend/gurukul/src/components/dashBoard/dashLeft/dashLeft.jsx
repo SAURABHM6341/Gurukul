@@ -8,6 +8,7 @@ import { clearUser } from "../../../context/slices/profileSlice";
 import { clearToken } from "../../../context/slices/authslice";
 import { toast } from "react-hot-toast";
 import Header from '../../header/header'
+import { resetCart } from "../../../context/slices/cartslice";
 function DashLeft() {
 
 
@@ -17,9 +18,12 @@ function DashLeft() {
 
     const handleLogout = () => {
         dispatch(clearUser());             // Clears user from Redux
-        dispatch(clearToken());            // Clears token from Redux
+        dispatch(clearToken());
+        dispatch(resetCart());
+                    // Clears token from Redux
         localStorage.removeItem("token"); // Also clear from localStorage
         localStorage.removeItem("user");
+        localStorage.removeItem("cart");
         toast.success("Logged out successfully");
         navigate("/login");
     };
@@ -61,7 +65,7 @@ function DashLeft() {
                     </>
                 )}
 
-                <Link to="/allcourses" className="allcourses" style={matchRoute('/allcourses') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
+                <Link to="/dashboard/allcourses" className="allcourses" style={matchRoute('/dashboard/allcourses') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
                     Courses
                 </Link>
 

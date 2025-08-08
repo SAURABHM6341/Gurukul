@@ -59,6 +59,15 @@ export const additonalProfileApiUpdate = {
 export const updateUserImage = {
     UPDATE_API_USER_IMAGE:`${BASE_URL}/api/v1/user/details/edit/image`
 }
+export const removeUserImage = {
+    REMOVE_API_USER_IMAGE:`${BASE_URL}/api/v1/user/details/remove/image`
+}
 export const changePassword = {
     CHANGE_PASSWORD_API:`${BASE_URL}/api/v1/user/changePassword`
+}
+export const getallcourses = {
+    GET_ALL_COURSES_API:`${BASE_URL}/api/v1/course/getAllcourses`
+}
+export const getTagDes = {
+    GET_TAG_API:`${BASE_URL}/api/v1/course/tag/details`
 }

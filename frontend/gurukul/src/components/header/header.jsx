@@ -33,12 +33,13 @@ function Header() {
     const matchRoute = (route) => {
         return matchPath({ path: route }, location.pathname);
     }
-    const handleClickProfile = ()=>{
+    const handleClickProfile = () => {
         navigate('/dashboard')
     }
-    const [tagname,setTagname] = useState("");
-    const handleTagPage=()=>{
-        navigate(`/${tagname}`)
+    // const [tagname, setTagname] = useState("");
+    // const [tagID, setTagID] = useState("");
+    const handleTagPage = (id) => {
+       navigate(`/tag/${id}`); 
     }
     return (<>
         <div className="header-container">
@@ -58,10 +59,7 @@ function Header() {
                             Catalog.length > 0 ? (
                                 Catalog.map((element, index) =>
 
-                                    <div key={element._id || element.name || index} className="categoriestags" onClick={()=>{
-                                        setTagname(element.name);
-                                        handleTagPage();
-                                    }}>
+                                    <div key={element._id || element.name || index} className="categoriestags" onClick={() => handleTagPage(element._id)}>
                                         {element.name}
                                     </div>
                                 )
@@ -86,21 +84,20 @@ function Header() {
                 <div className="header-searchIcon">
                     <img src={searchIcon} alt="" />
                 </div>
-                {
-                    user && user.accountType != "Instructor" && (
-                        <Link to={"/dashboard/cart"} >
-                            <div className="header-cartIcon">
-                                <img src={cartIcon} alt="" />
-                            </div>{
-                                totalItems > 0 && (
-                                    <span>
-                                        {totalItems}
-                                    </span>
-                                )
-                            }
-                        </Link>
-                    )
-                }
+                {user && user.accountType !== "Instructor" && (
+                    <Link to="/dashboard/cart" className="cart-wrapper">
+                        <div className="header-cartIcon">
+                            <img src={cartIcon} alt="Cart" />
+
+                            {totalItems > 0 && (
+                                <div className="itemincart">
+                                    {totalItems}
+                                </div>
+                            )}
+                        </div>
+                    </Link>
+                )}
+
                 {
                     !user && (
                         <>
@@ -121,11 +118,11 @@ function Header() {
                     )
                 }
                 {
-                    user&&(
+                    user && (
                         <>
-                        <div className="profileDiv" onClick={handleClickProfile} >
-                            <img src={user.image} alt="profile" />
-                        </div>
+                            <div className="profileDiv" onClick={handleClickProfile} >
+                                <img src={user.image} alt="profile" />
+                            </div>
                         </>
                     )
                 }

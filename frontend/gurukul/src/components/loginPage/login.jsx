@@ -4,7 +4,7 @@ import './login.css'
 import { apiConnector } from "../../service/apiconnector";
 import { LoGin } from "../../service/apis";
 import { Toaster, toast } from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { setToken } from "../../context/slices/authslice";
 import { setUser } from "../../context/slices/profileSlice";
@@ -132,7 +132,7 @@ function Login() {
             </div>
 
             <div className="forgot-password">
-              <a href="#">Forgot password</a>
+              <Link to={'/resetPassword'}  >Forgot password</Link>
             </div>
 
             <div className="login-submit-form-button">

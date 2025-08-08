@@ -1,7 +1,8 @@
 import React from "react";
 import "./ResetPassword.css";
-
+import { useNavigate } from "react-router-dom";
 function ResetPassword() {
+  const navigate = useNavigate();
   return (
     <div className="resetsendotp-container">
       <h2 className="reset-title">Reset your password</h2>
@@ -24,7 +25,7 @@ function ResetPassword() {
           Reset Password
         </button>
 
-        <div className="back-to-login">
+        <div className="back-to-login" onClick={()=>navigate('/login')} >
           <span>&larr;</span> Back to login
         </div>
       </form>

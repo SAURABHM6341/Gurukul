@@ -100,7 +100,7 @@ exports.getAllCourses = async (req, res) => {
     try {
         const courses = await courseSchema.find({}, {
             courseName: true,
-            courseDescription: true, thumbnail: true, price: true, instructor: true, tag: true
+            courseDescription: true, thumbnail: true, price: true, instructor: true, tag: true,createdAt:true
         }).populate("instructor").exec();
         if (courses.length === 0) {
             return res.status(404).json({
@@ -223,7 +223,7 @@ exports.getAllEnrolledCourses = async (req, res) => {
 
 exports.getCoursesByIds = async (req, res) => {
     try {
-        const { ids } = req.body; // array of courseIds
+        const {ids} = req.body; // array of courseIds
 
         if (!ids || !Array.isArray(ids) || ids.length === 0) {
             return res.status(400).json({
@@ -390,3 +390,14 @@ exports.changeStatus =async(req,res)=>{
         })
     }
 }
+
+
+// exports.checkEnroll = async(req,res)=>{
+//     try {
+//         const {UserId,CourseId} = req.body;
+//         const user = await userModel.findById(UserId);
+//         if(user.courses.includes(CourseId))
+//     } catch (error) {
+        
+//     }
+// }

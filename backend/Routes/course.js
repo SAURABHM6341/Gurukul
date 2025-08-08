@@ -9,7 +9,7 @@ router.post('/create', authenticate, isInstructor, createCourse);
 router.get('/getAllcourses', getAllCourses);
 router.get('/get_course/:id', getCourseDetailsById);
 router.get('/getenrolled_courses',authenticate, getAllEnrolledCourses);
-router.get('/getcart_courses',authenticate, isStudent, getCoursesByIds);
+router.post('/getcart_courses',authenticate, isStudent, getCoursesByIds);
 router.post('/changestatus',authenticate, isInstructor, changeStatus);
 
 // *********** for rating and review ***********
@@ -57,6 +57,6 @@ const {createTagOrCategory, getallTag_s, tagpageDetails} = require('../Controlle
 
 router.post('/tag/create', authenticate, isAdmin, createTagOrCategory);
 router.get('/tag_s', getallTag_s);
-router.get('/tag/details', tagpageDetails);
+router.get('/tag/details/:tagid', tagpageDetails);
 
 module.exports = router;

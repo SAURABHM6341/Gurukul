@@ -59,7 +59,7 @@ const cartSlice = createSlice({
             localStorage.setItem("cart", JSON.stringify(state.cart));
             localStorage.setItem("total", JSON.stringify(state.total));
             localStorage.setItem("totalItems", JSON.stringify(state.totalItems));
-
+            toast.dismiss();
             toast.success("Course added to cart");
         },
         // Remove from Cart
@@ -78,7 +78,7 @@ const cartSlice = createSlice({
                 localStorage.setItem("cart", JSON.stringify(state.cart));
                 localStorage.setItem("total", JSON.stringify(state.total));
                 localStorage.setItem("totalItems", JSON.stringify(state.totalItems));
-
+                toast.dismiss();
                 toast.success("Course removed from cart");
             }
         },

@@ -87,7 +87,7 @@ exports.updateProfileImage = async (req, res) => {
     }
 
     const fileType = image.name.split('.').pop().toLowerCase();
-    const supportedFormats = ["jpeg", "jpg", "png"];
+    const supportedFormats = ["jpeg", "jpg", "png","svg"];
 
     if (!supportedFormats.includes(fileType)) {
       return res.status(400).json({
@@ -127,3 +127,28 @@ exports.updateProfileImage = async (req, res) => {
     });
   }
 };
+
+exports.removeImage= async(req,res)=>{
+  try{
+    const {Fname,Lname} = req.body
+    const secure_url = `https://api.dicebear.com/5.x/initials/svg?seed=${Fname} ${Lname}`;
+    console.log(Lname);
+  const updatedUser = await userSchema.findByIdAndUpdate(
+      req.user.id,
+      { image: secure_url },
+      { new: true }
+    );
+     return res.status(200).json({
+      success: true,
+      message: "Profile image updated successfully",
+      updatedUser
+    });
+   } catch (error) {
+    console.error("Image update error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating profile image",
+    });
+  }
+
+}

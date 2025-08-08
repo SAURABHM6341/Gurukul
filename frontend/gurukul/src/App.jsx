@@ -21,6 +21,10 @@ import MyCourses from './components/dashBoard/MyCorses/myCourses.jsx'
 import AddCourse from './components/dashBoard/addnewCourses/newCourse.jsx'
 import CourseInformationForm from './components/dashBoard/addnewCourses/courseInformation.jsx'
 import PassWordChange from './pages/passChange.jsx'
+import GetAllCourse from './components/dashBoard/allcourses/Allcourses.jsx'
+import TagPage from './pages/tagPage.jsx'
+import ResetPass from './pages/resetPass.jsx';
+import LEcturePage from './pages/Lecture.jsx'
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -45,6 +49,9 @@ function App() {
         <Route path='/verify_otp' element={<Verify_otp />} />
         <Route path='/course_details/:id' element={<CourseDet/>} />
         <Route path='/change_password' element={<PassWordChange/>} />
+        <Route path='/tag/:tagid' element={<TagPage/>} />
+        <Route path='/resetpassword' element={<ResetPass/>} />
+        <Route path='/videopage' element={<LEcturePage/>} />
 
         {/* Dashboard Layout with Nested Routes */}
         <Route path='/dashboard' element={<DashLeft />}>
@@ -54,7 +61,8 @@ function App() {
           <Route path='cart' element={<Wishlist />} />
           <Route path='mycourses' element={<MyCourses />} />
           <Route path='mycourses' element={<AddCourse />} />
-          <Route path='add-course' element={<CourseInformationForm />} />
+          <Route path='mycourses' element={<CourseInformationForm />} />
+          <Route path='allcourses' element={<GetAllCourse />} />
         </Route>
       </Routes>
     </div>

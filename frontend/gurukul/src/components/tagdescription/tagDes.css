@@ -1,0 +1,117 @@
+/* Using a dark theme based on the original image */
+:root {
+  --bg-dark: #000814; /* UPDATED: Main page background */
+  --bg-content: #161D29; /* UPDATED: Background for the description box */
+  --text-light: #F1F2FF;
+  --text-gray: #99A1B3;
+  --accent-yellow: #FFD60A;
+  --border-dark: #424854;
+}
+
+/* Main page container */
+.course-page-container-forTag {
+  background-color: var(--bg-dark); /* Using the new page background */
+  color: var(--text-light);
+  min-height: 100vh;
+  padding: 40px 6%; /* Use percentage for responsive padding */
+  font-family: 'Inter', sans-serif; /* A good modern sans-serif font */
+}
+
+/* Top section containing description */
+.upperTag-forTag {
+  background-color: var(--bg-content); /* Using the new background for this specific tag */
+  max-width: 1200px;
+  margin: 0 auto 50px auto; /* Center the block and add bottom margin */
+  padding: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--border-dark);
+}
+
+.breadcrumb-forTag {
+  font-size: 0.9rem;
+  color: var(--text-gray);
+  margin-bottom: 24px;
+}
+
+.breadcrumb-active-forTag {
+  color: var(--accent-yellow);
+}
+
+.course-title-forTag {
+  font-size: 2.2rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.course-description-forTag {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--text-gray);
+  max-width: 800px; /* Constrain line length for readability */
+}
+
+/* Section for all carousels */
+.carousalSection-forTag {
+  max-width: 1200px;
+  margin: 0 auto; /* Center the carousels */
+}
+
+/* Individual course section (e.g., "Courses to get you started") */
+.course-section-forTag {
+  margin-bottom: 50px;
+  position: relative;
+}
+
+.section-title-forTag {
+  font-size: 1.5rem;
+  font-weight: 500;
+  margin-bottom: 24px;
+}
+
+.courses-carousel-forTag {
+  display: flex;
+  overflow-x: auto; /* Enables horizontal scrolling */
+  padding-bottom: 16px; /* Space for scrollbar if visible */
+}
+
+/* Hide scrollbar for a cleaner look across browsers */
+.courses-carousel-forTag::-webkit-scrollbar {
+  display: none;
+}
+.courses-carousel-forTag {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Arrow for carousel navigation */
+.carousel-arrow-forTag {
+  position: absolute;
+  right: -20px;
+  top: 55%;
+  transform: translateY(-50%);
+  background-color: white;
+  color: black;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease-in-out;
+}
+
+.carousel-arrow-forTag:hover {
+    transform: translateY(-50%) scale(1.1);
+}
+
+
+/* Loading spinner style */
+.loading-spinner-forTag {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-size: 2rem;
+  color: white;
+  background-color: var(--bg-dark);
+}

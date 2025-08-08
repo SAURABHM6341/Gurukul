@@ -1,0 +1,245 @@
+/* General Layout & Main Content */
+.lecture-page {
+    display: flex;
+    height: 100vh;
+    background-color: #000814;
+    color: #F1F2FF;
+    font-family: 'Inter', sans-serif;
+}
+
+.video-main-content {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.video-player-wrapper {
+    width: 100%;
+    height: 65vh; /* Adjust height as needed */
+    background-color: #000;
+}
+
+.video-details {
+    padding: 24px;
+}
+
+.video-title {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+}
+
+.video-description {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #99A1B3;
+}
+
+
+/* --- Video Sidebar --- */
+.video-sidebar {
+    width: 320px;
+    background-color: #161D29;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #424854;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    padding: 16px;
+    border-bottom: 1px solid #424854;
+}
+.course-title-wrapper{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+}
+.course-title {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+.add-review-btn {
+    width: 100%;
+    padding: 10px;
+    margin-top: 16px;
+    background-color: #FFD60A;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.add-review-btn:hover {
+    background-color: #eab308;
+}
+
+.sections-container {
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+.course-section {
+    border-bottom: 1px solid #424854;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    cursor: pointer;
+    background-color: #2C333F;
+}
+
+.section-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: #99A1B3;
+}
+
+.chevron-icon {
+    transition: transform 0.3s ease;
+}
+.chevron-icon.open {
+    transform: rotate(180deg);
+}
+
+.subsections-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.subsection-item {
+    padding: 10px 16px;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+}
+.subsection-item.active {
+    background-color: #424854;
+    border-left-color: #FFD60A;
+}
+
+.subsection-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.checkbox-icon {
+    font-size: 1.1rem;
+    cursor: pointer;
+    color: #99A1B3;
+}
+.checkbox-icon.completed {
+    color: #FFD60A;
+}
+
+.subsection-title.strikethrough {
+    text-decoration: line-through;
+    color: #6E727F;
+}
+
+/* --- Review Modal --- */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: #161D29;
+    padding: 24px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    border: 1px solid #424854;
+}
+.modal-close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #F1F2FF;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.modal-header h3 {
+    margin: 0 0 16px 0;
+    font-size: 1.5rem;
+}
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+.user-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+}
+.user-name {
+    font-weight: bold;
+    margin: 0;
+}
+.posting-status {
+    font-size: 0.8rem;
+    color: #99A1B3;
+    margin: 0;
+}
+.star-rating {
+    margin-bottom: 16px;
+    cursor: pointer;
+}
+
+.review-textarea {
+    width: 100%;
+    min-height: 120px;
+    background-color: #2C333F;
+    border: 1px solid #424854;
+    border-radius: 8px;
+    padding: 12px;
+    color: #F1F2FF;
+    font-size: 1rem;
+    resize: vertical;
+}
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+.modal-btn-cancel, .modal-btn-submit {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+.modal-btn-cancel {
+    background-color: #424854;
+    color: #F1F2FF;
+}
+.modal-btn-submit {
+    background-color: #FFD60A;
+    color: #000;
+}

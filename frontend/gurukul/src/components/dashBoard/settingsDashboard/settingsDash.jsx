@@ -3,10 +3,10 @@ import './dashsetting.css';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { apiConnector } from '../../../service/apiconnector';
-import { additonalProfileApi, additonalProfileApiUpdate,updateUserImage } from '../../../service/apis';
+import { additonalProfileApi, additonalProfileApiUpdate, updateUserImage,removeUserImage } from '../../../service/apis';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
-import {setUser} from '../../../context/slices/profileSlice'
+import { setUser } from '../../../context/slices/profileSlice'
 export default function UserProfile() {
     const navigate = useNavigate();
     const token = useSelector((state) => state.auth?.token);
@@ -29,6 +29,7 @@ export default function UserProfile() {
             const response = await apiConnector("GET", additonalProfileApi.PROFILE_INFO_API, `Bearer ${token}`);
             if (response.data.success) {
                 const details = response.data.userDetails.additionalDetails;
+                toast.dismiss();
                 toast.success("Profile details fetched");
 
                 setFormData({
@@ -40,10 +41,12 @@ export default function UserProfile() {
 
                 setProfileImage(user?.image || defaultAvatar);
             } else {
+                toast.dismiss();
                 toast.error("Something went wrong");
             }
         } catch (error) {
             console.log(error);
+            toast.dismiss();
             toast.error("Cannot fetch profile details");
         }
     };
@@ -56,13 +59,16 @@ export default function UserProfile() {
 
     const handleUpdate = async () => {
         try {
+            toast.loading("Updating details")
             const payload = {
                 ...formData
             };
             await apiConnector('PUT', additonalProfileApiUpdate.PROFILE_INFO_UPDATE_API, `Bearer ${token}`, payload);
+            toast.dismiss();
             toast.success("Profile updated successfully");
         } catch (error) {
             console.error('Update failed', error);
+            toast.dismiss();
             toast.error("Update failed");
         }
     };
@@ -71,9 +77,7 @@ export default function UserProfile() {
         setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
     };
 
-    const handleRemoveImage = () => {
-        setProfileImage(defaultAvatar);
-    };
+
 
     const handlePassChange = () => {
         navigate('/change_password');
@@ -83,9 +87,11 @@ export default function UserProfile() {
         return <>Loading...</>;
     }
     const handleImageChange = async (event) => {
+        toast.loading("Uploading Image")
         const file = event.target.files[0];
 
         if (!file) {
+            toast.dismiss();
             toast.error("No image selected.");
             return;
         }
@@ -95,22 +101,54 @@ export default function UserProfile() {
         formData1.append("image", file);
 
         try {
-            const response = await apiConnector("PUT",updateUserImage.UPDATE_API_USER_IMAGE,`Bearer ${token}`,formData1);
+            const response = await apiConnector("PUT", updateUserImage.UPDATE_API_USER_IMAGE, `Bearer ${token}`, formData1);
 
             if (response?.data?.success) {
+                toast.dismiss();
                 toast.success("Image updated successfully");
                 dispatch(setUser(response.data.updatedUser));
                 localStorage.setItem("user", JSON.stringify(response.data.updatedUser));
             } else {
+                toast.dismiss();
                 toast.error("Failed to update image");
             }
 
         } catch (error) {
             console.error("Image update error:", error);
+            toast.dismiss();
             toast.error("Something went wrong");
-        }finally {
-        setIsImageUploading(false); // 🔁 Hide loader
-    }
+        } finally {
+            setIsImageUploading(false); // 🔁 Hide loader
+        }
+    };
+    const handleRemoveImage = async () => {
+        try {
+            toast.loading("Removing...")
+            setIsImageUploading(true);
+            const payload ={
+                Fname : user.Fname,
+                Lname : user.Lname,
+            }
+
+            const response = await apiConnector("PUT", removeUserImage.REMOVE_API_USER_IMAGE, `Bearer ${token}`,payload);
+
+            if (response?.data?.success) {
+                toast.dismiss();
+                toast.success("Profile image reset to default");
+                dispatch(setUser(response.data.updatedUser));
+                localStorage.setItem("user", JSON.stringify(response.data.updatedUser));
+            } else {
+                toast.dismiss();
+                toast.error("Failed to reset image");
+            }
+        } catch (error) {
+            console.error("Error resetting image:", error);
+            toast.dismiss();
+            toast.error("Something went wrong");
+        } finally {
+            setIsImageUploading(false);
+        }
+
     };
     return (
         <div className="profile-container">

@@ -89,7 +89,7 @@ function StuDashboard() {
                                 </div>
                                 <div className="dobprofile">
                                     <div className="DOBTitle">Date of Birth</div>
-                                    <div className="Dobtext">{additionalData.dateOfBirth.split("T")[0]}</div>
+                                    <div className="Dobtext">{additionalData?.dateOfBirth?.split("T")[0]}</div>
                                 </div>
                             </div>
                         </div>
