@@ -11,6 +11,14 @@ const courses = require('./Routes/course');
 const payment = require('./Routes/payment');
 const user = require('./Routes/user');
 const { verifySignature } = require("./Controllers/payment");
+const cron = require("node-cron");
+const { deleteExpiredAccounts } = require("./Controllers/accountdeletion");
+
+// Run every day at midnight (00:00)
+cron.schedule("0 0 * * *", async () => {
+  console.log("Running account deletion cleanup...");
+  await deleteExpiredAccounts();
+});
 
 
 app.post(
@@ -23,7 +31,6 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:5000",
-  "https://0ac9894ef797.ngrok-free.app",
   "http://localhost:5173"
 ];
 

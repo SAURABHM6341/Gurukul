@@ -51,14 +51,6 @@ useEffect(()=>{
                                                 <div className="course-card-footer-mycourses">
                                                     {/* <span className="course-card-duration">{course.duration}</span> */}
                                                     <span className="course-card-price-mycourses">₹{course.price}</span>
-                                                    <div className="course-card-actions-mycourses">
-                                                        <button title="Edit" onClick={() => navigate(`/dashboard/edit-course/${course._id}`)}>
-                                                            <FaPencilAlt />
-                                                        </button>
-                                                        <button title="Delete">
-                                                            <FaTrash />
-                                                        </button>
-                                                    </div>
                                                 </div>
                                             </div>
                                         ))}

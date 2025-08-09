@@ -39,13 +39,15 @@ export const createsection = {
     CREATE_SECTION_API: `${BASE_URL}/api/v1/course/section/create`
 }
 export const editsection = {
-    EDIT_SECTION_API: `${BASE_URL}/api/v1/course/section/edit`
+    EDIT_SECTION_API: `${BASE_URL}/api/v1/course/section/edit`,
+    DELETE_SECTION_API: `${BASE_URL}/api/v1/course/section/delete`
 }
 export const createsubsection = {
     CREATE_SUBSECTION_API: `${BASE_URL}/api/v1/course/subsection/create`
 }
 export const editsubsection = {
-    EDIT_SUBSECTION_API: `${BASE_URL}/api/v1/course/subsection/edit`
+    EDIT_SUBSECTION_API: `${BASE_URL}/api/v1/course/subsection/edit`,
+    DELETE_SUBSECTION_API: `${BASE_URL}/api/v1/course/subsection/delete`
 }
 export const submitquery = {
     SUBMIT_QUERY_API: `${BASE_URL}/api/v1/user/contactus/submitform`
@@ -88,4 +90,12 @@ export const capturePayment = {
 }
 export const verifySignapi = {
     VERIFY_PAY_API:`${BASE_URL}/api/v1/payment/verify-signature`
+}
+export const deleteAccount = {
+    DELETE_ACCOUNT_API: `${BASE_URL}/api/v1/user/deleteAccount`,
+    CANCEL_DELETE_ACCOUNT_API: `${BASE_URL}/api/v1/user/cancel/deleteAccount`
+}
+export const deleteEditCourse = {
+    DELETE_COURSE_API: `${BASE_URL}/api/v1/course/delete/course`, 
+    UPDATE_COURSE_API: `${BASE_URL}/api/v1/course/edit/course`//append courseid
 }

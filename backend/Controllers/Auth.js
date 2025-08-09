@@ -43,7 +43,7 @@ exports.login = async (req, res) => {
                 success: false
             });
         }
-        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3h' }); // 3 hours expiration
+        const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '3d' }); // 3 hours expiration
         user = user.toObject(); // Convert Mongoose document to plain object
         user._id = user._id.toString(); // Convert ObjectId to string
         user.token = token; // Add token to user object

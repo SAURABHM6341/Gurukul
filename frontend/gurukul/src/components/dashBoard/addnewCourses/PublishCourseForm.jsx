@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 const PublishCourseForm = ({ courseData, setCourseData }) => {
     const navigate = useNavigate();
     const handlePublishChange = (e) => {
-        setCourseData({ ...courseData, status: e.target.checked ? 'Published' : 'Draft' });
+        setCourseData({ ...courseData, status: e.target.checked ? 'published' : 'draft' });
     };
     const onSubmit = async () => {
         try {
@@ -30,7 +30,7 @@ const PublishCourseForm = ({ courseData, setCourseData }) => {
                 <div className="publishcheckform">
                     <div> <input
                         type="checkbox"
-                        checked={courseData.status === 'Published'}
+                        checked={courseData.status === 'published'}
                         onChange={handlePublishChange}
                         className='publishCheck' /></div>
                     <div><label className="checkbox-label"> Make this Course Public
@@ -41,8 +41,7 @@ const PublishCourseForm = ({ courseData, setCourseData }) => {
             </div>
 
             <div className="form-actions">
-                <button className="form-btn">Save as Draft</button>
-                <button onClick={onSubmit} className="form-btn primary">Save and Publish</button>
+                <button onClick={onSubmit} className="form-btn primary">Save </button>
             </div>
         </div>
     );

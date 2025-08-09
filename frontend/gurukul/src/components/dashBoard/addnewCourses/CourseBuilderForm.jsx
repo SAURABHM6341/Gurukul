@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import LectureModal from './LectureModal'; // Your existing modal component
 import { FaPlus, FaPencilAlt, FaTrash, FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import './courseBuilder.css';
@@ -7,14 +7,14 @@ import toast from 'react-hot-toast';
 import { createsubsection, editsubsection, createsection, editsection } from '../../../service/apis'
 import { useSelector } from 'react-redux';
 
-const CourseBuilderForm = ({ courseData, setCourseData, onNext }) => {
+const CourseBuilderForm = ({ courseData = null, setCourseData, onNext, isEditing }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentLecture, setCurrentLecture] = useState(null);
     const [currentSectionId, setCurrentSectionId] = useState(null);
     const [expandedSections, setExpandedSections] = useState(new Set());
     const [isLoading, setIsLoading] = useState(false); // New loading state
     const [videoCache, setVideoCache] = useState({});
-
+    console.log("Course Data:", courseData);
     const token = useSelector((state) => state?.auth?.token);
     //apis
     const createOrUpdateSectionAPI = async (sectionData) => {
@@ -25,7 +25,7 @@ const CourseBuilderForm = ({ courseData, setCourseData, onNext }) => {
 
         const method = isNew ? 'POST' : 'PUT';
         console.log("Saving section:", sectionData.sectionName);
-        const payload = { sectionName: sectionData.sectionName, courseId: courseData._id};
+        const payload = { sectionName: sectionData.sectionName, courseId: courseData._id };
         console.log(courseData);
         try {
             const response = await apiConnector(method, url, `Bearer ${token}`, payload);
@@ -111,26 +111,61 @@ const CourseBuilderForm = ({ courseData, setCourseData, onNext }) => {
     const handleAddSection = () => {
         const newSection = {
             _id: `section${Date.now()}`,
-            sectionName: `New Section ${courseData.courseContent.length + 1}`,
+            sectionName: `New Section ${courseData?.courseContent?.length + 1}`,
             subSection: []
         };
         setCourseData({ ...courseData, courseContent: [...courseData.courseContent, newSection] });
     };
 
-    const handleDeleteSection = (sectionId) => {
-        const updatedContent = courseData.courseContent.filter(s => s._id !== sectionId);
-        setCourseData({ ...courseData, courseContent: updatedContent });
+    const handleDeleteSection = async (sectionId) => {
+        try {
+            toast.loading("Deleting section...");
+            const payload = { sectionId };
+            const response = await apiConnector("DELETE", editsection.DELETE_SECTION_API + `/${courseData._id}`, `Bearer ${token}`, payload);
+            if (response?.data?.success) {
+                toast.dismiss();
+                toast.success("Section deleted successfully");
+                const updatedContent = courseData.courseContent.filter(s => s._id !== sectionId);
+                setCourseData({ ...courseData, courseContent: updatedContent });
+            } else {
+                toast.dismiss();
+                toast.error(response?.data?.message || "Failed to delete section.");
+            }
+        } catch (err) {
+            toast.dismiss();
+            toast.error("Failed to delete section.");
+            console.error(err);
+        }
+
     };
 
-    const handleDeleteLecture = (sectionId, lectureId) => {
-        const updatedContent = courseData.courseContent.map(section => {
-            if (section._id === sectionId) {
-                const updatedSubSection = section.subSection.filter(lec => lec._id !== lectureId);
-                return { ...section, subSection: updatedSubSection };
+    const handleDeleteLecture = async (sectionId, lectureId) => {
+
+        try {
+            toast.loading("Deleting lecture...");
+            const response = await apiConnector("DELETE", editsubsection.DELETE_SUBSECTION_API + `/${lectureId}`, `Bearer ${token}`, { sectionId });
+            if (response?.data?.success) {
+                toast.dismiss();
+                toast.success("Lecture deleted successfully");
+                const updatedContent = courseData.courseContent.map(section => {
+                    if (section._id === sectionId) {
+                        const updatedSubSection = section.subSection.filter(lec => lec._id !== lectureId);
+                        return { ...section, subSection: updatedSubSection };
+                    }
+                    return section;
+                });
+                setCourseData({ ...courseData, courseContent: updatedContent });
+                console.log("res", response);
+            } else {
+                toast.dismiss();
+                toast.error(response?.data?.message || "Failed to delete lecture.");
             }
-            return section;
-        });
-        setCourseData({ ...courseData, courseContent: updatedContent });
+        } catch (err) {
+            toast.dismiss();
+            toast.error("Failed to delete lecture.");
+            console.error(err);
+        }
+
     };
 
     const handleToggleSection = (sectionId) => {
@@ -197,8 +232,6 @@ const CourseBuilderForm = ({ courseData, setCourseData, onNext }) => {
         try {
             for (let i = 0; i < updatedContent.length; i++) {
                 const section = updatedContent[i];
-
-                // 1. Call the Section API
                 const savedSection = await createOrUpdateSectionAPI(section);
                 // Update the section in our copy with the response (which may have a new ID)
                 updatedContent[i] = { ...savedSection, subSection: [] }; // Reset lectures, we will repopulate
@@ -219,7 +252,9 @@ const CourseBuilderForm = ({ courseData, setCourseData, onNext }) => {
 
             // 3. After all loops are done, update the state and proceed
             console.log("All content saved. Final structure:", updatedContent);
+            console.log("Course Data before setting:", courseData);
             setCourseData({ ...courseData, courseContent: updatedContent });
+            console.log("Course Data after setting:", courseData);
             onNext(); // Call the original onNext prop to move to the next form step
 
         } catch (error) {
@@ -230,13 +265,18 @@ const CourseBuilderForm = ({ courseData, setCourseData, onNext }) => {
             setIsLoading(false);
         }
     };
-
+    useEffect(() => {
+        if (isEditing && courseData?.courseContent?.length) {
+            const defaultExpanded = new Set(courseData.courseContent.map(section => section._id));
+            setExpandedSections(defaultExpanded);
+        }
+    }, [isEditing, courseData]);
 
     return (
         <div className="course-builder-container">
             <h2 className="course-builder-heading">Course Builder</h2>
             <div className="sections-list">
-                {courseData.courseContent.map(section => (
+                {courseData?.courseContent?.map(section => (
                     <div key={section._id} className="section-wrapper">
                         <div className="section-header">
                             <div className="section-title">
@@ -244,7 +284,7 @@ const CourseBuilderForm = ({ courseData, setCourseData, onNext }) => {
                                 <input
                                     type="text"
                                     className="section-name-input"
-                                    value={section.sectionName}
+                                    value={section?.sectionName}
                                     onChange={(e) => {
                                         const updatedContent = courseData.courseContent.map(s => s._id === section._id ? { ...s, sectionName: e.target.value } : s);
                                         setCourseData({ ...courseData, courseContent: updatedContent });
@@ -264,7 +304,7 @@ const CourseBuilderForm = ({ courseData, setCourseData, onNext }) => {
 
                         {expandedSections.has(section._id) && (
                             <div className="lectures-container">
-                                {section.subSection.map(lecture => (
+                                {section.subSection?.map(lecture => (
                                     <div key={lecture._id} className="lecture-item">
                                         <div className="lecture-title">
                                             <span className="drag-handle">::</span>

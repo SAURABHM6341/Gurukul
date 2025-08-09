@@ -74,10 +74,7 @@ exports.capturePayment = async (req, res) => {
     }
 }
 
-const crypto = require("crypto");
-const userModel = require("../models/userModel");
-const courseModel = require("../models/courseModel");
-const mailSender = require("../utils/mailSender");
+
 
 exports.verifySignature = async (req, res) => {
   try {

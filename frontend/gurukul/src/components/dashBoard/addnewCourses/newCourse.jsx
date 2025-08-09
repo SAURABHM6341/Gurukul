@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState } from 'react';
 import './newCourse.css';
 
 // Import the step components
@@ -7,47 +6,56 @@ import CourseInformationForm from './courseInformation';
 import CourseBuilderForm from './CourseBuilderForm';
 import PublishCourseForm from './PublishCourseForm';
 
-
-const AddCourse = ({onBack}) => {
+const AddCourse = ({ onBack, isEditing = false, courseInfo = {} }) => {
     const [step, setStep] = useState(1);
     const [courseData, setCourseData] = useState({
-        courseName: '',
-        courseDescription: '',
-        price: '',
-        tag: '',
-        whatToLearn: '',
-        status: 'Draft',
-        courseContent: [],
-        _id:"",
-        thumbnail:"",
-        thumbnailfile:null
-    });
-
+    courseName: courseInfo?.courseName || "",
+    courseDescription: courseInfo?.courseDescription || "",
+    price: courseInfo?.price || "",
+    tag: courseInfo?.tag || "",
+    whatToLearn: courseInfo?.whatToLearn || "",
+    thumbnail: courseInfo?.thumbnail || "",
+    thumbnailfile: null,
+    _id: courseInfo?._id || null, // used during editing
+    courseContent: courseInfo?.courseContent || [],
+    status: courseInfo?.status || "draft"
+});
 
 
     const handleNext = () => {
         setStep(prev => prev + 1);
     };
-    
-
+   
     const renderStepContent = () => {
+        const stepProps = {
+            courseData,
+            setCourseData,
+            onNext: handleNext,
+            isEditing: isEditing,
+        };
+
         switch (step) {
             case 1:
-                return <CourseInformationForm courseData={courseData} setCourseData={setCourseData} onNext={handleNext} />;
+                return <CourseInformationForm {...stepProps} />;
             case 2:
-                return <CourseBuilderForm courseData={courseData} setCourseData={setCourseData} onNext={handleNext}  />;
+                return <CourseBuilderForm {...stepProps} />;
             case 3:
-                return <PublishCourseForm courseData={courseData} setCourseData={setCourseData}   />;
+                return (
+                    <PublishCourseForm
+                        courseData={courseData}
+                        setCourseData={setCourseData}
+                    />
+                );
             default:
                 return <div>Unknown Step</div>;
         }
     };
-    
+
     return (
         <div className="add-course-container">
             <p onClick={onBack} style={{ color: "#facc15", textDecoration: "underline", cursor: "pointer" }}>
-                    Back to MyCourse
-                </p>
+                Back to MyCourse
+            </p>
             <div className="add-course-stepper">
                 <div className={`step ${step >= 1 ? 'active' : ''}`}>
                     <div className="step-number">1</div>

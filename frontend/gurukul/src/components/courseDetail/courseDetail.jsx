@@ -184,7 +184,7 @@ if (!courseData) {
 
             {/* --- SIDEBAR --- */}
             {/* This entire section will not render if the user is already enrolled */}
-            {!isEnrolled && (
+            {!isEnrolled && user.accountType === "Student" && (
                  <div className="course-sidebar">
                     <div className="buy-card">
                         <div className="course-thumbnail-placeholder">

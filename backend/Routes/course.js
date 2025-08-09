@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const {createCourse, getAllCourses, getCourseDetailsById,getAllEnrolledCourses,getCoursesByIds,changeStatus,getfullCourseDetailsById} = require('../Controllers/Course_s');
+const {createCourse, updateCourse, deleteCourse, getAllCourses, getCourseDetailsById,getAllEnrolledCourses,getCoursesByIds,changeStatus,getfullCourseDetailsById} = require('../Controllers/Course_s');
 const {authenticate, isInstructor, isStudent, isAdmin} = require('../Middlewares/auth');
 
 // ************ courses *************
@@ -12,6 +12,8 @@ router.get('/get_full_course/:id', getfullCourseDetailsById);
 router.get('/getenrolled_courses',authenticate, getAllEnrolledCourses);
 router.post('/getcart_courses',authenticate, isStudent, getCoursesByIds);
 router.post('/changestatus',authenticate, isInstructor, changeStatus);
+router.put('/edit/course/:courseId',authenticate, isInstructor, updateCourse);
+router.delete('/delete/course',authenticate, isInstructor, deleteCourse);
 
 // *********** for rating and review ***********
 

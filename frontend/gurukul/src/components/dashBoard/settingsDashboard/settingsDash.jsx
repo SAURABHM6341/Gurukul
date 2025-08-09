@@ -3,7 +3,7 @@ import './dashsetting.css';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { apiConnector } from '../../../service/apiconnector';
-import { additonalProfileApi, additonalProfileApiUpdate, updateUserImage,removeUserImage } from '../../../service/apis';
+import { additonalProfileApi, additonalProfileApiUpdate, updateUserImage,removeUserImage,deleteAccount } from '../../../service/apis';
 import { toast } from 'react-hot-toast';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../../../context/slices/profileSlice'
@@ -150,6 +150,43 @@ export default function UserProfile() {
         }
 
     };
+    const [deleteAcc,setDeleteAccount] = useState(false);
+    const handleDeleteAccount = async()=>{
+        if(window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+            try{
+                const response = await apiConnector("PUT", deleteAccount.DELETE_ACCOUNT_API, `Bearer ${token}`);
+                if(response?.data?.success) {
+                    toast.dismiss();
+                    toast.success("Account deleted Initiated");
+                    setDeleteAccount(true);
+
+                } else {
+                    toast.dismiss();
+                    toast.error("Failed to delete account");
+                }
+            }catch(error) {
+                console.error("Error deleting account:", error);
+                toast.error("Something went wrong while deleting account");
+            }
+        }
+    }
+    const cancelDeleteAccount=async()=>{
+    try {
+            const response = await apiConnector("PUT", deleteAccount.CANCEL_DELETE_ACCOUNT_API, `Bearer ${token}`);
+            if(response?.data?.success) {
+                toast.dismiss();
+                toast.success("Account deletion cancelled");
+                setDeleteAccount(false);
+            } else {
+                toast.dismiss();
+                toast.error("Failed to cancel account deletion");
+            }
+        } catch (error) {
+            console.error("Error cancelling account deletion:", error);
+            toast.dismiss();
+            toast.error("Something went wrong while cancelling account deletion");
+        }
+    }
     return (
         <div className="profile-container">
             <h1>Edit Profile</h1>
@@ -258,7 +295,18 @@ export default function UserProfile() {
                         <br />
                         This account contains paid courses. Deleting your account will remove all associated content.
                     </p>
-                    <button className="btn link">I want to delete my account.</button>
+                    {
+                        deleteAcc &&
+                       <div> <p className="delete-success">Account deletion initiated. You will receive an email confirmation.</p>  
+                        <button className="btn link" onClick={cancelDeleteAccount} >I want to cancel the request</button>
+                        <p>if you don't want to cancel request please logout </p>
+                        <p>User may able to see their details after account deletion but once you logout evrything will be deleted </p>
+                        </div>
+                        
+                    }
+                    { !deleteAcc &&
+                    <button className="btn link" onClick={handleDeleteAccount} >I want to delete my account.</button>
+                    }
                 </div>
             </div>
 

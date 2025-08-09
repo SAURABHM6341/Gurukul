@@ -3,7 +3,7 @@ const router = require('express').Router();
 const {sendOtpMailVerify, login, verifyOtpanduserCreation, changePassword} = require('../Controllers/Auth');
 const { authenticate } = require('../Middlewares/auth');
 const {resetPasswordsendOtp, resetPasswordEntry} = require('../Controllers/resetpass');
-const { deleteAccount } = require('../Controllers/deleteAccount');
+const { accountDelete,cancelAccountDeletion } = require('../Controllers/accountdeletion');
 const {getallDetails, editDetails,updateProfileImage,removeImage} = require('../Controllers/additionalDetails');
 const {contactQuery} = require('../Controllers/contactUs')
 // for login
@@ -16,7 +16,8 @@ router.put('/changePassword', authenticate,changePassword);
 router.post('/resetPassword/sendotp', resetPasswordsendOtp);
 router.put('/resetPassword', resetPasswordEntry);
 // delete account
-router.delete('/deleteAccount', authenticate, deleteAccount);
+router.put('/deleteAccount', authenticate, accountDelete);
+router.put('/cancel/deleteAccount', authenticate, cancelAccountDeletion);
 // get the user details
 router.get('/details',authenticate, getallDetails);
 router.put('/details/edit',authenticate, editDetails);

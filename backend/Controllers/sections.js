@@ -1,4 +1,5 @@
 const sectionModel = require('../Models/section');
+const subSectionModel = require('../Models/SubSection');
 const courseModel = require('../Models/course');
 const userModel = require('../Models/User');
 exports.createSection = async (req, res) => {
@@ -103,8 +104,12 @@ exports.deleteSection = async (req, res) => {
                 success: false
             });
         }
+        const subsections = await sectionModel.findById(sectionId).select('subSection');
         const section = await sectionModel.findByIdAndDelete(sectionId);
-        
+        if (subsections) {
+            await subSectionModel.deleteMany({ _id: { $in: subsections.subSection } });
+        }
+
         // remove section from course
         await courseModel.findByIdAndUpdate(courseId,{
             $pull:{

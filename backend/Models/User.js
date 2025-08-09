@@ -33,24 +33,30 @@ const Userschema = new mongoose.Schema({
         enum: ['Student', 'Instructor', 'Admin'],
         default: 'Student',
     },
-    additionalDetails:{
-        required:true,
-        type:mongoose.Schema.Types.ObjectId,
+    additionalDetails: {
+        required: true,
+        type: mongoose.Schema.Types.ObjectId,
         ref: 'profile'
     },
-    courses:[{
+    courses: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "course"
     }],
-    image:{
-        type:String,
+    image: {
+        type: String,
         required: true,
     },
-    courseProgress:[{
+    courseProgress: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "courseProgress"
-    }]
-    // we acan add more fields like all rating this user has given to some courses
+    }],
+    markedForDeletion: {
+        type: Boolean,
+        default: false,
+    },
+    deletionScheduledAt: {
+        type: Date,
+    },
 
 });
 module.exports = mongoose.model('User', Userschema);

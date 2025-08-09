@@ -43,14 +43,23 @@ function Login() {
       if (response.data.success) {
         toast.dismiss();
         toast.success("Logged in successfully!");
+        const session_ttl = 3 * 24 * 60 * 60 * 1000;
+        const logintime = Date.now();
+        const expiryTime = logintime + session_ttl;
         const userData = response?.data?.user;
-        console.log("userdata line 47 in login.jsx",userData);
+        console.log("userdata line 47 in login.jsx", userData);
         const token = response?.data?.token;
-        console.log("token line 49 in login.jsx",token);
+        console.log("token line 49 in login.jsx", token);
         dispatch(setToken(token));
         dispatch(setUser(userData));
-        localStorage.setItem("user", JSON.stringify(userData));
-        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify({
+          value: userData,
+          expiry: expiryTime
+        }));
+        localStorage.setItem("token", JSON.stringify({
+          value: token,
+          expiry: expiryTime
+        }));
         navigate('/')
 
       } else {

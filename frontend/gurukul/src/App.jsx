@@ -25,15 +25,25 @@ import GetAllCourse from './components/dashBoard/allcourses/Allcourses.jsx'
 import TagPage from './pages/tagPage.jsx'
 import ResetPass from './pages/resetPass.jsx';
 import LEcturePage from './pages/Lecture.jsx'
+import { getItemWithTTL } from './utils/ttlStorage.js'
 function App() {
   const dispatch = useDispatch();
   useEffect(() => {
-    const savedUser = localStorage.getItem("user");
-    const savedToken = localStorage.getItem("token");
+    const user = getItemWithTTL("user");
+    const token = getItemWithTTL("token");
 
-    if (savedUser && savedToken) {
-      dispatch(setUser(JSON.parse(savedUser)));
-      dispatch(setToken(savedToken));
+    if (user && token) {
+      dispatch(setUser(user));
+      dispatch(setToken(token));
+    } else {
+      dispatch(clearUser());             
+      dispatch(clearToken());
+      dispatch(resetCart());
+      localStorage.removeItem("token"); 
+      localStorage.removeItem("user");
+      localStorage.removeItem("cart");
+      toast.success("Logged out successfully");
+      navigate("/login");
     }
   }, []);
   return (
@@ -47,16 +57,16 @@ function App() {
         <Route path='/login' element={<LogIn />} />
         <Route path='/check_email' element={<CheckEmail />} />
         <Route path='/verify_otp' element={<Verify_otp />} />
-        <Route path='/course_details/:id' element={<CourseDet/>} />
-        <Route path='/changePassword' element={<PassWordChange/>} />
-        <Route path='/changePasswordOTP' element={<PassWordChange/>} />
-        <Route path='/tag/:tagid' element={<TagPage/>} />
-        <Route path='/resetpassword' element={<ResetPass/>} />
-        <Route path='/videopage/:id' element={<LEcturePage/>} />
+        <Route path='/course_details/:id' element={<CourseDet />} />
+        <Route path='/changePassword' element={<PassWordChange />} />
+        <Route path='/changePasswordOTP' element={<PassWordChange />} />
+        <Route path='/tag/:tagid' element={<TagPage />} />
+        <Route path='/resetpassword' element={<ResetPass />} />
+        <Route path='/videopage/:id' element={<LEcturePage />} />
 
         {/* Dashboard Layout with Nested Routes */}
         <Route path='/dashboard' element={<DashLeft />}>
-          <Route index element={< StuDashboard/>} /> 
+          <Route index element={< StuDashboard />} />
           <Route path='setting' element={<UserProfile />} />
           <Route path='enrolledcourses' element={<EnrolledCourses />} />
           <Route path='cart' element={<Wishlist />} />

@@ -1,6 +1,8 @@
 const courseSchema = require('../Models/course');
 const userModel = require('../Models/User');
 const tagModel = require('../Models/tags');
+const sectionModel = require('../Models/section');
+const subSectionModel = require('../Models/SubSection');
 const mongoose = require('mongoose');
 const { ImageUploader } = require('../Util/imageUploader');
 // create course
@@ -98,10 +100,20 @@ exports.createCourse = async (req, res) => {
 
 exports.getAllCourses = async (req, res) => {
     try {
-        const courses = await courseSchema.find({}, {
-            courseName: true,
-            courseDescription: true, thumbnail: true, price: true, instructor: true, tag: true,createdAt:true
-        }).populate("instructor").exec();
+        const courses = await courseSchema.find(
+            { status: "published" },
+            {
+                courseName: true,
+                courseDescription: true,
+                thumbnail: true,
+                price: true,
+                instructor: true,
+                tag: true,
+                createdAt: true,
+                status: true
+            }
+        ).populate("instructor").exec();
+
         if (courses.length === 0) {
             return res.status(404).json({
                 message: "No courses found",
@@ -199,7 +211,17 @@ exports.getCourseDetailsById = async (req, res) => {
 exports.getAllEnrolledCourses = async (req, res) => {
     try {
         const user_id = req.user.id;
-        const allEnrolled = await userModel.findById(user_id).populate("courses").exec();
+        const allEnrolled = await userModel.findById(user_id).populate(
+            {
+                path: "courses",
+                populate: {
+                    path: "courseContent",
+                    populate: {
+                        path: "subSection",
+                    }
+                }
+            }
+        ).exec();
         if (!allEnrolled) {
             return res.status(404).json({
                 message: "Seems Like You Haven't Bought any Course Yet!"
@@ -223,7 +245,7 @@ exports.getAllEnrolledCourses = async (req, res) => {
 
 exports.getCoursesByIds = async (req, res) => {
     try {
-        const {ids} = req.body; // array of courseIds
+        const { ids } = req.body; // array of courseIds
 
         if (!ids || !Array.isArray(ids) || ids.length === 0) {
             return res.status(400).json({
@@ -300,7 +322,7 @@ exports.getCoursesByIds = async (req, res) => {
 
 exports.updateCourse = async (req, res) => {
     try {
-        const { courseId } = req.body;
+        const { courseId } = req.params;
 
         if (!courseId) {
             return res.status(400).json({
@@ -309,28 +331,18 @@ exports.updateCourse = async (req, res) => {
             });
         }
 
-        const course = await courseSchema.findById(courseId);
+        const course = await courseSchema.findById(courseId).populate({
+            path: "courseContent",
+            populate: {
+                path: "subSection"
+            }
+        }).exec();
         if (!course) {
             return res.status(404).json({
                 success: false,
                 message: "Course not found.",
             });
         }
-
-        const allowedFields = [
-            "courseName",
-            "courseDescription",
-            "whatToLearn",
-            "price",
-            "status",
-        ];
-
-        allowedFields.forEach((field) => {
-            if (req.body[field] !== undefined) {
-                course[field] = req.body[field];
-            }
-        });
-
 
         if (req.files && req.files.thumbnail) {
             const imageResponse = await ImageUploader(
@@ -347,9 +359,20 @@ exports.updateCourse = async (req, res) => {
 
             course.thumbnail = imageResponse.secure_url;
         }
+        const allowedFields = [
+            "courseName",
+            "courseDescription",
+            "whatToLearn",
+            "price",
+        ];
+        allowedFields.forEach((field) => {
+            if (req.body[field] !== undefined) {
+                course[field] = req.body[field];
+            }
+        });
 
         await course.save();
-
+        console.log("Updated Course:", course);
         return res.status(200).json({
             success: true,
             message: "Course updated successfully.",
@@ -366,27 +389,27 @@ exports.updateCourse = async (req, res) => {
 
 }
 
-exports.changeStatus =async(req,res)=>{
-    try{
-        const {courseId,status} = req.body;
-        if(!courseId){
+exports.changeStatus = async (req, res) => {
+    try {
+        const { courseId, status } = req.body;
+        if (!courseId) {
             return res.status(401).json({
-                message:"please provide courseId",
-                success:false,
+                message: "please provide courseId",
+                success: false,
             })
         }
         const course = await courseSchema.findById(courseId);
-        course.status = "published";
+        course.status = status;
         course.save();
         return res.status(200).json({
-            success:true,
-            message:"status changed",
+            success: true,
+            message: "status changed",
             course
         });
-    }catch(err){
+    } catch (err) {
         return res.status(500).json({
-            message:"internal server error",
-            success:false
+            message: "internal server error",
+            success: false
         })
     }
 }
@@ -464,3 +487,68 @@ exports.getfullCourseDetailsById = async (req, res) => {
         });
     }
 }
+exports.deleteCourse = async (req, res) => {
+    try {
+        const { courseId } = req.body;
+        const userId = req.user.id;
+
+        if (!courseId) {
+            return res.status(400).json({ message: "Course ID is required", success: false });
+        }
+
+        // Find the course and check for ownership (CRITICAL security check)
+        const course = await courseSchema.findById(courseId);
+        if (!course) {
+            return res.status(404).json({ message: "Course not found", success: false });
+        }
+
+        if (course.instructor.toString() !== userId) {
+            return res.status(403).json({
+                message: "You are not authorized to delete this course",
+                success: false
+            });
+        }
+
+        // --- Efficient Deletion Logic (without transaction) ---
+
+        // 1. Collect all Section IDs from the course
+        const sectionIds = course.courseContent;
+
+        if (sectionIds && sectionIds.length > 0) {
+            // 2. Find all sections and collect their sub-section IDs
+            const sections = await sectionModel.find({ _id: { $in: sectionIds } });
+            const subSectionIds = sections.flatMap(section => section.subSection);
+
+            // 3. Delete all subsections in one go
+            if (subSectionIds && subSectionIds.length > 0) {
+                await subSectionModel.deleteMany({ _id: { $in: subSectionIds } });
+            }
+
+            // 4. Delete all sections in one go
+            await sectionModel.deleteMany({ _id: { $in: sectionIds } });
+        }
+        //un-enroll all students from this course
+
+        await userModel.updateMany(
+            { courses: courseId },
+            { $pull: { courses: courseId } }
+        );
+        console.log(`Un-enrolled students from course: ${courseId}`);
+
+
+        // 6. Delete the course itself
+        await courseSchema.findByIdAndDelete(courseId);
+
+        return res.status(200).json({
+            message: "Course deleted successfully",
+            success: true,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "Internal server error, please try again later",
+            success: false,
+            error: error.message,
+        });
+    }
+};

@@ -1,7 +1,8 @@
 const subSectionModel = require('../Models/SubSection');
 const sectionModel = require('../Models/section');
 const userModel = require('../Models/User');
-const {videoUpload} = require('../Util/videoUploader')
+const { videoUpload } = require('../Util/videoUploader');
+const { updateCourse } = require('./Course_s');
 const cloudinary = require('cloudinary').v2; // Import cloudinary for video deletion
 // create sub section
 exports.createSubSection = async (req, res) => {
@@ -91,7 +92,6 @@ exports.createSubSection = async (req, res) => {
 exports.editSubSection = async (req, res) => {
     try {
         const subSectionId = req.params.id;
-        const videoFile = req.files.video;
         const { title, timeDuration, description } = req.body;
         const subSectionResponse = await subSectionModel.findById(subSectionId);
         if (!subSectionResponse) {
@@ -111,7 +111,8 @@ exports.editSubSection = async (req, res) => {
         if (timeDuration) {
             subSectionResponse.timeDuration = timeDuration;
         }
-        if (videoFile) {
+        if (req.files && req.files.video) {
+            const videoFile = req.files.video;
             const supportedFormats = ["mp4", "avi", "mov", "mkv"];
             const fileType = videoFile.name.split('.')[1].toLowerCase();
             if (!supportedFormats.includes(fileType)) {
@@ -138,7 +139,7 @@ exports.editSubSection = async (req, res) => {
             const videoUrl = videoResponse.secure_url;
             const oldVideoUrl = subSectionResponse.videoUrl;
             subSectionResponse.videoUrl = videoUrl;
-            await subSectionResponse.save();
+            
             // delete old video from cloudinary
             if (oldVideoUrl) {
                 //extract public id from cloudinary url
@@ -156,6 +157,7 @@ exports.editSubSection = async (req, res) => {
 
             }
         }
+        await subSectionResponse.save();
         return res.status(200).json({
             message: "Sub section updated successfully",
             success: true,
@@ -175,35 +177,42 @@ exports.editSubSection = async (req, res) => {
 
 // delete subsection
 exports.deleteSubSection = async (req, res) => {
-    try{
-        const subsectionId = req.params.id;
-        const subSectionResponse = await subSectionModel.findById(subsectionId);
-        if(!subSectionResponse){
+    try {
+        const { id } = req.params;
+        const sectionId = req.body.sectionId;
+        const subSectionResponse = await subSectionModel.findById(id);
+        if (!subSectionResponse) {
             return res.status(404).json({
                 message: "Sub section not found, please enter valid sub section ID",
                 success: false
             });
         }
+       const section =  await sectionModel.findByIdAndUpdate(sectionId,{
+            $pull:{
+                subSection: id
+            }
+        },{ new: true });
         // delete video from cloudinary
         const videoUrl = subSectionResponse.videoUrl;
-        if(videoUrl){
+        if (videoUrl) {
             const extractPublicIdFromCloudinaryUrl = (url) => {
-                    const parts = url.split('/');
-                    const fileName = parts.pop().split('.')[0]; // 'lecture.mp4' → 'lecture'
-                    const versionIndex = parts.findIndex(p => /^v\d+$/.test(p));
-                    const publicIdParts = parts.slice(versionIndex + 1);
-                    publicIdParts.push(fileName);
-                    return publicIdParts.join('/');
-                };
+                const parts = url.split('/');
+                const fileName = parts.pop().split('.')[0]; // 'lecture.mp4' → 'lecture'
+                const versionIndex = parts.findIndex(p => /^v\d+$/.test(p));
+                const publicIdParts = parts.slice(versionIndex + 1);
+                publicIdParts.push(fileName);
+                return publicIdParts.join('/');
+            };
 
-                const publicId = extractPublicIdFromCloudinaryUrl(videoUrl);
-                await cloudinary.uploader.destroy(publicId, { resource_type: 'video' });
+            const publicId = extractPublicIdFromCloudinaryUrl(videoUrl);
+            await cloudinary.uploader.destroy(publicId, { resource_type: 'video' });
         }
+        await subSectionModel.findByIdAndDelete(id);
         return res.status(200).json({
-            message:"video deleted successfully",
-            success:false
+            message: "video deleted successfully",
+            success: true
         });
-    }catch(err){
+    } catch (err) {
         return res.status(500).json({
             message: "Internal server error, please try again later",
             success: false,
@@ -212,30 +221,30 @@ exports.deleteSubSection = async (req, res) => {
     }
 }
 // get all subsections of a section
-exports.getAllSubSections = async (req,res)=>{
-    try{
+exports.getAllSubSections = async (req, res) => {
+    try {
         const sectionId = req.params.sectionId;
-        if(!sectionId){
+        if (!sectionId) {
             return res.status(400).json({
                 message: "Section ID is required",
                 success: false
             });
         }
         const user = await userModel.findById(req.user.id);
-            if(!user.courses.includes(courseId)){
-                return res.status(403).json({
-                    message: "You are not enrolled in this course",
-                    success: false
-                });
-            }
+        if (!user.courses.includes(courseId)) {
+            return res.status(403).json({
+                message: "You are not enrolled in this course",
+                success: false
+            });
+        }
         const section = await sectionModel.findById(sectionId).populate('subSection');
-        if(!section){
+        if (!section) {
             return res.status(404).json({
                 message: "Section not found",
                 success: false
             });
         }
-        if(!section.subSection || section.subSection.length === 0){
+        if (!section.subSection || section.subSection.length === 0) {
             return res.status(404).json({
                 message: "No sub sections found for this section",
                 success: false
@@ -246,7 +255,7 @@ exports.getAllSubSections = async (req,res)=>{
             success: true,
             data: section.subSection
         });
-    }catch(err){
+    } catch (err) {
 
     }
 }

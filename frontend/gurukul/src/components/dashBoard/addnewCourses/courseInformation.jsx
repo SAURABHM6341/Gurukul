@@ -1,19 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import { toast } from 'react-hot-toast'
+import { toast } from 'react-hot-toast';
 import { apiConnector } from '../../../service/apiconnector';
-import { createCourse, categories } from '../../../service/apis';
-import { useSelector } from 'react-redux'
-const CourseInformationForm = ({ courseData = null, setCourseData, onNext }) => {
+import { createCourse, categories, deleteEditCourse } from '../../../service/apis';
+import { useSelector } from 'react-redux';
 
+const CourseInformationForm = ({ courseData = null, setCourseData, onNext, isEditing }) => {
+    const token = useSelector((state) => state.auth?.token);
     const [thumbnailPreview, setThumbnailPreview] = useState(null);
+    const [Catalog, setCatalog] = useState([]);
+    const [courseInfo, setOriginalCourseData] = useState(courseData)
+    useEffect(() => {
+        // Set preview from existing thumbnail if editing
+        if (isEditing && courseData?.thumbnail && !thumbnailPreview) {
+            setThumbnailPreview(courseData.thumbnail);
+        }
+    }, [courseData, isEditing, thumbnailPreview]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const result = await apiConnector("GET", categories.CATEGORIES_API);
+                if (result?.data?.tags) {
+                    setCatalog(result.data.tags);
+                }
+            } catch (err) {
+                console.error("Could not fetch categories", err);
+            }
+        };
+        fetchCategories();
+    }, []);
+
     if (!courseData) {
-        return <div>Loading form...</div>; // Prevent render crash
+        return <div>Loading form...</div>;
     }
 
     const handleChange = (e) => {
         setCourseData({ ...courseData, [e.target.name]: e.target.value });
     };
-    const token = useSelector((state) => state.auth?.token)
+
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
@@ -21,221 +45,209 @@ const CourseInformationForm = ({ courseData = null, setCourseData, onNext }) => 
             setThumbnailPreview(URL.createObjectURL(file));
         }
     };
-    const CourseCreate = async () => {
-        const payload = new FormData();
-        payload.append("courseName", courseData.courseName);
-        payload.append("courseDescription", courseData.courseDescription);
-        payload.append("price", courseData.price);
-        payload.append("tag", courseData.tag);
-        payload.append("whatToLearn", courseData.whatToLearn);
+    const isCourseDataChanged = () => {
+        const fieldsToCompare = ["courseName", "courseDescription", "price", "whatToLearn"];
 
+        for (let field of fieldsToCompare) {
+            if (courseData[field] !== courseInfo[field]) {
+                return true;
+            }
+        }
+
+        // Check if thumbnail file is newly selected
         if (courseData.thumbnailfile) {
-            payload.append("thumbnail", courseData.thumbnailfile); 
+            return true;
         }
-        try {
-    const res = await apiConnector("POST", createCourse.CREATE_COURSE_API, `Bearer ${token}`, payload);
-    console.log("API Response", res);
 
-    if (res?.data?.success) {
-        toast.dismiss();
-        toast.success("Course creation successful. Proceeding...");
-        setCourseData({ ...res.data.course, thumbnailfile: courseData.thumbnailfile }); 
-        onNext();
-    } else {
-        toast.dismiss();
-        toast.error("Course creation failed. Please try again.");
-        console.log("Unexpected response:", res?.data);
+        return false;
     }
-} catch (err) {
-    toast.dismiss();
-    toast.error("Something went wrong while creating the course.");
-    console.error("Error while creating course →", err);
-}
-    }
-    const handleNext = () => {
-        const { courseName, courseDescription, price, tag, thumbnailfile, whatToLearn } = courseData;
+    const handleNext = async () => {
+        const { courseName, courseDescription, price, tag, thumbnailfile, whatToLearn, thumbnail } = courseData;
+        if (!courseName.trim()) return toast.error("Course title is required");
+        if (!courseDescription.trim()) return toast.error("Short description is required");
+        if (!price) return toast.error("Price is required");
+        if (!tag) return toast.error("Please select a category");
+        if (!thumbnailfile && !isEditing) return toast.error("Course thumbnail is required");
+        if (!whatToLearn.trim()) return toast.error("Please provide at least one benefit");
 
-        if (!courseName.trim()) {
-            toast.dismiss();
-            toast.error("Course title is required");
-            return;
-        }
-        if (!courseDescription.trim()) {
-            toast.dismiss();
-            toast.error("Short description is required");
-            return;
-        }
-        if (!price) {
-            toast.dismiss();
-            toast.error("Price is required");
-            return;
-        }
-        if (!tag) {
-            toast.dismiss();
-            toast.error("Please select a category");
-            return;
-        }
-        if (!thumbnailfile) {
-            toast.dismiss();
-            toast.error("Course thumbnail is required");
-            return;
-        }
-        if (!whatToLearn.trim()) {
-            toast.dismiss();
-            toast.error("Please provide at least one benefit");
-            return;
-        }
-        CourseCreate();
-    };
-    const [Catalog,setCatalog] = useState([]);
-    const fetchCategories = async () => {
+        if (isEditing) {
+            if (!isCourseDataChanged()) {
+                toast.success("No changes detected");
+                return onNext();
+            }
+
             try {
-                const result = await apiConnector("GET", categories.CATEGORIES_API)
-                console.log("print result catalog", result)
-                if (result?.data?.tags) {
-                    setCatalog(result.data.tags);
+                toast.loading("Saving changes...");
+                const payload = new FormData();
+                payload.append("courseName", courseName);
+                payload.append("courseDescription", courseDescription);
+                payload.append("price", price);
+                payload.append("whatToLearn", whatToLearn);
+                if (thumbnailfile) {
+                    console.log("running till here")
+                    payload.append("thumbnail", thumbnailfile);
+                }
+                const res = await apiConnector("PUT", `${deleteEditCourse.UPDATE_COURSE_API}/${courseData._id}`, `Bearer ${token}`, payload);
+                if (res?.data?.success) {
+                    setCourseData({ ...res.data.course, thumbnailfile });
+                    toast.dismiss();
+                    toast.success("Course info updated");
+                }
+                else {
+                    toast.dismiss();
+                    toast.error("Failed to update course info");
+                }
+                onNext();
+            } catch (err) {
+                toast.dismiss();
+                toast.error("Failed to update course info");
+                console.error("Update error:", err);
+
+            }
+        }
+
+        else {
+
+            // Create new course logic
+            toast.loading("Creating Course...");
+            const payload = new FormData();
+            payload.append("courseName", courseName);
+            payload.append("courseDescription", courseDescription);
+            payload.append("price", price);
+            payload.append("tag", tag);
+            payload.append("whatToLearn", whatToLearn);
+            if (thumbnailfile) payload.append("thumbnail", thumbnailfile);
+
+            try {
+                const res = await apiConnector("POST", createCourse.CREATE_COURSE_API, `Bearer ${token}`, payload);
+                toast.dismiss();
+                if (res?.data?.success) {
+                    toast.success("Course created successfully. Proceeding...");
+                    setCourseData({ ...res.data.course, thumbnailfile });
+                    onNext();
                 } else {
-                    setCatalog([]);
+                    toast.error("Course creation failed. Try again.");
                 }
             } catch (err) {
-                console.log("could not fetch the lists", err);
+                toast.dismiss();
+                toast.error("Error creating course");
+                console.error("API Error →", err);
             }
-        };
-        useEffect(() => {
-            fetchCategories();
-        }, []);
+        }
+    };
+
     return (
         <div>
-            <div>
-                <h1>Course Information</h1>
-                {/* Course Title */}
-                <div className="form-group">
-                    <label htmlFor="courseName">Course Title <span style={{ color: "red" }} >*</span></label>
-                    <input
-                        type="text"
-                        id="courseName"
-                        name="courseName"
-                        className="form-input"
-                        value={courseData.courseName}
-                        onChange={handleChange}
-                        placeholder="Enter Course Title"
-                        required
-                    />
-                </div>
+            <h1>Course Information</h1>
 
-                {/* Course Short Description */}
-                <div className="form-group">
-                    <label htmlFor="courseDescription">Course Short Description<span style={{ color: "red" }} >*</span> </label>
-                    <textarea
-                        id="courseDescription"
-                        name="courseDescription"
-                        className="form-textarea"
-                        value={courseData.courseDescription}
-                        onChange={handleChange}
-                        placeholder="Enter Description"
-                        required
-                    ></textarea>
-                </div>
+            {/* Course Title */}
+            <div className="form-group">
+                <label>Course Title <span style={{ color: "red" }}>*</span></label>
+                <input
+                    type="text"
+                    name="courseName"
+                    className="form-input"
+                    value={courseData.courseName}
+                    onChange={handleChange}
+                    placeholder="Enter Course Title"
+                />
+            </div>
 
-                {/* Price */}
-                <div className="form-group">
-                    <label htmlFor="price">Price<span style={{ color: "red" }} >*</span></label>
-                    <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        className="form-input"
-                        value={courseData.price}
-                        onChange={handleChange}
-                        placeholder="Enter Price"
-                        required
-                    />
-                </div>
+            {/* Description */}
+            <div className="form-group">
+                <label>Short Description <span style={{ color: "red" }}>*</span></label>
+                <textarea
+                    name="courseDescription"
+                    className="form-textarea"
+                    value={courseData.courseDescription}
+                    onChange={handleChange}
+                    placeholder="Enter Description"
+                ></textarea>
+            </div>
 
-                {/* Category */}
-                <div className="form-group">
-                    <label htmlFor="tag">Category <span style={{ color: "red" }} >*</span></label>
-                     <select  id="tag"
+            {/* Price */}
+            <div className="form-group">
+                <label>Price <span style={{ color: "red" }}>*</span></label>
+                <input
+                    type="number"
+                    name="price"
+                    className="form-input"
+                    value={courseData.price}
+                    onChange={handleChange}
+                    placeholder="Enter Price"
+                />
+            </div>
+
+            {/* Category */}
+            {
+                !isEditing && <div className="form-group">
+                    <label>Category <span style={{ color: "red" }}>*</span></label>
+                    <select
                         name="tag"
                         className="form-select"
                         value={courseData.tag}
                         onChange={handleChange}
-                        required>
-                            <option value="">Select Category</option>
-                    {
-                            Catalog.length > 0 ? (
-                                Catalog.map((element, index) =>
-
-                                   
-                                        <option >
-                                        {element.name}
-                                    </option>
-                               
-                                )
-                            ) : (<div className="categoriestags" ></div>)
-                        }
-                             </select>
-                </div>
-
-                {/* Course Thumbnail Uploader */}
-                <div className="form-group">
-                    <label htmlFor="thumbnail-input">Course Thumbnail <span style={{ color: "red" }} >*</span></label>
-
-                    <div
-                        className="thumbnail-uploader"
-                        onClick={() => document.getElementById('thumbnail-input').click()}
                     >
-                        {thumbnailPreview ? (
-                            <img
-                                src={thumbnailPreview}
-                                alt="Thumbnail Preview"
-                                width={"250px"}
-                                height={"150px"}
-                                className="thumbnail-preview"
-                            />
-                        ) : (
-                            <div className="thumbnail-placeholder">
-                                <p>
-                                    Drag and drop an image, or{" "}
-                                    <span className="browse-link">Browse</span>
-                                </p>
-                                <small>Aspect ratio 16:9 | Recommended size 1024x576</small>
-                            </div>
-                        )}
-                    </div>
-                    <input
-                        required
-                        type="file"
-                        id="thumbnail-input"
-                        name="thumbnailfile"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        style={{ display: "none" }} // hide input properly
-                    />
+                        <option value="">Select Category</option>
+                        {Catalog.map((element, index) => (
+                            <option key={element._id || index} value={element.name}>
+                                {element.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
-
-                {/* Benefits of the course (Dynamic List) */}
-                <div className="form-group">
-                    <label>Benefits of the course <span style={{ color: "red" }} >*</span></label>
-                    <input
-                        type="text"
-                        className="form-input"
-                        name="whatToLearn"
-                        value={courseData.whatToLearn}
-                        onChange={handleChange}
-                        placeholder="Enter a benefit"
-                        required
-                    />
-
-
+            }
+            {/* Thumbnail */}
+            <div className="form-group">
+                <label>Course Thumbnail <span style={{ color: "red" }}>*</span></label>
+                <div
+                    className="thumbnail-uploader"
+                    onClick={() => document.getElementById('thumbnail-input').click()}
+                >
+                    {thumbnailPreview ? (
+                        <img
+                            src={thumbnailPreview}
+                            alt="Thumbnail Preview"
+                            width="250"
+                            height="150"
+                            className="thumbnail-preview"
+                        />
+                    ) : (
+                        <div className="thumbnail-placeholder">
+                            <p>Drag and drop an image, or <span className="browse-link">Browse</span></p>
+                            <small>Aspect ratio 16:9 | Recommended size 1024x576</small>
+                        </div>
+                    )}
                 </div>
+                <input
+                    type="file"
+                    id="thumbnail-input"
+                    name="thumbnailfile"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    style={{ display: "none" }}
+                />
+            </div>
 
+            {/* What to Learn */}
+            <div className="form-group">
+                <label>Benefits of the course <span style={{ color: "red" }}>*</span></label>
+                <input
+                    type="text"
+                    name="whatToLearn"
+                    className="form-input"
+                    value={courseData.whatToLearn}
+                    onChange={handleChange}
+                    placeholder="e.g. Learn React in 7 days"
+                />
+            </div>
 
-                {/* Form Actions */}
-                <div className="form-actions">
-                    <button onClick={handleNext} className="form-btn primary">Next</button>
-                </div>
+            {/* Next Button */}
+            <div className="form-actions">
+                <button onClick={handleNext} className="form-btn primary">
+                    {isEditing ? "Continue Editing" : "Next"}
+                </button>
             </div>
         </div>
     );
