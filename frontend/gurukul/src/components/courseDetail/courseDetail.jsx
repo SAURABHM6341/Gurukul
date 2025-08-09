@@ -3,10 +3,11 @@ import './courseDetail.css';
 import { FaStar, FaRegStar, FaStarHalfAlt, FaInfoCircle, FaCheck, FaPlayCircle, FaChevronDown, FaRegClock, FaSignal, FaCertificate, FaInfinity } from 'react-icons/fa';
 import { useDispatch, useSelector } from 'react-redux';
 import { apiConnector } from '../../service/apiconnector';
-import { getCourseByid } from '../../service/apis';
+import { getCourseByid, capturePayment,verifySignapi} from '../../service/apis';
 import {useParams} from 'react-router-dom';
 import {toast} from 'react-hot-toast'
-import { addToCart,removeFromCart,resetCart } from '../../context/slices/cartslice';
+const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY;
+import { addToCart,removeFromCart } from '../../context/slices/cartslice';
 // --- HELPER COMPONENT FOR LESSONS ---
 // This component manages its own state for collapsing/expanding
 const LessonAccordion = ({ lesson }) => {
@@ -80,6 +81,43 @@ useEffect(() => {
         setisEnrolled(true);
     }
 }, [user])
+const handleBuyNow = async (id) => {
+  try {
+    const payload = {
+        courseId:id,
+    }
+    const response = await apiConnector("POST",capturePayment.PAYMENT_API,`Bearer ${token}`,payload);
+    if(response.data.success){
+        toast.success(response.data.message);
+    }
+    const data = response?.data;
+    console.log(data);
+    const options = {
+      key: RAZORPAY_KEY,
+      amount: data.course.amount * 100,
+      currency: data.course.currency,
+      name: data.course.name,
+      description: data.course.courseDescription,
+      order_id: data.order,
+      notes: {
+        courseId: id,
+      },
+      prefill: {
+        name: `${user.Fname} ${user.Lname}`,
+        email: user.email,
+      },
+      callback_url: verifySignapi.VERIFY_PAY_API,
+      redirect: true,
+    };
+
+    const razorpay = new window.Razorpay(options);
+    razorpay.open();
+  } catch (err) {
+    console.error("Error initiating payment:", err);
+    toast.error("Payment failed. Try again.");
+  }
+};
+
 const renderStars = (rating) => {
     const stars = [];
         const fullStars = Math.floor(rating);
@@ -162,7 +200,7 @@ if (!courseData) {
                         
                         }
                         
-                        <button className="buy-now-btn">Buy Now</button>
+                        <button className="buy-now-btn" onClick={()=>handleBuyNow(id)} >Buy Now</button>
                         <p className="money-back-guarantee">30-Day Money-Back Guarantee</p>
                         
                         <div className="course-includes">

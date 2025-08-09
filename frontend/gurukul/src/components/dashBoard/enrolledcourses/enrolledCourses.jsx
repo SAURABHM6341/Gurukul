@@ -4,8 +4,10 @@ import {apiConnector} from '../../../service/apiconnector'
 import { useSelector } from "react-redux";
 import {getEnrolledCourses} from '../../../service/apis'
 import {toast} from 'react-hot-toast';
+import {useNavigate} from 'react-router-dom'
 
 function EnrolledCourses() {
+    const navigate = useNavigate();
     const [coursesData,setCourseData] = useState([]);
     const [openMenuId, setOpenMenuId] = useState(null);
     const [filter, setFilter] = useState('All');
@@ -82,7 +84,7 @@ function EnrolledCourses() {
 
                 <div className="courseListBody">
                     {filteredCourses.map((course) => (
-                        <div key={course.id} className="courseRow">
+                        <div key={course.id} className="courseRow" onClick={()=>navigate(`/videopage/${course._id}`)}>
                             <div className="courseInfo">
                                 <img src={course.thumbnail} alt={course.courseName} />
                                 <div>

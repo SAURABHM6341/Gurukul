@@ -1,17 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./enterNewPass.css";
 import { apiConnector } from '../../service/apiconnector';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from "react-redux"; 
-import { toast } from "react-hot-toast"; 
-import { changePassword } from "../../service/apis";
-
-const CHANGE_PASSWORD_API = "/api/v1/auth/changepassword"; // <-- Replace with your actual endpoint
+import { useSelector } from "react-redux";
+import { toast } from "react-hot-toast";
+import { changePassword, resetpassentry } from "../../service/apis";
 
 function EnterNewPassword() {
   // Get user data (including email) from your Redux store's profile slice
-  const  user  = useSelector((state) => state.profile.user);
-  const  token  = useSelector((state) => state.auth.token);
+  const user = useSelector((state) => state.profile.user);
+  const token = useSelector((state) => state.auth.token);
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -45,47 +43,85 @@ function EnterNewPassword() {
     specialChar: validationRules.specialChar.test(newPassword),
     minLength: validationRules.minLength.test(newPassword)
   };
-
+  const resetData = JSON.parse(localStorage.getItem("resetData"));
+  const isResetFlow = resetData?.purpose === "password-reset";
+  useEffect(() => {
+    if (isResetFlow && !resetData?.email) {
+      toast.error("Invalid session. Please restart the reset process.");
+      navigate("/check_email");
+    }
+  }, [isResetFlow, resetData, navigate]);
   const allValid = Object.values(isValid).every(Boolean);
   const passwordsMatch = newPassword === confirmNewPassword;
   const handleReset = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
+
     if (!allValid) {
-        toast.error("New password does not meet all criteria.");
-        return;
+      toast.error("New password does not meet all criteria.");
+      return;
     }
+
     if (!passwordsMatch) {
-        toast.error("New passwords do not match.");
-        return;
+      toast.error("New passwords do not match.");
+      return;
     }
+
+    if (!isResetFlow && !oldPassword.trim()) {
+      toast.error("Old password is required.");
+      return;
+    }
+
     const toastId = toast.loading("Updating...");
+
     try {
-      // Create the payload
+      const emailToUse = isResetFlow ? resetData.email : user.email;
+
       const payload = {
-        email: user.email, 
-        oldPassword,
-        newPassword,
-        confirmNewPassword
+        email: emailToUse,
+        newpassword: newPassword,
+        confirmPassword: confirmNewPassword,
       };
 
-      // Call the API
-      const response = await apiConnector("PUT", changePassword.CHANGE_PASSWORD_API,`Bearer ${token}`, payload);
+      if (isResetFlow) {
+        payload.otp = resetData.otp;
+        payload.purpose = resetData.purpose; // ✅ ADD THIS
+      } else {
+        payload.oldPassword = oldPassword;
+      }
 
-      console.log("CHANGE PASSWORD API RESPONSE............", response);
+      const response = await apiConnector(
+        "PUT",
+        isResetFlow
+          ? resetpassentry.RESET_PASS_ENTRY_API
+          : changePassword.CHANGE_PASSWORD_API,
+        isResetFlow ? null : `Bearer ${token}`,
+        payload
+      );
+
+      console.log("CHANGE PASSWORD API RESPONSE:", response);
 
       if (!response.data.success) {
         throw new Error(response.data.message);
       }
 
       toast.success("Password Changed Successfully!");
-      navigate('/dashboard'); 
+
+      if (isResetFlow) {
+        localStorage.removeItem("resetData");
+        navigate("/login");
+      } else {
+        navigate("/dashboard");
+      }
 
     } catch (error) {
-      console.log("CHANGE PASSWORD API ERROR............", error);
-      toast.error(error.response?.data?.message || "Could Not Change Password");
+      console.log("CHANGE PASSWORD API ERROR:", error);
+      toast.error(error?.response?.data?.message || "Could Not Change Password");
     }
+
     toast.dismiss(toastId);
   };
+
+
 
   const handleBack = () => {
     navigate('/dashboard/my-profile');
@@ -103,13 +139,15 @@ function EnterNewPassword() {
           Old password <span>*</span>
         </label>
         <input
-          required
+          required={!isResetFlow}
           type="password"
           id="oldPassword"
           name="oldPassword"
           value={oldPassword}
           onChange={handleOnChange}
           placeholder="********"
+          disabled={isResetFlow}
+          className={isResetFlow ? "faded-input" : ""}
         />
       </div>
 
@@ -157,10 +195,15 @@ function EnterNewPassword() {
       <button type="submit" className="reset-btn">
         Reset Password
       </button>
-
-      <div className="back-link" onClick={handleBack}>
-        ← Back to My Profile
-      </div>
+      {!isResetFlow &&
+        <div className="back-link" onClick={handleBack}>
+          ← Back to My Profile
+        </div>
+      }{isResetFlow &&
+        <div className="back-link" onClick={() => navigate('/login')}>
+          ← Back to Login
+        </div>
+      }
     </form>
   );
 }

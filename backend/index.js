@@ -13,15 +13,11 @@ const user = require('./Routes/user');
 const { verifySignature } = require("./Controllers/payment");
 
 
-app.post('/api/v1/payment/verify-signature', 
-  express.json({
-    verify: (req, res, buf) => {
-      req.rawBody = buf;
-    }
-  }), 
+app.post(
+  "/api/v1/payment/verify-signature",
+  express.raw({ type: "application/json" }),
   verifySignature
 );
-
 
 app.use(express.json());
 

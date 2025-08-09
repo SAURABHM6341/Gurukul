@@ -13,7 +13,7 @@ router.post('/signup/sendOTP', sendOtpMailVerify);
 router.post('/signup', verifyOtpanduserCreation);
 // password change and reset password
 router.put('/changePassword', authenticate,changePassword);
-router.post('/resetPassword/sendOtp', resetPasswordsendOtp);
+router.post('/resetPassword/sendotp', resetPasswordsendOtp);
 router.put('/resetPassword', resetPasswordEntry);
 // delete account
 router.delete('/deleteAccount', authenticate, deleteAccount);

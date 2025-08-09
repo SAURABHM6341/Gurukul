@@ -48,10 +48,11 @@ function App() {
         <Route path='/check_email' element={<CheckEmail />} />
         <Route path='/verify_otp' element={<Verify_otp />} />
         <Route path='/course_details/:id' element={<CourseDet/>} />
-        <Route path='/change_password' element={<PassWordChange/>} />
+        <Route path='/changePassword' element={<PassWordChange/>} />
+        <Route path='/changePasswordOTP' element={<PassWordChange/>} />
         <Route path='/tag/:tagid' element={<TagPage/>} />
         <Route path='/resetpassword' element={<ResetPass/>} />
-        <Route path='/videopage' element={<LEcturePage/>} />
+        <Route path='/videopage/:id' element={<LEcturePage/>} />
 
         {/* Dashboard Layout with Nested Routes */}
         <Route path='/dashboard' element={<DashLeft />}>

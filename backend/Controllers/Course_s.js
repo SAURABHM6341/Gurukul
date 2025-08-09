@@ -147,7 +147,7 @@ exports.getCourseDetailsById = async (req, res) => {
                     select: "title timeDuration"
                 }
             })
-            .populate("ratingandReview") // This is required for the calculation
+            .populate("ratingandReview")
             .populate("tag")
             .populate("studentEnrolled")
             .exec();
@@ -392,12 +392,75 @@ exports.changeStatus =async(req,res)=>{
 }
 
 
-// exports.checkEnroll = async(req,res)=>{
-//     try {
-//         const {UserId,CourseId} = req.body;
-//         const user = await userModel.findById(UserId);
-//         if(user.courses.includes(CourseId))
-//     } catch (error) {
-        
-//     }
-// }
+
+exports.getfullCourseDetailsById = async (req, res) => {
+    try {
+        const { id: courseId } = req.params;
+        if (!mongoose.Types.ObjectId.isValid(courseId)) {
+            return res.status(400).json({
+                success: false,
+                message: `Invalid course ID format: ${courseId}`,
+            });
+        }
+        const course = await courseSchema.findById(courseId)
+            .populate({
+                path: "instructor",
+                populate: {
+                    path: "additionalDetails",
+                }
+            })
+            .populate({
+                path: "courseContent",
+                populate: {
+                    path: "subSection",
+                }
+            })
+            .populate("ratingandReview")
+            .populate("tag")
+            .populate("studentEnrolled")
+            .exec();
+
+        // Handle case where the course doesn't exist
+        if (!course) {
+            return res.status(404).json({
+                success: false,
+                message: "Course not found",
+            });
+        }
+
+        // --- RATING CALCULATION LOGIC ---
+        const reviews = course.ratingandReview || [];
+        const totalReviews = reviews.length;
+        let averageRating = 0;
+
+        if (totalReviews > 0) {
+            const totalRatingValue = reviews.reduce(
+                (acc, review) => acc + review.rating,
+                0
+            );
+            averageRating = totalRatingValue / totalReviews;
+        }
+
+        // Create the final response object with the added rating data
+        const courseDataWithRating = {
+            ...course.toObject(), // Convert Mongoose doc to a plain JS object
+            averageRating: parseFloat(averageRating.toFixed(2)),
+            totalReviews: totalReviews,
+        };
+        // --- END OF CALCULATION ---
+
+        // Return the successful response with the enhanced course data
+        return res.status(200).json({
+            success: true,
+            message: "Course details fetched successfully",
+            course: courseDataWithRating, // Send the object with the new properties
+        });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error, please try again later",
+        });
+    }
+}

@@ -38,12 +38,14 @@ exports.createRating = async (req, res) => {
         },{new: true});
         return res.status(200).json({
             message: "Rating created successfully",
-            rating: newRating
+            rating: newRating,
+            success:true
         });
     } catch (err) {
         return res.status(500).json({
             message: "Internal Server Error",
-            error: err.message
+            error: err.message,
+            success:false
         })
     }
 }

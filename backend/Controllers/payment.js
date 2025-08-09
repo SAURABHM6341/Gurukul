@@ -74,77 +74,93 @@ exports.capturePayment = async (req, res) => {
     }
 }
 
+const crypto = require("crypto");
+const userModel = require("../models/userModel");
+const courseModel = require("../models/courseModel");
+const mailSender = require("../utils/mailSender");
+
 exports.verifySignature = async (req, res) => {
-    try {
-        const signature = req.headers['x-razorpay-signature'];
-        const webhookSecret = '1234567890'; // Replace with your webhook secret
-        const shaSum = crypto.createHmac("sha256", webhookSecret);
-        shaSum.update(req.rawBody.toString());
-        const digest = shaSum.digest("hex");
+  try {
+    const webhookSecret = process.env.RAZORPAY_KEY_SECRET;
+    const signature = req.headers['x-razorpay-signature'];
 
-        // Verify the signature
-        if (digest === signature) {
-            console.log("Signature verified successfully");
-            // return res.status(200).json({
-            //     message: "Signature verified successfully",});
-            // now user ko course dena h to course id aur user id ki need h isiliye hamne notes me userId aur courseId pass kiya tha
-            const { userId, courseId } = req.body.payload.payment.entity.notes;  // this is the path where we get notes
-            // find user and course
-            const user = await userModel.findById(userId);
-            const course = await courseModel.findByIdAndUpdate(
-                { _id: courseId },
-                {
-                    $push: { studentEnrolled: user._id }
-                },
-                { new: true }
-            );
-            // add course to user profile
-            await userModel.findByIdAndUpdate({ _id: userId },
-                {
-                    $push: { courses: course._id }
-                },
-                { new: true }
-            )
-            if (!user || !course) {
-                return res.status(404).json({
-                    message: "User or Course not found",
-                    success: false
-                });
-            }
-            // send email to user
-            const emailResponse = await mailSender(
-                user.email,
-                "Course Purchase Successful",
-                `<h1>Congratulations ${user.Fname}!</h1>
-                   <p>You have successfully purchased the course: ${course.courseName}</p>
-                   <p>Course Description: ${course.courseDescription}</p>
-                   <p>Price: ₹${course.price}</p>
-                   <p>Thank you for choosing our platform!</p>`
-            );
-            return res.status(200).json({
-                message: "Payment verified and course enrolled successfully",
-                success: true,
-                course: {
-                    id: course._id,
-                    name: course.courseName,
-                    price: course.price,
-                    thumbnail: course.thumbnail
-                },
-                emailResponse: emailResponse
-            });
-        }
-        else{
-            return res.status(400).json({
-                message: "Invalid signature",
-                success: false
-            });
-        }
-
-    } catch (err) {
-        console.log(err);
-        res.status(500).json({ message: "Internal Server Error",
-            success: false,
-            error: err.message
-         });
+    if (!signature || !req.body) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing signature or request body",
+      });
     }
-}
+
+    // Razorpay sends raw body, we use it directly to generate HMAC
+    const digest = crypto
+      .createHmac("sha256", webhookSecret)
+      .update(req.body)
+      .digest("hex");
+
+    if (digest !== signature) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid signature",
+      });
+    }
+
+    console.log("✅ Signature verified successfully");
+
+    // Now parse the raw buffer to extract data
+    const payload = JSON.parse(req.body.toString());
+    const { userId, courseId } = payload.payload.payment.entity.notes;
+
+    // Fetch user and course
+    const user = await userModel.findById(userId);
+    const course = await courseModel.findByIdAndUpdate(
+      courseId,
+      { $push: { studentEnrolled: user._id } },
+      { new: true }
+    );
+
+    if (!user || !course) {
+      return res.status(404).json({
+        success: false,
+        message: "User or Course not found",
+      });
+    }
+
+    // Add course to user profile
+    await userModel.findByIdAndUpdate(
+      userId,
+      { $push: { courses: course._id } },
+      { new: true }
+    );
+
+    // Send confirmation email
+    const emailResponse = await mailSender(
+      user.email,
+      "Course Purchase Successful",
+      `<h1>Congratulations ${user.Fname}!</h1>
+        <p>You have successfully purchased the course: ${course.courseName}</p>
+        <p>Course Description: ${course.courseDescription}</p>
+        <p>Price: ₹${course.price}</p>
+        <p>Thank you for choosing our platform!</p>`
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment verified and course enrolled successfully",
+      course: {
+        id: course._id,
+        name: course.courseName,
+        price: course.price,
+        thumbnail: course.thumbnail
+      },
+      emailResponse
+    });
+
+  } catch (err) {
+    console.error("❌ Error in verifySignature:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: err.message
+    });
+  }
+};

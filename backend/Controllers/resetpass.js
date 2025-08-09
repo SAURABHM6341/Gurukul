@@ -39,7 +39,7 @@ exports.resetPasswordsendOtp = async (req, res) => {
         });
     }
     if (otpData.createdAt < Date.now() - 5 * 60 * 1000) {
-        otpSchema.findOneAndUpdate(
+        await otpSchema.findOneAndUpdate(
             { email, purpose: "password-reset" },
             { otp },
             { purpose: "password-reset" },

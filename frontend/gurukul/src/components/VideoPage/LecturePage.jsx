@@ -3,42 +3,58 @@ import VideoSidebar from './VideoSidebar';
 import ReviewModal from './ReviewModal';
 import ReactPlayer from 'react-player/lazy';
 import './LecturePage.css';
-
+import { apiConnector } from '../../service/apiconnector';
+import { getFullCourseByid,submitReview } from '../../service/apis';
+import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { toast } from 'react-hot-toast'
 // --- MOCK DATA (In a real app, this would come from an API) ---
-const courseData = {
-    id: "course01",
-    title: "Learn Python 2025",
-    sections: [
-        {
-            id: "sec01",
-            title: "Python Tutorial",
-            duration: "59min",
-            subsections: [
-                { id: "sub01", title: "Open a File on the Server", url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", description: "Learn the basics of file handling and opening files on a server using Python's built-in functions." },
-                { id: "sub02", title: "File Write", url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4", description: "This lesson covers how to write and append data to files, an essential skill for data logging and storage." },
-                { id: "sub03", title: "Delete File", url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4", description: "Understand the risks and methods for safely deleting files from your filesystem using Python." },
-                { id: "sub04", title: "Data Types", url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4", description: "A deep dive into Python's fundamental data types, including integers, floats, strings, and booleans." },
-            ]
-        },
-        {
-            id: "sec02",
-            title: "Modules",
-            duration: "21min",
-            subsections: [
-                { id: "sub05", title: "NumPy Tutorial", url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4", description: "Explore the powerful NumPy library for numerical computing and array manipulation." },
-                { id: "sub06", title: "Pandas Tutorial", url: "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4", description: "Learn how to use Pandas for data analysis and manipulation, a cornerstone of data science in Python." },
-            ]
-        }
-    ]
-};
 
 const LecturePage = () => {
-    const [currentVideo, setCurrentVideo] = useState(courseData.sections[0].subsections[0]);
+    const [courseData, setCourseData] = useState(null);
+    const { id } = useParams();
+    const token = useSelector((state) => state?.auth?.token);
+    const user = useSelector((state) => state?.profile?.user);
+    useEffect(() => {
+        const fetchCourse = async () => {
+            try {
+                toast.loading("Loading course...");
+                const url = `${getFullCourseByid.FULL_COURSE_ID_API}/${id}`;
+                console.log("api url is", url);
+
+                const res = await apiConnector("GET", url, `Bearer ${token}`);
+
+                if (res.data.success) {
+                    toast.dismiss();
+                    toast.success("Course fetched");
+                    console.log(res.data);
+                    setCourseData(res.data.course)
+                    const course11 = res.data.course;
+                    setCurrentVideo(course11.courseContent[0].subSection[0]);
+                } else {
+                    toast.dismiss();
+                    toast.error("Fetching failed");
+                }
+            } catch (err) {
+                toast.dismiss();
+                toast.error("Course details cannot be fetched");
+                console.log(err);
+            }
+        };
+
+        fetchCourse();
+    }, [id]);
+
+    const [currentVideo, setCurrentVideo] = useState(null);
     const [completedVideos, setCompletedVideos] = useState(new Set());
     const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
     const [allVideosCompleted, setAllVideosCompleted] = useState(false);
 
-    const totalVideos = courseData.sections.reduce((acc, section) => acc + section.subsections.length, 0);
+    const totalVideos = courseData?.courseContent?.reduce((acc, courseContent) => {
+        return acc + (courseContent?.subSection?.length || 0);
+    }, 0) || 0;
+
+
 
     // Effect to check if all videos are completed
     useEffect(() => {
@@ -63,8 +79,8 @@ const LecturePage = () => {
     const handleCourseComplete = (isComplete) => {
         if (isComplete) {
             const allVideoIds = new Set();
-            courseData.sections.forEach(section => {
-                section.subsections.forEach(sub => allVideoIds.add(sub.id));
+            courseData.courseContent.forEach(section => {
+                section.subSection.forEach(sub => allVideoIds.add(sub._id));
             });
             setCompletedVideos(allVideoIds);
             setIsReviewModalOpen(true);
@@ -72,11 +88,32 @@ const LecturePage = () => {
             setCompletedVideos(new Set());
         }
     };
-    
-    const handleSubmitReview = (reviewData) => {
-        // In a real app, you would send this to your backend API
-        console.log("Submitting review:", reviewData);
-        alert("Thank you for your review!");
+    const [rated,setRated] = useState(false);
+    const handleSubmitReview = async(reviewData) => {
+      try {
+          toast.loading("Submitting review:", reviewData);
+        const payload = {
+            courseId:id,
+            rating:reviewData.rating,
+            review:reviewData.reviewText
+        }
+        // console.log("urls is ",submitReview.SUBMIT_REVIEW_API )
+        const res = await apiConnector("POST",submitReview.SUBMIT_REVIEW_API,`Bearer ${token}`,payload);
+        console.log("response", res.data);
+        if(res.data.success){
+            toast.dismiss();
+            toast.success("Thank you for your review!");
+            setRated(true);
+        }
+        else{
+            toast.dismiss();
+            toast.error("review submission failed or already rated");
+        }
+      } catch (error) {
+        console.log(error);
+        toast.dismiss();
+            toast.error("review submission failed");
+      }
         setIsReviewModalOpen(false);
     };
 
@@ -84,28 +121,32 @@ const LecturePage = () => {
         <div className="lecture-page">
             <VideoSidebar
                 course={courseData}
-                currentVideoId={currentVideo.id}
+                currentVideoId={currentVideo?._id}
                 completedVideos={completedVideos}
                 onVideoSelect={handleVideoSelect}
                 onToggleComplete={handleToggleVideoComplete}
                 onCourseComplete={handleCourseComplete}
                 showReviewButton={allVideosCompleted}
                 onAddReviewClick={() => setIsReviewModalOpen(true)}
+                rated={rated}
             />
 
             <main className="video-main-content">
                 <div className="video-player-wrapper">
-                    <ReactPlayer
-                        url={currentVideo.url}
-                        playing={true}
-                        controls={true}
+                    <video
+                        src={currentVideo?.videoUrl}
+                        controls
+                        controlsList="nodownload"
+                        disablePictureInPicture
+                        onContextMenu={(e) => e.preventDefault()}
                         width="100%"
                         height="100%"
                     />
                 </div>
                 <div className="video-details">
-                    <h1 className="video-title">{currentVideo.title}</h1>
-                    <p className="video-description">{currentVideo.description}</p>
+                    <h1 className="video-title">{currentVideo?.title}</h1>
+                    <p className="video-description">{currentVideo?.description}</p>
+                    <p>By - {courseData?.instructor?.Fname}</p>
                 </div>
             </main>
 
@@ -113,6 +154,8 @@ const LecturePage = () => {
                 isOpen={isReviewModalOpen}
                 onClose={() => setIsReviewModalOpen(false)}
                 onSubmit={handleSubmitReview}
+                courseId={id}
+                user={user}
             />
         </div>
     );

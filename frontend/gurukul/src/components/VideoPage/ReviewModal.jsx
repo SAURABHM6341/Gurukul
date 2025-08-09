@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
+import toast from 'react-hot-toast';
 import { FaStar } from 'react-icons/fa';
 import { IoClose } from 'react-icons/io5';
 
-const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
+const ReviewModal = ({ isOpen, onClose, onSubmit,user }) => {
     const [rating, setRating] = useState(0);
     const [hoverRating, setHoverRating] = useState(0);
     const [reviewText, setReviewText] = useState('');
+
 
     if (!isOpen) return null;
 
     const handleFormSubmit = () => {
         if (rating === 0 || !reviewText) {
-            alert("Please provide a rating and a review.");
+            toast.error("Please provide a rating and a review.");
             return;
         }
         onSubmit({ rating, reviewText });
@@ -26,9 +28,9 @@ const ReviewModal = ({ isOpen, onClose, onSubmit }) => {
                 </div>
                 <div className="modal-body">
                     <div className="user-info">
-                        <img src="https://via.placeholder.com/50" alt="User" className="user-avatar" />
+                        <img src={user?.image} alt="User" className="user-avatar" />
                         <div>
-                            <p className="user-name">Wade Warren</p>
+                            <p className="user-name">{user.Fname} {user.Lname}</p>
                             <p className="posting-status">Posting Publicly</p>
                         </div>
                     </div>

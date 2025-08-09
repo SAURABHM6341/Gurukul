@@ -40,27 +40,53 @@ function VerifyEmail() {
     }
 
     try {
-      const formData = JSON.parse(localStorage.getItem("signupData"));
+      // Try loading resetData first
+      const resetData = JSON.parse(localStorage.getItem("resetData"));
+      const signupData = JSON.parse(localStorage.getItem("signupData"));
 
-      const payload = {
-        email: formData.email,
-        otp: otp,
-        Fname: formData.firstName,
-        Lname: formData.lastName,
-        password: formData.password,
-        confirmPassword: formData.confirmPassword,
-        accountType: formData.accType
-      };
-      const verification_res = await apiConnector("POST", verify_otp.SIGN_OTP_VERIFY_API, {}, payload, null);
-      if (verification_res.data.success) {
-        toast.success("Email verified and SignUp is completed");
+      let payload, apiUrl, nextRoute;
+
+      if (resetData?.email && resetData?.purpose === "password-reset") {
+        nextRoute = "/changePasswordOTP";
+        // Store verified OTP for next step
+        const updatedResetData = {
+          ...resetData,
+          otp,
+        };
+        localStorage.setItem("resetData", JSON.stringify(updatedResetData));
+        navigate(nextRoute);
+      } else if (signupData?.email) {
+        // Signup flow
+        payload = {
+          email: signupData.email,
+          otp: otp,
+          Fname: signupData.firstName,
+          Lname: signupData.lastName,
+          password: signupData.password,
+          confirmPassword: signupData.confirmPassword,
+          accountType: signupData.accType
+        };
+        apiUrl = verify_otp.SIGN_OTP_VERIFY_API;
+        nextRoute = "/login";
+        const verification_res = await apiConnector("POST", apiUrl, {}, payload, null);
+
+        if (verification_res.data.success) {
+          toast.success("OTP verified successfully");
+
+          localStorage.removeItem("signupData");
+          navigate(nextRoute);
+        }
+      } else {
+        toast.error("No OTP verification context found.");
+        return;
       }
-      navigate('/login');
-      localStorage.removeItem("signupData");
+
     } catch (error) {
-      toast.error(error.verification_res.data.message);
+      console.error(error);
+      toast.error(error?.response?.data?.message || "OTP verification failed");
     }
-  }
+  };
+
   return (
     <div className="verify-container">
       <h2>Verify Yourself</h2>
