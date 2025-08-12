@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './MyCourses.css';
+import './myCourses.css';
 import { FaPlus, FaPencilAlt, FaTrash } from 'react-icons/fa';
 import AddCourse from '../addnewCourses/newCourse'; // Import the new component
 import { apiConnector } from '../../../service/apiconnector';
