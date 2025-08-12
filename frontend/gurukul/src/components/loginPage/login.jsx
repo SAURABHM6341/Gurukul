@@ -39,7 +39,7 @@ function Login() {
     };
     try {
       const toastId = toast.loading("Logging in...");
-      const response = await apiConnector("POST", LoGin.LOGIN_API, {}, payload, null);
+      const response = await apiConnector("POST", LoGin.LOGIN_API, null, payload, null);
       if (response.data.success) {
         toast.dismiss(toastId);
         toast.success("Logged in successfully!");
@@ -66,10 +66,8 @@ function Login() {
         toast.dismiss(toastId);
         toast.error(response.data.message || "Login failed!");
       }
-      console.log("login was successfull", response);
     } catch (err) {
-      console.error("Error during login:", err);
-      toast.dismiss(toastId);
+      toast.dismiss();
       toast.error(err.response?.data?.message || "Something went wrong");
     }
   };

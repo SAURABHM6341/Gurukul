@@ -6,7 +6,12 @@ const User = require('../Models/User');
 exports.authenticate = (req, res, next) => {
   try {
     const authHeader = req.header("Authorization");
-
+    if(!authHeader){
+        return res.status(401).json({
+            success: false,
+            message: "Unauthorized access"
+        });
+    }
     const token =
       req.cookies.token ||
       req.body.token ||

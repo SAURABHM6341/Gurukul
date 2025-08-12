@@ -1,0 +1,14 @@
+# Environment Variables
+frontend/gurukul/.env
+backend/.env
+
+# Node Modules
+frontend/gurukul/node_modules/
+backend/node_modules/
+
+# Build Artifacts
+frontend/gurukul/build/
+backend/dist/
+
+# Logs
+*.log
