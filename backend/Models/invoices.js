@@ -5,27 +5,48 @@ const invoiceSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
-    courseName:{
+    courses: [{
+        courseId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "course",
+            required: true
+        },
+        courseName: {
+            type: String,
+            required: true,
+        },
+        price: {
+            type: Number,
+            required: true,
+        }
+    }],
+    totalAmount: {
+        type: Number,
+        required: true,
+    },
+    paymentId: {
         type: String,
         required: true,
     },
-    Price:{
-        type:String,
-        required:true,
-    },
-    courseId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref:"course",
-        required: true
-    },
-    address:{
+    orderId: {
         type: String,
         required: true,
     },
-    pincode:{
+    paymentStatus: {
         type: String,
-        required: true,
+        enum: ['pending', 'completed', 'failed'],
+        default: 'completed'
+    },
+    paymentMethod: {
+        type: String,
+        default: 'Razorpay'
+    },
+    purchaseDate: {
+        type: Date,
+        default: Date.now
     }
-
+}, {
+    timestamps: true
 });
+
 module.exports = mongoose.model('invoice', invoiceSchema);

@@ -5,6 +5,6 @@ const { authenticate, isStudent } = require('../Middlewares/auth');
 // ************ payment *************
 // Capture payment for a course
 router.post('/capture',authenticate, isStudent, capturePayment);
-// Verify payment signature and enroll student in course
+// Verify payment signature and enroll student in course - no auth needed as it's called by Razorpay
 router.post('/verify-signature', verifySignature);
 module.exports = router;

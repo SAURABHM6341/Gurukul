@@ -12,6 +12,7 @@ export default function UserProfile() {
     const token = useSelector((state) => state.auth?.token);
     const user = useSelector((state) => state.profile?.user);
     const dispatch = useDispatch();
+        const [deleteAcc,setDeleteAccount] = useState(false);
     const [formData, setFormData] = useState({
         dateOfBirth: '',
         gender: '',
@@ -150,7 +151,7 @@ export default function UserProfile() {
         }
 
     };
-    const [deleteAcc,setDeleteAccount] = useState(false);
+
     const handleDeleteAccount = async()=>{
         if(window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
             try{

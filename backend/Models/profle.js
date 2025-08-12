@@ -20,4 +20,4 @@ const profileScheme = new mongoose.Schema({
     },
 
 });
-module.exports = mongoose.model('profile', profileScheme);
+module.exports = mongoose.models.profile || mongoose.model('profile', profileScheme);

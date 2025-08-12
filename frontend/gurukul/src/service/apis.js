@@ -99,3 +99,16 @@ export const deleteEditCourse = {
     DELETE_COURSE_API: `${BASE_URL}/api/v1/course/delete/course`, 
     UPDATE_COURSE_API: `${BASE_URL}/api/v1/course/edit/course`//append courseid
 }
+export const invoiceApi = {
+    PURCHASE_HISTORY_API: `${BASE_URL}/api/v1/invoice/purchase-history`,
+    GET_INVOICE_API: `${BASE_URL}/api/v1/invoice/invoice` // append /:invoiceId
+}
+
+// Admin APIs
+export const adminApi = {
+    GET_ALL_USERS_API: `${BASE_URL}/api/v1/admin/users`,
+    GET_ALL_STUDENTS_API: `${BASE_URL}/api/v1/admin/students`,
+    GET_ALL_INSTRUCTORS_API: `${BASE_URL}/api/v1/admin/instructors`,
+    GET_USER_DETAILS_API: `${BASE_URL}/api/v1/admin/user`, // append /:userId
+    CREATE_TAG_API: `${BASE_URL}/api/v1/course/tag/create`
+}

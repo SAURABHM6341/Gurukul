@@ -55,4 +55,5 @@ const courseSchema = new mongoose.Schema({
         default:Date.now()
     }
 });
-module.exports = mongoose.model('course', courseSchema);
+
+module.exports = mongoose.models.course || mongoose.model('course', courseSchema);

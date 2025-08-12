@@ -33,9 +33,25 @@ function EnrolledCourses() {
         }
 }
     useEffect(() => {
-            fetchEnrolled();
-        }, []);
-    const handleMenuToggle = (courseId) => {
+        fetchEnrolled();
+    }, []);
+
+    // Close menu when clicking outside
+    useEffect(() => {
+        const handleClickOutside = () => {
+            setOpenMenuId(null);
+        };
+
+        if (openMenuId) {
+            document.addEventListener('click', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('click', handleClickOutside);
+        };
+    }, [openMenuId]);
+    const handleMenuToggle = (courseId, event) => {
+        event.stopPropagation(); // Prevent event bubbling
         setOpenMenuId(openMenuId === courseId ? null : courseId);
     };
      const filteredCourses = coursesData.filter(course => {
@@ -109,7 +125,7 @@ function EnrolledCourses() {
                                 </div>
                             </div>
                             <div className="courseActions">
-                                <button className="menu-trigger-btn" onClick={() => handleMenuToggle(course.id)}>
+                                <button className="menu-trigger-btn" onClick={(e) => handleMenuToggle(course.id, e)}>
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <circle cx="12" cy="5" r="2" fill="#99A1B3" />
                                         <circle cx="12" cy="12" r="2" fill="#99A1B3" />
@@ -117,18 +133,12 @@ function EnrolledCourses() {
                                     </svg>
                                 </button>
                                 {openMenuId === course.id && (
-                                    <div className="context-menu">
-                                        <button className="menu-item">
+                                    <div className="context-menu" onClick={(e) => e.stopPropagation()}>
+                                        <button className="menu-item" onClick={(e) => e.stopPropagation()}>
                                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M14.1667 3.33331H5.83333C4.91667 3.33331 4.175 4.07498 4.175 4.99998L4.16667 15C4.16667 15.925 4.91667 16.6666 5.83333 16.6666H14.1667C15.0833 16.6666 15.8333 15.925 15.8333 15V4.99998C15.8333 4.07498 15.0833 3.33331 14.1667 3.33331ZM8.625 12.725L6.4 10.5L7.15833 9.74165L8.625 11.2L12.8417 7.00002L13.6 7.75831L8.625 12.725Z" fill="#99A1B3" />
                                             </svg>
                                             Mark as Completed
-                                        </button>
-                                        <button className="menu-item remove">
-                                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                <path d="M5 15.8333C5 16.75 5.75 17.5 6.66667 17.5H13.3333C14.25 17.5 15 16.75 15 15.8333V5.83331H5V15.8333ZM15.8333 3.33331H12.9167L12.0833 2.5H7.91667L7.08333 3.33331H4.16667V4.99998H15.8333V3.33331Z" fill="#99A1B3" />
-                                            </svg>
-                                            Remove
                                         </button>
                                     </div>
                                 )}

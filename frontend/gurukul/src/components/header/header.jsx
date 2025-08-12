@@ -81,10 +81,7 @@ function Header() {
                 </Link>
             </div>
             <div className="header-icons">
-                <div className="header-searchIcon">
-                    <img src={searchIcon} alt="" />
-                </div>
-                {user && user.accountType !== "Instructor" && (
+                {user && user.accountType !== "Instructor" && user.accountType !== "Admin" && (
                     <Link to="/dashboard/cart" className="cart-wrapper">
                         <div className="header-cartIcon">
                             <img src={cartIcon} alt="Cart" />

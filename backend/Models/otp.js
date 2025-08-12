@@ -21,23 +21,33 @@ const otpSchema = new mongoose.Schema({
     }
 });
 // a function to send email
-
-async function sendVerificationEmail(email, otp) {
+async function sendVerificationEmail(email, otp, purpose) {
     try {
-        const title = "Email verification OTP for  GURUKUL A CENTRALIZED LEARNING PLATFORM";
-        const body = `OTP to verify your email On <b>Gurukul - a centralized learning platform</b> is <h1>${otp}</h1>`;
+        let title, body;
+        
+        if (purpose === 'signup') {
+            title = "Email verification OTP for GURUKUL A CENTRALIZED LEARNING PLATFORM";
+            body = `OTP to verify your email On <b>Gurukul - a centralized learning platform</b> is <h1>${otp}</h1>`;
+        } else if (purpose === 'password-reset') {
+            title = "Password Reset OTP for GURUKUL - A Centralized Learning Platform";
+            body = `OTP for Account Recovery is <h1>${otp}</h1>`;
+        } else {
+            // Default template for other purposes
+            title = "OTP for GURUKUL A CENTRALIZED LEARNING PLATFORM";
+            body = `Your OTP is <h1>${otp}</h1>`;
+        }
 
         await sendOtpEmail(email, title, body);
 
     } catch (err) {
-        console.error("Error in OTP generation:", err);
+        console.error("Error in sending OTP email:", err);
     }
 }
 
 //pre middleware because i want to send it before entry created in db of user
 otpSchema.pre('save', async function(next){
-        if (!this.isModified('otp')) return next();
-    await sendVerificationEmail(this.email, this.otp);
+    if (!this.isModified('otp')) return next();
+    await sendVerificationEmail(this.email, this.otp, this.purpose);
     next();
 })
 

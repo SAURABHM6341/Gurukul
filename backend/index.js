@@ -10,7 +10,8 @@ const PORT = process.env.PORT || 4000;
 const courses = require('./Routes/course');
 const payment = require('./Routes/payment');
 const user = require('./Routes/user');
-const { verifySignature } = require("./Controllers/payment");
+const invoice = require('./Routes/invoice');
+const admin = require('./Routes/admin');
 const cron = require("node-cron");
 const { deleteExpiredAccounts } = require("./Controllers/accountdeletion");
 
@@ -20,18 +21,13 @@ cron.schedule("0 0 * * *", async () => {
   await deleteExpiredAccounts();
 });
 
-
-app.post(
-  "/api/v1/payment/verify-signature",
-  express.raw({ type: "application/json" }),
-  verifySignature
-);
-
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const allowedOrigins = [
   "http://localhost:5000",
-  "http://localhost:5173"
+  "http://localhost:5173",
+  "http://localhost:5174"
 ];
 
 app.use(cors({
@@ -54,6 +50,8 @@ app.use(cookieParser());
 app.use('/api/v1/course', courses);
 app.use('/api/v1/payment', payment);
 app.use('/api/v1/user', user);
+app.use('/api/v1/invoice', invoice);
+app.use('/api/v1/admin', admin);
 app.listen(PORT,()=>{
     console.log(`server is running on port ${PORT}`);
 });

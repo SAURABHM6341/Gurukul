@@ -51,7 +51,7 @@ function DashLeft() {
                         <Link to="/dashboard/cart" className="WishedCourse" style={matchRoute('/dashboard/cart') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
                             Wishlist
                         </Link>
-                        <Link to="/purchases" className="PurchaseHistory" style={matchRoute('/purchases') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
+                        <Link to="/dashboard/purchase-history" className="PurchaseHistory" style={matchRoute('/dashboard/purchase-history') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
                             Purchase History
                         </Link>
                     </>
@@ -61,6 +61,23 @@ function DashLeft() {
                     <>
                         <Link to="/dashboard/mycourses" className="instCourse" style={matchRoute('/dashboard/mycourses') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
                             My Courses
+                        </Link>
+                    </>
+                )}
+
+                {safeUser.accountType === "Admin" && (
+                    <>
+                        <Link to="/dashboard/admin/all-users" className="adminUsers" style={matchRoute('/dashboard/admin/all-users') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
+                            All Users
+                        </Link>
+                        <Link to="/dashboard/admin/all-instructors" className="adminInstructors" style={matchRoute('/dashboard/admin/all-instructors') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
+                            All Instructors
+                        </Link>
+                        <Link to="/dashboard/admin/all-students" className="adminStudents" style={matchRoute('/dashboard/admin/all-students') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
+                            All Students
+                        </Link>
+                        <Link to="/dashboard/admin/create-tag" className="createTag" style={matchRoute('/dashboard/admin/create-tag') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
+                            Create Tag
                         </Link>
                     </>
                 )}

@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const generateOtp = require('../Util/otpGenerater');
-const sendOtpEmail = require('../Util/mailsender');
 const otpSchema = require('../Models/otp');
 // reset password token or email verification token
 // both tested
@@ -32,20 +31,15 @@ exports.resetPasswordsendOtp = async (req, res) => {
             otp,
             purpose: "password-reset"
         });
-        await sendOtpEmail(email, "Password Reset OTP for GURUKUL - A Centralized Learning Platform", `OTP for Account Recovery is ${otp}`,);
         return res.status(200).json({
             message: "OTP sent to your email, please check your inbox",
             success: true
         });
     }
     if (otpData.createdAt < Date.now() - 5 * 60 * 1000) {
-        await otpSchema.findOneAndUpdate(
-            { email, purpose: "password-reset" },
-            { otp },
-            { purpose: "password-reset" },
-            { new: true, upsert: true }
-        );
-        await sendOtpEmail(email, "Password Reset OTP for GURUKUL - A Centralized Learning Platform", `OTP for Account Recovery is ${otp}`,);
+        otpData.otp = otp;
+        otpData.createdAt = new Date();
+        await otpData.save(); // This will trigger the pre-save middleware
         return res.status(200).json({
             message: "OTP sent to your email, please check your inbox",
             success: true
@@ -115,6 +109,10 @@ exports.resetPasswordEntry = async (req, res) => {
         user.password = hashedPassword;
         user.confirmPassword = hashedPassword; // Assuming you want to update confirmPassword as well
         await user.save();
+        
+        // Delete the OTP entry after successful password reset
+        await otpSchema.deleteOne({ email, purpose });
+        
         return res.status(200).json({
             message: "Password reset successfully",
             success: true

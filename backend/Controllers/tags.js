@@ -5,24 +5,40 @@ exports.createTagOrCategory = async (req, res) => {
     try {
         const { tagname, Description } = req.body;
         if (!tagname || !Description) {
-            return res.status(400).json({ message: 'Tag name or Description is required' });
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Tag name or Description is required' 
+            });
         }
         const existingTag = await Tag.findOne({ name: tagname });
         if (existingTag) {
-            return res.status(400).json({ message: 'Tag already exists' });
+            return res.status(400).json({ 
+                success: false, 
+                message: 'Tag already exists' 
+            });
         }
         const newTag = await Tag.create({
             name: tagname,
             Description: Description,
         });
         if (!newTag) {
-            return res.status(500).json({ message: 'Failed to create tag' });
+            return res.status(500).json({ 
+                success: false, 
+                message: 'Failed to create tag' 
+            });
         }
-        res.status(201).json({ message: 'Tag created successfully' });
+        res.status(201).json({ 
+            success: true,
+            message: 'Tag created successfully',
+            data: newTag 
+        });
     }
     catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Internal Server Error||path is controllers/tags.js' });
+        res.status(500).json({ 
+            success: false, 
+            message: 'Internal Server Error||path is controllers/tags.js' 
+        });
     }
 }
 exports.getallTag_s = async (req, res) => {

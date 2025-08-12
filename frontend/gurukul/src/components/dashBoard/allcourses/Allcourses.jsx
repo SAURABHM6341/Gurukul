@@ -13,24 +13,28 @@ function GetAllCourse() {
     const navigate = useNavigate();
     const fetchallCourses = async() =>{
     try{
-        toast.loading("Fetching Courses")
-        const res = await apiConnector("GET",getallcourses.GET_ALL_COURSES_API,`Bearer ${token}`);
+        const toastId = toast.loading("Fetching Courses")
+        const res = await apiConnector("GET", getallcourses.GET_ALL_COURSES_API, {
+            Authorization: `Bearer ${token}`
+        });
         if(res.data.success){
         console.log(res.data?.courses)
-        toast.dismiss();
+        toast.dismiss(toastId);
         toast.success("course fetched");
         setCourSe(res.data?.courses);
     }
     }catch(err){
         console.log("dikkat h ");
-        toast.dismiss();
+        toast.dismiss(toastId);
         toast.error("course not fetched");
         setCourSe([]);
     }
 }
 useEffect(()=>{
-    fetchallCourses();
-},[]);
+    if(token) {
+        fetchallCourses();
+    }
+},[token]);
     return (
         <>
         <div className="Headingallcourses">

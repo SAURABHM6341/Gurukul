@@ -11,4 +11,4 @@ subSection:[
     }
 ]
 });
-module.exports = mongoose.model('section', sectionSchema);
+module.exports = mongoose.models.section || mongoose.model('section', sectionSchema);

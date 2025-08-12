@@ -3,7 +3,7 @@ exports.accountDelete = async (req, res) => {
     try {
         const userID = req.user.id;
         const deletionTime = 3 * 24 * 60 * 60 * 1000;
-        await userModel.findByIdAndUpdate({ userID }, {
+        await userModel.findByIdAndUpdate( userID , {
             markedForDeletion: true,
             deletionScheduledAt: deletionTime
         });
@@ -12,7 +12,7 @@ exports.accountDelete = async (req, res) => {
             message: "Account deletion requested. It will be deleted in 3 days unless canceled.",
         });
     } catch (err) {
-        res.status(500).json({ success: false, message: "Error requesting account deletion" });
+        res.status(500).json({ success: false, message: "Error requesting account deletion", err });
     }
 }
 
