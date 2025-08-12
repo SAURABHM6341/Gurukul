@@ -1,15 +1,15 @@
 import React from 'react';
 import './swiss.css';
-import calenderImg from '../../assets/calender.png'
 import { useNavigate } from 'react-router-dom';
 
 const LanguageProgress = () => {
   const navigate = useNavigate();
-
+  
   const handleLearnMore = () => {
     navigate('/aboutus');
   };
-
+  const calenderImg = 'https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000031/calender_m778no.png'
+  
   return (
     <div className="lang-section">
       <h2>Your swiss knife for <span>learning any language</span></h2>

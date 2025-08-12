@@ -1,14 +1,15 @@
 
 import './contact.css';
-import globeLogo from '../../assets/globeLogo.png';
-import calllogo from '../../assets/calllogo.png';
-import chatlogo from '../../assets/chatlogo.png';
+
 import { apiConnector } from '../../service/apiconnector';
 import { submitquery } from '../../service/apis';
 import { toast } from 'react-hot-toast';
 import React, { useState } from "react";
 
 function ContactUs() {
+    const globeLogo = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000032/globeLogo_ebgfys.png";
+    const calllogo = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000031/calllogo_rdejic.png";
+    const chatlogo = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000031/chatlogo_drrf5b.png";
     const [formData, setFormData] = useState({
         Fname: "",
         Lname: "",

@@ -8,6 +8,11 @@ import problemImg from '../../assets/Subtract.png'
 import { useNavigate } from 'react-router-dom';
 
 function JobSkills() {
+  const jobImg = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000039/job-skills_ndcfpk.png";
+  const leaderImg = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000031/fi-sr-badge_oajfed.png";
+  const ResponsibilityImg = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000032/fi-sr-graduation-cap_f4w6mi.png";
+  const FlexibilityImg = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000032/fi-sr-diamond_yey837.png";
+  const problemImg = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000041/Subtract_khc5cx.png";
   const navigate = useNavigate();
 
   const handleLearnMore = () => {

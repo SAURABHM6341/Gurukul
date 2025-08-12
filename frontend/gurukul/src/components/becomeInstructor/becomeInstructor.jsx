@@ -1,6 +1,5 @@
 import React from 'react';
 import './becomeInstructor.css';
-import instructorImg from '../../assets/instructorImg.png'; // update with actual path
 import { useNavigate } from 'react-router-dom';
 
 const BecomeInstructor = () => {
@@ -9,7 +8,7 @@ const BecomeInstructor = () => {
   const handleStartTeaching = () => {
     navigate('/signup');
   };
-
+const instructorImg = 'https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000038/instructorImg_zkswht.png';
   return (
     <div className="instructor-section">
       <img src={instructorImg} alt="Instructor" className="instructor-image" />

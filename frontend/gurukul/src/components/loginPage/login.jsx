@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import girlImage from "../../assets/girlImage.png";
 import './login.css'
 import { apiConnector } from "../../service/apiconnector";
 import { LoGin } from "../../service/apis";
@@ -9,6 +8,7 @@ import { useDispatch } from "react-redux";
 import { setToken } from "../../context/slices/authslice";
 import { setUser } from "../../context/slices/profileSlice";
 function Login() {
+  const  girlImage = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000032/girlImage_stzjqv.png";
   const [accType, setAccType] = useState("Student");
   const navigate = useNavigate();
   const [formData, setFormData] = useState({

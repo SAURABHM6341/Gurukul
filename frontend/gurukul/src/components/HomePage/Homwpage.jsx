@@ -1,11 +1,11 @@
 import React from 'react';
 import './homepage.css';
-import HeroImage from '../../assets/HeroImage.png'; // Replace with your actual image path
 import { Link, useNavigate } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation'
 import AnimatedCodeBlock from '../typingAnimation.jsx'
 
 function HeroSection() {
+    const HeroImage = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000036/HeroImage_xecher.png";
     const navigate = useNavigate();
 
     const handleLearnMore = () => {

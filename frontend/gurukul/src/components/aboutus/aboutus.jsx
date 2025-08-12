@@ -1,14 +1,15 @@
 import {React,useState} from "react";
 import ReviewHome from '../reviewshome/review.jsx';
-import About1 from '../../assets/aboutsUs1.png';
-import About2 from '../../assets/aboutUs2.png';
-import About3 from '../../assets/aboutUs3.png';
-import About4 from '../../assets/foundingStory.png'
+
 import {toast} from 'react-hot-toast'
 import { apiConnector } from "../../service/apiconnector.js";
 import { submitquery } from "../../service/apis.js";
 import './aboutus.css';
 function AboutUs() {
+    const About1 = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000031/aboutsUs1_pyev7l.png";
+    const About2 = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000031/aboutUs2_ayyjrx.png";
+    const About3 = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000031/aboutUs3_ovqmzk.png";
+    const About4 = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000032/foundingStory_sh9ljy.png";
         const [formData, setFormData] = useState({
             Fname: "",
             Lname: "",

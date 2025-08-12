@@ -1,13 +1,13 @@
 import React, { useEffect } from "react";
 import './header.css';
-import searchIcon from '../../assets/search.png';
-import cartIcon from '../../assets/cart.png';
+// import cartIcon from '../../assets/cart.png';
 import { Link, matchPath, Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { useSelector } from 'react-redux';
 import { apiConnector } from '../../service/apiconnector'
 import { categories } from '../../service/apis'
 import { useState } from "react";
 function Header() {
+    const cartIcon = "https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000031/cart_qs1nbo.png";
     const [Catalog, setCatalog] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();

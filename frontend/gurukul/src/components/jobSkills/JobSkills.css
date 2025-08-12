@@ -68,7 +68,7 @@
 .imageTimeline{
 width: 24px;
 height: 24px;
-border: 1px solid #00C7FF;
+/* border: 1px solid #00C7FF; */
 padding: 6px;
 border-radius: 50%;
 text-align: center;

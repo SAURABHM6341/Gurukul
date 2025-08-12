@@ -1,11 +1,11 @@
 import React, { use, useState } from "react";
 import "./Signup.css";
-import groupImage from '../../assets/groupImage.png'
 import { useNavigate } from "react-router-dom";
 import { send_otp } from '../../service/apis'
 import { apiConnector } from "../../service/apiconnector";
 import { toast } from "react-hot-toast";
 function Signup() {
+    const  groupImage =  'https://res.cloudinary.com/dwwwmae9x/image/upload/v1755000033/groupImage_aezszj.png'
     const navigate = useNavigate();
     const [accType, setAccType] = useState("Student");
     const [showPassword, setShowPassword] = useState(false);
