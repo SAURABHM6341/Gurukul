@@ -63,15 +63,16 @@ const CourseInformationForm = ({ courseData = null, setCourseData, onNext, isEdi
     }
     const handleNext = async () => {
         const { courseName, courseDescription, price, tag, thumbnailfile, whatToLearn, thumbnail } = courseData;
-        if (!courseName.trim()) return toast.error("Course title is required");
-        if (!courseDescription.trim()) return toast.error("Short description is required");
-        if (!price) return toast.error("Price is required");
-        if (!tag) return toast.error("Please select a category");
-        if (!thumbnailfile && !isEditing) return toast.error("Course thumbnail is required");
-        if (!whatToLearn.trim()) return toast.error("Please provide at least one benefit");
+        if (!courseName.trim()) { toast.dismiss(); return toast.error("Course title is required"); }
+        if (!courseDescription.trim()) { toast.dismiss(); return toast.error("Short description is required"); }
+        if (!price) { toast.dismiss(); return toast.error("Price is required"); }
+        if (!tag) { toast.dismiss(); return toast.error("Please select a category"); }
+        if (!thumbnailfile && !isEditing) { toast.dismiss(); return toast.error("Course thumbnail is required"); }
+        if (!whatToLearn.trim()) { toast.dismiss(); return toast.error("Please provide at least one benefit"); }
 
         if (isEditing) {
             if (!isCourseDataChanged()) {
+                toast.dismiss();
                 toast.success("No changes detected");
                 return onNext();
             }

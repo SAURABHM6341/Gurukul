@@ -398,9 +398,137 @@ exports.changeStatus = async (req, res) => {
                 success: false,
             })
         }
-        const course = await courseSchema.findById(courseId);
+        const course = await courseSchema.findById(courseId).populate('instructor');
+        const oldStatus = course.status;
         course.status = status;
-        course.save();
+        await course.save();
+        
+        // Send email notification to instructor about status change
+        if (oldStatus !== status) {
+            const mailSender = require('../Util/mailsender');
+            const instructor = course.instructor;
+            
+            let emailTitle, emailBody;
+            
+            if (status === 'published') {
+                emailTitle = "🎉 Course Published - Gurukul";
+                emailBody = `
+                    <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
+                        <div style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); padding: 30px; text-align: center; border-radius: 15px 15px 0 0;">
+                            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600;">🎉 Course Published!</h1>
+                            <p style="color: #c6f6d5; margin: 10px 0 0 0; font-size: 16px;">Gurukul - Centralized Learning Platform</p>
+                        </div>
+                        
+                        <div style="background-color: white; padding: 40px; border-radius: 0 0 15px 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                            <h2 style="color: #2d3748; margin-bottom: 20px; font-size: 24px;">Congratulations!</h2>
+                            
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                                Hi <strong>${instructor.firstName} ${instructor.lastName}</strong>,
+                            </p>
+                            
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                                Great news! Your course "<strong>${course.courseName}</strong>" has been successfully published and is now live on Gurukul platform.
+                            </p>
+                            
+                            <div style="background-color: #f0fff4; border-left: 4px solid #48bb78; padding: 20px; margin: 30px 0; border-radius: 5px;">
+                                <h3 style="color: #2f855a; margin: 0 0 15px 0; font-size: 18px;">📚 Course Details</h3>
+                                <ul style="color: #2f855a; margin: 0; padding-left: 20px; font-size: 14px;">
+                                    <li><strong>Course Name:</strong> ${course.courseName}</li>
+                                    <li><strong>Price:</strong> ₹${course.price}</li>
+                                    <li><strong>Status:</strong> Published ✅</li>
+                                    <li><strong>Published Date:</strong> ${new Date().toLocaleDateString()}</li>
+                                </ul>
+                            </div>
+                            
+                            <h3 style="color: #2d3748; font-size: 18px; margin: 30px 0 15px 0;">🚀 What's next?</h3>
+                            <ol style="color: #4a5568; font-size: 16px; line-height: 1.6; padding-left: 20px;">
+                                <li>Students can now enroll in your course</li>
+                                <li>Monitor your course performance in the instructor dashboard</li>
+                                <li>Engage with students through discussions</li>
+                                <li>Update course content as needed</li>
+                            </ol>
+                            
+                            <div style="text-align: center; margin: 40px 0;">
+                                <a href="${process.env.FRONTEND_URL}/instructor/dashboard" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; display: inline-block;">
+                                    View Instructor Dashboard
+                                </a>
+                            </div>
+                            
+                            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                                <p style="color: #718096; font-size: 14px; text-align: center; margin: 0;">
+                                    Keep creating amazing content!<br>
+                                    <strong>The Gurukul Team</strong><br>
+                                    🎓 Empowering educators worldwide
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (status === 'draft') {
+                emailTitle = "📝 Course Status Updated - Gurukul";
+                emailBody = `
+                    <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
+                        <div style="background: linear-gradient(135deg, #f6ad55 0%, #ed8936 100%); padding: 30px; text-align: center; border-radius: 15px 15px 0 0;">
+                            <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600;">📝 Course Moved to Draft</h1>
+                            <p style="color: #fed7cc; margin: 10px 0 0 0; font-size: 16px;">Gurukul - Centralized Learning Platform</p>
+                        </div>
+                        
+                        <div style="background-color: white; padding: 40px; border-radius: 0 0 15px 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                            <h2 style="color: #2d3748; margin-bottom: 20px; font-size: 24px;">Course Status Updated</h2>
+                            
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                                Hi <strong>${instructor.firstName} ${instructor.lastName}</strong>,
+                            </p>
+                            
+                            <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                                Your course "<strong>${course.courseName}</strong>" has been moved back to draft status. This means it's currently not visible to students on the platform.
+                            </p>
+                            
+                            <div style="background-color: #fef5e7; border-left: 4px solid #f6ad55; padding: 20px; margin: 30px 0; border-radius: 5px;">
+                                <h3 style="color: #c05621; margin: 0 0 15px 0; font-size: 18px;">📚 Course Details</h3>
+                                <ul style="color: #c05621; margin: 0; padding-left: 20px; font-size: 14px;">
+                                    <li><strong>Course Name:</strong> ${course.courseName}</li>
+                                    <li><strong>Status:</strong> Draft 📝</li>
+                                    <li><strong>Updated Date:</strong> ${new Date().toLocaleDateString()}</li>
+                                </ul>
+                            </div>
+                            
+                            <h3 style="color: #2d3748; font-size: 18px; margin: 30px 0 15px 0;">🔧 What you can do now:</h3>
+                            <ol style="color: #4a5568; font-size: 16px; line-height: 1.6; padding-left: 20px;">
+                                <li>Review and edit your course content</li>
+                                <li>Add more lectures or improve existing ones</li>
+                                <li>Update course description and pricing</li>
+                                <li>Request republishing when ready</li>
+                            </ol>
+                            
+                            <div style="text-align: center; margin: 40px 0;">
+                                <a href="${process.env.FRONTEND_URL}/instructor/edit-course/${course._id}" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; display: inline-block;">
+                                    Edit Course
+                                </a>
+                            </div>
+                            
+                            <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                                <p style="color: #718096; font-size: 14px; text-align: center; margin: 0;">
+                                    Keep improving your content!<br>
+                                    <strong>The Gurukul Team</strong><br>
+                                    🎓 Supporting educators every step of the way
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Send email notification
+            try {
+                await mailSender(instructor.email, emailTitle, emailBody);
+                console.log(`Course status change email sent to ${instructor.email}`);
+            } catch (emailError) {
+                console.error("Error sending course status email:", emailError);
+                // Don't fail the status change if email fails
+            }
+        }
+        
         return res.status(200).json({
             success: true,
             message: "status changed",

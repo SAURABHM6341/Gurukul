@@ -130,12 +130,12 @@ const AllUsers = ({ userType = 'all' }) => {
                             <div className="user-info">
                                 <h3>{user.Fname} {user.Lname}</h3>
                                 <p className="user-email">{user.email}</p>
-                                <span className={`user-type ${user.accountType.toLowerCase()}`}>
+                                <span className={`user-type ${user?.accountType?.toLowerCase()}`}>
                                     {user.accountType}
                                 </span>
                                 <div className="user-stats">
                                     <span>Courses: {user.courses?.length || 0}</span>
-                                    <span>Joined: {new Date(user.createdAt).toLocaleDateString()}</span>
+                                    <span>Joined: {(user?.createdAt?.split('T')[0])}</span>
                                 </div>
                             </div>
                         </div>

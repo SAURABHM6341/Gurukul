@@ -107,7 +107,62 @@ exports.changePassword = async (req, res) => {
         user.confirmPassword = hashedNewPassword; // Assuming you want to update confirmPassword as well
         await user.save();
         // Optionally, you can send a confirmation email about the password change
-        const emailBody = `<p>Your password has been changed successfully.</p>`;
+        const emailBody = `
+            <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
+                <div style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); padding: 30px; text-align: center; border-radius: 15px 15px 0 0;">
+                    <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600;">✅ Password Changed Successfully</h1>
+                    <p style="color: #c6f6d5; margin: 10px 0 0 0; font-size: 16px;">Gurukul - Centralized Learning Platform</p>
+                </div>
+                
+                <div style="background-color: white; padding: 40px; border-radius: 0 0 15px 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                    <h2 style="color: #2d3748; margin-bottom: 20px; font-size: 24px;">Your Password Has Been Updated</h2>
+                    
+                    <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                        Hi <strong>${user.firstName} ${user.lastName}</strong>,
+                    </p>
+                    
+                    <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                        Your password has been successfully changed on <strong>${new Date().toLocaleDateString()}</strong> at <strong>${new Date().toLocaleTimeString()}</strong>. Your account is now secured with your new password.
+                    </p>
+                    
+                    <div style="background-color: #f0fff4; border-left: 4px solid #48bb78; padding: 20px; margin: 30px 0; border-radius: 5px;">
+                        <h3 style="color: #2f855a; margin: 0 0 15px 0; font-size: 18px;">🔐 Security Confirmation</h3>
+                        <ul style="color: #2f855a; margin: 0; padding-left: 20px; font-size: 14px;">
+                            <li>Password successfully updated</li>
+                            <li>Account security enhanced</li>
+                            <li>All active sessions remain valid</li>
+                        </ul>
+                    </div>
+                    
+                    <div style="background-color: #fef5e7; border-left: 4px solid #f6ad55; padding: 15px; margin: 20px 0; border-radius: 5px;">
+                        <p style="color: #c05621; margin: 0; font-size: 14px;">
+                            <strong>⚠️ Important:</strong> If you didn't make this change, please contact our support team immediately at <a href="mailto:support@gurukul.com" style="color: #c05621;">support@gurukul.com</a>
+                        </p>
+                    </div>
+                    
+                    <h3 style="color: #2d3748; font-size: 18px; margin: 30px 0 15px 0;">What's next?</h3>
+                    <ol style="color: #4a5568; font-size: 16px; line-height: 1.6; padding-left: 20px;">
+                        <li>Continue using Gurukul with your new password</li>
+                        <li>Make sure to remember your new password securely</li>
+                        <li>Consider using a password manager for better security</li>
+                    </ol>
+                    
+                    <div style="text-align: center; margin: 40px 0;">
+                        <a href="${process.env.FRONTEND_URL}/login" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; display: inline-block;">
+                            Login to Your Account
+                        </a>
+                    </div>
+                    
+                    <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                        <p style="color: #718096; font-size: 14px; text-align: center; margin: 0;">
+                            Best regards,<br>
+                            <strong>The Gurukul Security Team</strong><br>
+                            🛡️ Keeping your account safe and secure
+                        </p>
+                    </div>
+                </div>
+            </div>
+        `;
         try {
             await mailSender(user.email, "Password Change Confirmation", emailBody);
             console.log("Confirmation email sent successfully");

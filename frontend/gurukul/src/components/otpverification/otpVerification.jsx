@@ -35,6 +35,7 @@ function VerifyEmail() {
     const otp = inputs.current.map(input => input.value).join('');
 
     if (otp.length !== 6) {
+      toast.dismiss();
       toast.error("Please enter the complete 6-digit OTP");
       return;
     }
@@ -71,18 +72,21 @@ function VerifyEmail() {
         const verification_res = await apiConnector("POST", apiUrl, {}, payload, null);
 
         if (verification_res.data.success) {
+          toast.dismiss();
           toast.success("OTP verified successfully");
 
           localStorage.removeItem("signupData");
           navigate(nextRoute);
         }
       } else {
+        toast.dismiss();
         toast.error("No OTP verification context found.");
         return;
       }
 
     } catch (error) {
       console.error(error);
+      toast.dismiss();
       toast.error(error?.response?.data?.message || "OTP verification failed");
     }
   };

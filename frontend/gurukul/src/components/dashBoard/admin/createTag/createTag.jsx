@@ -3,7 +3,8 @@ import './createTag.css';
 import { useSelector } from 'react-redux';
 import { createTag } from '../../../../service/operations/adminApi';
 import { toast } from 'react-hot-toast';
-
+import { apiConnector } from '../../../../service/apiconnector';
+import { categories } from '../../../../service/apis';
 const CreateTag = () => {
     const [formData, setFormData] = useState({
         tagname: '',
@@ -11,6 +12,17 @@ const CreateTag = () => {
     });
     const [loading, setLoading] = useState(false);
     const token = useSelector((state) => state.auth?.token);
+
+    const refreshCategories = async () => {
+        try {
+            // Trigger category refresh by calling the categories API
+            await apiConnector("GET", categories.CATEGORIES_API);
+            // This will help refresh the header categories when user navigates
+            window.dispatchEvent(new Event('categoriesUpdated'));
+        } catch (error) {
+            console.log("Could not refresh categories:", error);
+        }
+    };
 
     const handleChange = (e) => {
         setFormData({
@@ -23,6 +35,7 @@ const CreateTag = () => {
         e.preventDefault();
         
         if (!formData.tagname.trim()) {
+            toast.dismiss();
             toast.error("Tag name is required");
             return;
         }
@@ -36,6 +49,9 @@ const CreateTag = () => {
                     tagname: '',
                     Description: ''
                 });
+                // Refresh categories after successful tag creation
+                await refreshCategories();
+                toast.success("Tag created successfully! Categories updated.");
             }
         } catch (error) {
             console.error("Error creating tag:", error);
@@ -86,7 +102,7 @@ const CreateTag = () => {
                         <button
                             type="button"
                             className="cancel-btn"
-                            onClick={() => setFormData({ tagName: '', tagDescription: '' })}
+                            onClick={() => setFormData({ tagname: '', Description: '' })}
                         >
                             Clear
                         </button>

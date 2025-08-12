@@ -24,6 +24,7 @@ function DashLeft() {
         localStorage.removeItem("token"); // Also clear from localStorage
         localStorage.removeItem("user");
         localStorage.removeItem("cart");
+        toast.dismiss();
         toast.success("Logged out successfully");
         navigate("/login");
     };
@@ -67,6 +68,9 @@ function DashLeft() {
 
                 {safeUser.accountType === "Admin" && (
                     <>
+                        <Link to="/dashboard/admin/stats" className="adminStats" style={matchRoute('/dashboard/admin/stats') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
+                            Dashboard Stats
+                        </Link>
                         <Link to="/dashboard/admin/all-users" className="adminUsers" style={matchRoute('/dashboard/admin/all-users') ? { color: "#facc15", backgroundColor: "#3D2A01" } : {}}>
                             All Users
                         </Link>

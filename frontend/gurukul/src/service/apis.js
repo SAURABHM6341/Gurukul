@@ -49,6 +49,12 @@ export const editsubsection = {
     EDIT_SUBSECTION_API: `${BASE_URL}/api/v1/course/subsection/edit`,
     DELETE_SUBSECTION_API: `${BASE_URL}/api/v1/course/subsection/delete`
 }
+export const progressApis = {
+    UPDATE_VIDEO_PROGRESS_API: `${BASE_URL}/api/v1/progress/update-progress`,
+    GET_COURSE_PROGRESS_API: `${BASE_URL}/api/v1/progress/course`,
+    MARK_VIDEO_COMPLETED_API: `${BASE_URL}/api/v1/progress/mark-completed`,
+    GET_VIDEO_ANALYTICS_API: `${BASE_URL}/api/v1/progress/analytics`
+}
 export const submitquery = {
     SUBMIT_QUERY_API: `${BASE_URL}/api/v1/user/contactus/submitform`
 }

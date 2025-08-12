@@ -28,10 +28,12 @@ import TagPage from './pages/tagPage.jsx'
 import ResetPass from './pages/resetPass.jsx';
 import LEcturePage from './pages/Lecture.jsx'
 import { getItemWithTTL } from './utils/ttlStorage.js';
+import CatalogPage from './pages/CatalogPage.jsx';
 // Admin Components
 import AllUsers from './components/dashBoard/admin/allUsers/allUsers.jsx';
 import UserDetails from './components/dashBoard/admin/userDetails/userDetails.jsx';
 import CreateTag from './components/dashBoard/admin/createTag/createTag.jsx';
+import AdminStats from './components/dashBoard/admin/stats/adminStats.jsx';
 
 function App() {
   const dispatch = useDispatch();
@@ -61,6 +63,7 @@ function App() {
         <Route path='/signup' element={<SignUp />} />
         <Route path='/aboutus' element={<Aboutus />} />
         <Route path='/contactus' element={<ContaCtUs />} />
+        <Route path='/catalog' element={<CatalogPage />} />
         <Route path='/login' element={<LogIn />} />
         <Route path='/check_email' element={<CheckEmail />} />
         <Route path='/verify_otp' element={<Verify_otp />} />
@@ -84,6 +87,7 @@ function App() {
           <Route path='allcourses' element={<GetAllCourse />} />
           
           {/* Admin Routes */}
+          <Route path='admin/stats' element={<AdminStats />} />
           <Route path='admin/all-users' element={<AllUsers userType="all" />} />
           <Route path='admin/all-students' element={<AllUsers userType="students" />} />
           <Route path='admin/all-instructors' element={<AllUsers userType="instructors" />} />

@@ -82,6 +82,7 @@
     display: flex;
     justify-content: center;
     margin-bottom: 1rem;
+    width: 100%;
 }
 
 .user-avatar img {
@@ -90,6 +91,15 @@
     border-radius: 50%;
     object-fit: cover;
     border: 3px solid #FACC15;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 15px;
+    gap: 0.5rem;
 }
 
 .user-info h3 {
@@ -140,9 +150,13 @@
 
 .user-stats {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
     font-size: 0.8rem;
     color: #94A3B8;
+    width: 100%;
+    margin-top: auto;
 }
 
 .no-users {

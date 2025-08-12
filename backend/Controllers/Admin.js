@@ -5,11 +5,18 @@ const profile = require('../Models/profle');
 // Get all users
 exports.getAllUsers = async (req, res) => {
     try {
+        const reqUserId = req.user.id;
+        const reqUser = await User.findById(reqUserId);
+        if (!reqUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'Admin not found'
+            });
+        }
         const users = await User.find()
             .populate('additionalDetails')
             .populate('courses')
-            .select('-password -confirmPassword')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 }).exec();
 
         return res.status(200).json({
             success: true,
@@ -29,11 +36,24 @@ exports.getAllUsers = async (req, res) => {
 // Get all students
 exports.getAllStudents = async (req, res) => {
     try {
+        const reqUserId = req.user.id;
+        const reqUser = await User.findById(reqUserId);
+        if (!reqUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'Admin not found'
+            });
+        }
         const students = await User.find({ accountType: 'Student' })
             .populate('additionalDetails')
             .populate('courses')
-            .select('-password -confirmPassword')
-            .sort({ createdAt: -1 });
+            .sort({ createdAt: -1 }).exec();
+        if (!students) {
+            return res.status(404).json({
+                success: false,
+                message: 'No students found'
+            });
+        }
 
         return res.status(200).json({
             success: true,
@@ -53,18 +73,30 @@ exports.getAllStudents = async (req, res) => {
 // Get all instructors
 exports.getAllInstructors = async (req, res) => {
     try {
+        const reqUserId = req.user.id;
+        const reqUser = await User.findById(reqUserId);
+        if (!reqUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'Admin not found'
+            });
+        }
         const instructors = await User.find({ accountType: 'Instructor' })
             .populate('additionalDetails')
             .populate({
                 path: 'courses',
                 populate: {
-                    path: 'studentsEnrolled',
+                    path: 'studentEnrolled',
                     select: 'Fname Lname email'
                 }
             })
-            .select('-password -confirmPassword')
-            .sort({ createdAt: -1 });
-
+            .sort({ createdAt: -1 }).exec();
+        if (!instructors) {
+            return res.status(404).json({
+                success: false,
+                message: 'No instructors found'
+            });
+        }
         return res.status(200).json({
             success: true,
             message: 'All instructors fetched successfully',
@@ -83,6 +115,14 @@ exports.getAllInstructors = async (req, res) => {
 // Get user details by ID
 exports.getUserDetails = async (req, res) => {
     try {
+        const reqUserId = req.user.id;
+        const reqUser = await User.findById(reqUserId);
+        if (!reqUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'Admin not found'
+            });
+        }
         const { userId } = req.params;
 
         const user = await User.findById(userId)
@@ -95,7 +135,7 @@ exports.getUserDetails = async (req, res) => {
                 }
             })
             .populate('courseProgress')
-            .select('-password -confirmPassword');
+            .exec();
 
         if (!user) {
             return res.status(404).json({
@@ -108,9 +148,8 @@ exports.getUserDetails = async (req, res) => {
         let createdCourses = [];
         if (user.accountType === 'Instructor') {
             createdCourses = await Course.find({ instructor: userId })
-                .populate('studentsEnrolled', 'Fname Lname email')
-                .populate('category')
-                .populate('tag');
+                .populate('studentEnrolled', 'Fname Lname email')
+                .populate('tag').exec();
         }
 
         return res.status(200).json({
@@ -134,13 +173,26 @@ exports.getUserDetails = async (req, res) => {
 // Get all courses for admin
 exports.getAllCourses = async (req, res) => {
     try {
+        const reqUserId = req.user.id;
+        const reqUser = await User.findById(reqUserId);
+        if (!reqUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'Admin not found'
+            });
+        }
         const courses = await Course.find()
             .populate('instructor', 'Fname Lname email')
             .populate('category')
             .populate('tag')
-            .populate('studentsEnrolled', 'Fname Lname email')
-            .sort({ createdAt: -1 });
-
+            .populate('studentEnrolled', 'Fname Lname email')
+            .sort({ createdAt: -1 }).exec();
+        if (!courses) {
+            return res.status(404).json({
+                success: false,
+                message: 'No courses found'
+            });
+        }
         return res.status(200).json({
             success: true,
             message: 'All courses fetched successfully',

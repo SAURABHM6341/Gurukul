@@ -37,9 +37,11 @@ function Signup() {
         try {
             const otp_res = await apiConnector("POST", send_otp.SIGN_OTP_API, {}, payload, null);
             if (otp_res.data.success) {
+                toast.dismiss();
                 toast.success("OTP sent successfully");
             }
         } catch (err) {
+            toast.dismiss();
             toast.error(err.otp_res?.data?.message || "Please wait for atleast 5 min before new request");
         }
 

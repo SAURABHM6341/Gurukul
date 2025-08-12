@@ -5,7 +5,15 @@ import leaderImg from '../../assets/fi-sr-badge.png';
 import ResponsibilityImg from '../../assets/fi-sr-graduation-cap.png';
 import FlexibilityImg from '../../assets/fi-sr-diamond.png'
 import problemImg from '../../assets/Subtract.png'
+import { useNavigate } from 'react-router-dom';
+
 function JobSkills() {
+  const navigate = useNavigate();
+
+  const handleLearnMore = () => {
+    navigate('/aboutus');
+  };
+
   const timeline = [
     {
       logo: leaderImg,
@@ -33,7 +41,7 @@ function JobSkills() {
       <div className="job-left">
         <h2>Get the skills you need for a <span>job that is in demand.</span></h2>
         <p>The modern StudyNotion is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.</p>
-        <button className="yellow-btn">Learn More</button>
+        <button className="yellow-btn" onClick={handleLearnMore}>Learn More</button>
 
         <div className="features">{
 

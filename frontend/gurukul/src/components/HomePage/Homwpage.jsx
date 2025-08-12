@@ -1,11 +1,33 @@
 import React from 'react';
 import './homepage.css';
 import HeroImage from '../../assets/HeroImage.png'; // Replace with your actual image path
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { TypeAnimation } from 'react-type-animation'
 import AnimatedCodeBlock from '../typingAnimation.jsx'
 
 function HeroSection() {
+    const navigate = useNavigate();
+
+    const handleLearnMore = () => {
+        navigate('/aboutus');
+    };
+
+    const handleBookDemo = () => {
+        navigate('/contactus');
+    };
+
+    const handleTryYourself = () => {
+        navigate('/signup');
+    };
+
+    const handleContinueLessons = () => {
+        navigate('/signup');
+    };
+
+    const handleExploreFullCatalog = () => {
+        navigate('/catalog');
+    };
+
     return (
         <>
             <div className="hero-container">
@@ -21,8 +43,8 @@ function HeroSection() {
                     With our online coding courses, you can learn at your own pace, from anywhere in the world, and get access to a wealth of resources, including hands-on projects, quizzes, and personalized feedback from instructors.
                 </p>
                 <div className="hero-buttons">
-                    <button className="primary-btn">Learn More</button>
-                    <button className="secondary-btn">Book a Demo</button>
+                    <button className="primary-btn" onClick={handleLearnMore}>Learn More</button>
+                    <button className="secondary-btn" onClick={handleBookDemo}>Book a Demo</button>
                 </div>
                 <div className="hero-image-container">
                     <div className="HeroGradient"></div>
@@ -38,10 +60,10 @@ function HeroSection() {
                         <div className="unlockPotential-text-subheading">Our courses are designed and taught by industry experts who have years of experience in coding and are passionate about sharing their knowledge with you.</div>
                         <div className="unlockPotential-text-Buttons">
                             <div className="tryPotentialContainer">
-                                <button>Try it Yourself →</button>
+                                <button onClick={handleTryYourself}>Try it Yourself →</button>
                             </div>
                             <div className="learnPotentialContainer">
-                                <button>
+                                <button onClick={handleLearnMore}>
                                     Learn More
                                 </button>
                             </div>
@@ -67,10 +89,10 @@ function HeroSection() {
                         <div className="unlockPotential-text-subheading">Go ahead, give it a try. Our hands-on learning environment means you'll be writing real code from your very first lesson.</div>
                         <div className="unlockPotential-text-Buttons">
                             <div className="ContinueLessonsContainer">
-                                <button>Continue Lessons →</button>
+                                <button onClick={handleContinueLessons}>Continue Lessons →</button>
                             </div>
                             <div className="learnPotentialContainer">
-                                <button>
+                                <button onClick={handleLearnMore}>
                                     Learn More
                                 </button>
                             </div>
@@ -126,10 +148,10 @@ function HeroSection() {
             </div>
             <div className='catalogButton'>
                 <div className="explorecatalogbutton">
-                    <button>Explore Full Catalog</button>
+                    <button onClick={handleExploreFullCatalog}>Explore Full Catalog</button>
                 </div>
                 <div className="catalogLearn">
-                    <button>Learn More</button>
+                    <button onClick={handleLearnMore}>Learn More</button>
                 </div>
             </div>
         </>

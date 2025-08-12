@@ -79,7 +79,7 @@ const CourseDetails = () => {
     }, []);
     const [isEnrolled, setisEnrolled] = useState(false);
     useEffect(() => {
-        if (user?.courses?.includes(courseData?._id)) {
+        if (user?.courses?.includes(courseData?._id)||user?.accountType==="Admin") {
             setisEnrolled(true);
         } else {
             setisEnrolled(false);
@@ -230,7 +230,7 @@ const CourseDetails = () => {
             </div>
 
             {/* --- SIDEBAR --- */}
-            {user?.accountType === "Student" && (
+            {(user?.accountType === "Student" || user?.accountType === "Admin") && (
                 <div className="course-sidebar">
                     <div className="buy-card">
                         <div className="course-thumbnail-placeholder">
@@ -239,7 +239,7 @@ const CourseDetails = () => {
 
                         <p className="price">Rs. {courseData.price} /-</p>
                         {
-                            (!isEnrolled) && <>
+                            (!isEnrolled && user?.accountType === "Student") && <>
                                 {!isIncart && user?.accountType == "Student" && <>
                                     <button className="add-to-cart-btn" onClick={() => dispatch(addToCart(courseData))} >Add to Cart</button>
                                     <div className="cart-notice">

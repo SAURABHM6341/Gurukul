@@ -155,10 +155,14 @@ export default function UserProfile() {
     const handleDeleteAccount = async()=>{
         if(window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
             try{
+                toast.dismiss();
+                toast.loading("Initiating account deletion...");
                 const response = await apiConnector("PUT", deleteAccount.DELETE_ACCOUNT_API, `Bearer ${token}`);
                 if(response?.data?.success) {
                     toast.dismiss();
-                    toast.success("Account deleted Initiated");
+                    toast.success("Account deletion initiated! A confirmation email has been sent to your registered email address. Your account will be permanently deleted in 3 days unless you cancel the deletion.", {
+                        duration: 8000,
+                    });
                     setDeleteAccount(true);
 
                 } else {
@@ -167,6 +171,7 @@ export default function UserProfile() {
                 }
             }catch(error) {
                 console.error("Error deleting account:", error);
+                toast.dismiss();
                 toast.error("Something went wrong while deleting account");
             }
         }
@@ -292,21 +297,37 @@ export default function UserProfile() {
                 <div className="delete-content">
                     <h3>Delete Account</h3>
                     <p>
-                        Would you like to delete account?
+                        Would you like to delete your account?
                         <br />
                         This account contains paid courses. Deleting your account will remove all associated content.
                     </p>
                     {
                         deleteAcc &&
-                       <div> <p className="delete-success">Account deletion initiated. You will receive an email confirmation.</p>  
-                        <button className="btn link" onClick={cancelDeleteAccount} >I want to cancel the request</button>
-                        <p>if you don't want to cancel request please logout </p>
-                        <p>User may able to see their details after account deletion but once you logout evrything will be deleted </p>
+                       <div> 
+                        <p className="delete-success">
+                            ✅ Account deletion initiated successfully! 
+                            <br />
+                            📧 A confirmation email has been sent to your registered email address.
+                            <br />
+                            ⏰ Your account will be permanently deleted in 3 days unless you cancel.
+                        </p>  
+                        <button className="btn link" onClick={cancelDeleteAccount} >Cancel Deletion Request</button>
+                        <p><strong>Important:</strong> Please check your email for deletion confirmation details.</p>
+                        <p><strong>Note:</strong> If you logout now, you won't be able to cancel the deletion request. Make sure you want to proceed.</p>
                         </div>
                         
                     }
                     { !deleteAcc &&
-                    <button className="btn link" onClick={handleDeleteAccount} >I want to delete my account.</button>
+                    <div>
+                        <p><strong>How it works:</strong></p>
+                        <ul style={{marginLeft: '20px', marginBottom: '15px'}}>
+                            <li>Click "Delete Account" to initiate the process</li>
+                            <li>You'll receive a confirmation email immediately</li>
+                            <li>Your account will be deleted in 3 days</li>
+                            <li>You can cancel anytime before deletion</li>
+                        </ul>
+                        <button className="btn link" onClick={handleDeleteAccount} >I want to delete my account.</button>
+                    </div>
                     }
                 </div>
             </div>

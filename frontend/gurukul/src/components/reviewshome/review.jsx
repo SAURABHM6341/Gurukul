@@ -171,7 +171,7 @@ function ReviewHome() {
                 
                 <div className="reviewCards">
                     {getCurrentReviews().map((review) => (
-                        <div key={review.id} className="review-card">
+                        <div key={`${review.id}-${currentSlide}`} className="review-card">
                             <div className="review-header">
                                 <img
                                     src={review.avatar}

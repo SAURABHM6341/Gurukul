@@ -146,15 +146,85 @@ exports.verifySignature = async (req, res) => {
       );
 
       // Send confirmation email
+      const emailBody = `
+        <div style="font-family: 'Arial', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f8fafc;">
+            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 15px 15px 0 0;">
+                <h1 style="color: white; margin: 0; font-size: 28px; font-weight: 600;">🎉 Purchase Successful!</h1>
+                <p style="color: #e2e8f0; margin: 10px 0 0 0; font-size: 16px;">Gurukul - Centralized Learning Platform</p>
+            </div>
+            
+            <div style="background-color: white; padding: 40px; border-radius: 0 0 15px 15px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+                <h2 style="color: #2d3748; margin-bottom: 20px; font-size: 24px;">Thank You for Your Purchase!</h2>
+                
+                <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                    Hi <strong>${user.Fname}</strong>,
+                </p>
+                
+                <p style="color: #4a5568; font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+                    Congratulations! Your payment has been processed successfully. You now have access to the following course${courses.length > 1 ? 's' : ''}:
+                </p>
+                
+                <div style="background-color: #f7fafc; border-radius: 10px; padding: 25px; margin: 30px 0;">
+                    <h3 style="color: #2d3748; margin: 0 0 20px 0; font-size: 20px;">📚 Your Course${courses.length > 1 ? 's' : ''}</h3>
+                    ${courses.map(course => `
+                        <div style="background-color: white; border-radius: 8px; padding: 20px; margin-bottom: 15px; border-left: 4px solid #667eea;">
+                            <h4 style="color: #2d3748; margin: 0 0 10px 0; font-size: 18px;">${course.courseName}</h4>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px;">
+                                <span style="color: #48bb78; font-weight: 600; font-size: 16px;">₹${course.price}</span>
+                                <span style="background-color: #e6fffa; color: #234e52; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: 600;">✅ ENROLLED</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                
+                <div style="background-color: #f0fff4; border-left: 4px solid #48bb78; padding: 20px; margin: 30px 0; border-radius: 5px;">
+                    <h3 style="color: #2f855a; margin: 0 0 15px 0; font-size: 18px;">💰 Payment Summary</h3>
+                    <ul style="color: #2f855a; margin: 0; padding-left: 20px; font-size: 14px; list-style: none;">
+                        <li style="margin-bottom: 8px;">📅 <strong>Date:</strong> ${new Date().toLocaleDateString()}</li>
+                        <li style="margin-bottom: 8px;">⏰ <strong>Time:</strong> ${new Date().toLocaleTimeString()}</li>
+                        <li style="margin-bottom: 8px;">💳 <strong>Total Paid:</strong> ₹${courses.reduce((total, course) => total + course.price, 0)}</li>
+                        <li>✅ <strong>Status:</strong> Payment Successful</li>
+                    </ul>
+                </div>
+                
+                <h3 style="color: #2d3748; font-size: 18px; margin: 30px 0 15px 0;">🚀 What's next?</h3>
+                <ol style="color: #4a5568; font-size: 16px; line-height: 1.6; padding-left: 20px;">
+                    <li>Access your course${courses.length > 1 ? 's' : ''} immediately from your dashboard</li>
+                    <li>Start learning at your own pace</li>
+                    <li>Complete assignments and track your progress</li>
+                    <li>Get certificates upon course completion</li>
+                </ol>
+                
+                <div style="text-align: center; margin: 40px 0;">
+                    <a href="${process.env.FRONTEND_URL}/dashboard" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; display: inline-block; margin-right: 15px;">
+                        Go to Dashboard
+                    </a>
+                    <a href="${process.env.FRONTEND_URL}/my-courses" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; padding: 12px 30px; text-decoration: none; border-radius: 25px; font-weight: 600; display: inline-block;">
+                        Start Learning
+                    </a>
+                </div>
+                
+                <div style="background-color: #e6fffa; border-left: 4px solid #38b2ac; padding: 15px; margin: 20px 0; border-radius: 5px;">
+                    <p style="color: #234e52; margin: 0; font-size: 14px;">
+                        <strong>💡 Need Help?</strong> If you have any questions about your course${courses.length > 1 ? 's' : ''} or need technical support, contact us at <a href="mailto:support@gurukul.com" style="color: #234e52;">support@gurukul.com</a>
+                    </p>
+                </div>
+                
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #e2e8f0;">
+                    <p style="color: #718096; font-size: 14px; text-align: center; margin: 0;">
+                        Happy Learning!<br>
+                        <strong>The Gurukul Team</strong><br>
+                        🎓 Empowering learners worldwide
+                    </p>
+                </div>
+            </div>
+        </div>
+      `;
+
       const emailResponse = await mailSender(
         user.email,
-        "Course Purchase Successful",
-        `<h1>Congratulations ${user.Fname}!</h1>
-        <p>You have successfully purchased the following courses:</p>
-        <ul>
-          ${courses.map(course => `<li>${course.courseName} - ₹${course.price}</li>`).join("")}
-        </ul>
-        <p>Thank you for choosing our platform!</p>`
+        "Course Purchase Confirmation - Gurukul",
+        emailBody
       );
 
       // Create invoice for purchase history

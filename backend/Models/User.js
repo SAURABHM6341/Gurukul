@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require("../Models/courseProgress");
 const Userschema = new mongoose.Schema({
     Fname: {
         type: String,

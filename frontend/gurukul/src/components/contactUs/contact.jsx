@@ -39,11 +39,14 @@ function ContactUs() {
         try {
             const response = await apiConnector("POST", submitquery.SUBMIT_QUERY_API, null, payload);
             if (response.data.success) {
+                toast.dismiss();
                 toast.success("Query submitted successfully!");
             } else {
+                toast.dismiss();
                 toast.error("Query submission failed.");
             }
         } catch (error) {
+            toast.dismiss();
             toast.error("An error occurred while submitting the query.");
             console.log(error);
         } finally {

@@ -31,6 +31,7 @@ const Wishlist = () => {
             console.log(cart);
             const response = await apiConnector("POST", getCartCourses.CART_COURSES_API, `Bearer ${token}`, payload);
             if (response?.data?.success) {
+                toast.dismiss();
                 toast.success("cart items fetched");
                 console.log(response?.data?.courses);
                 setCourses(response?.data?.courses);
@@ -39,6 +40,7 @@ const Wishlist = () => {
                 console.log("could not fetch");
             }
         } catch (error) {
+            toast.dismiss();
             toast.error("cart items fetch failed");
             console.log("could not fetch ", error);
         }

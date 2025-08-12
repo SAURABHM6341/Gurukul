@@ -14,13 +14,15 @@ const PublishCourseForm = ({ courseData, setCourseData }) => {
             const payload = { courseId: courseData._id, status: courseData.status };
             const response = await apiConnector("POST", changestatus.CHANGE_STATUS_API, null, payload);
             if (response.data.success) {
+                toast.dismiss();
                 toast.success("course is saved as per preference");
                 console.log(response.data.course);
                 navigate('/dashboard');
             }
         } catch (error) {
             console.log(error);
-            toast.dismiss("error occured")
+            toast.dismiss();
+            toast.error("error occured");
         }
     }
     return (

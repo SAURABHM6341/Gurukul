@@ -1,7 +1,15 @@
 import React from 'react';
 import './swiss.css';
 import calenderImg from '../../assets/calender.png'
+import { useNavigate } from 'react-router-dom';
+
 const LanguageProgress = () => {
+  const navigate = useNavigate();
+
+  const handleLearnMore = () => {
+    navigate('/aboutus');
+  };
+
   return (
     <div className="lang-section">
       <h2>Your swiss knife for <span>learning any language</span></h2>
@@ -46,7 +54,7 @@ const LanguageProgress = () => {
         </div>
       </div>
 
-      <button className="yellow-btn">Learn More</button>
+      <button className="yellow-btn" onClick={handleLearnMore}>Learn More</button>
     </div>
   );
 };

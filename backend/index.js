@@ -52,6 +52,7 @@ app.use('/api/v1/payment', payment);
 app.use('/api/v1/user', user);
 app.use('/api/v1/invoice', invoice);
 app.use('/api/v1/admin', admin);
+app.use('/api/v1/progress', require('./Routes/videoProgress'));
 app.listen(PORT,()=>{
     console.log(`server is running on port ${PORT}`);
 });

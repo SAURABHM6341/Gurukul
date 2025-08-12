@@ -26,6 +26,18 @@ function Header() {
     };
     useEffect(() => {
         fetchCategories();
+        
+        // Listen for category updates
+        const handleCategoriesUpdated = () => {
+            fetchCategories();
+        };
+        
+        window.addEventListener('categoriesUpdated', handleCategoriesUpdated);
+        
+        // Cleanup event listener
+        return () => {
+            window.removeEventListener('categoriesUpdated', handleCategoriesUpdated);
+        };
     }, []);
     const token = useSelector((state) => state.auth?.token)
     const user = useSelector((state) => state.profile?.user);

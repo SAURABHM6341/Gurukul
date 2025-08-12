@@ -12,6 +12,7 @@ const {
 
 // Get all users
 export const getAllUsers = async (token) => {
+    toast.dismiss();
     const toastId = toast.loading("Loading users...");
     let result = [];
     try {
@@ -24,10 +25,12 @@ export const getAllUsers = async (token) => {
         }
 
         result = response?.data?.data;
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.success("Users loaded successfully");
     } catch (error) {
         console.log("GET_ALL_USERS_API ERROR............", error);
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.error(error?.response?.data?.message || "Could not fetch users");
     }
@@ -36,6 +39,7 @@ export const getAllUsers = async (token) => {
 
 // Get all students
 export const getAllStudents = async (token) => {
+    toast.dismiss();
     const toastId = toast.loading("Loading students...");
     let result = [];
     try {
@@ -48,10 +52,12 @@ export const getAllStudents = async (token) => {
         }
 
         result = response?.data?.data;
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.success("Students loaded successfully");
     } catch (error) {
         console.log("GET_ALL_STUDENTS_API ERROR............", error);
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.error(error?.response?.data?.message || "Could not fetch students");
     }
@@ -60,6 +66,7 @@ export const getAllStudents = async (token) => {
 
 // Get all instructors
 export const getAllInstructors = async (token) => {
+    toast.dismiss();
     const toastId = toast.loading("Loading instructors...");
     let result = [];
     try {
@@ -76,10 +83,12 @@ export const getAllInstructors = async (token) => {
 
         result = response?.data?.data;
         console.log("Instructors result:", result);
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.success("Instructors loaded successfully");
     } catch (error) {
         console.log("GET_ALL_INSTRUCTORS_API ERROR............", error);
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.error(error?.response?.data?.message || "Could not fetch instructors");
     }
@@ -88,6 +97,7 @@ export const getAllInstructors = async (token) => {
 
 // Get user details by ID
 export const getUserDetails = async (userId, token) => {
+    toast.dismiss();
     const toastId = toast.loading("Loading user details...");
     let result = null;
     try {
@@ -100,10 +110,12 @@ export const getUserDetails = async (userId, token) => {
         }
 
         result = response?.data?.data;
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.success("User details loaded successfully");
     } catch (error) {
         console.log("GET_USER_DETAILS_API ERROR............", error);
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.error(error?.response?.data?.message || "Could not fetch user details");
     }
@@ -112,15 +124,16 @@ export const getUserDetails = async (userId, token) => {
 
 // Create new tag (for admin)
 export const createTag = async (data, token) => {
+    toast.dismiss();
     const toastId = toast.loading("Creating tag...");
     let result = null;
     try {
         console.log("Creating tag with data:", data);
         console.log("Using API endpoint:", CREATE_TAG_API);
         
-        const response = await apiConnector("POST", CREATE_TAG_API, data, {
+        const response = await apiConnector("POST", CREATE_TAG_API, {
             Authorization: `Bearer ${token}`,
-        });
+        }, data);
 
         console.log("Tag creation response:", response);
 
@@ -129,10 +142,12 @@ export const createTag = async (data, token) => {
         }
 
         result = response?.data?.data;
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.success("Tag created successfully");
     } catch (error) {
         console.log("CREATE_TAG_API ERROR............", error);
+        toast.dismiss();
         toast.dismiss(toastId);
         toast.error(error?.response?.data?.message || "Could not create tag");
     }

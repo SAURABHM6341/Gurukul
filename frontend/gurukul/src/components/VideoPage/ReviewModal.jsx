@@ -13,6 +13,7 @@ const ReviewModal = ({ isOpen, onClose, onSubmit,user }) => {
 
     const handleFormSubmit = () => {
         if (rating === 0 || !reviewText) {
+            toast.dismiss();
             toast.error("Please provide a rating and a review.");
             return;
         }

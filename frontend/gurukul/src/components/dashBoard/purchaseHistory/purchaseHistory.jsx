@@ -22,10 +22,12 @@ const PurchaseHistory = () => {
             if (response.data.success) {
                 setInvoices(response.data.invoices);
             } else {
+                toast.dismiss();
                 toast.error("Failed to fetch purchase history");
             }
         } catch (error) {
             console.error("Error fetching purchase history:", error);
+            toast.dismiss();
             toast.error("Failed to fetch purchase history");
         } finally {
             setLoading(false);

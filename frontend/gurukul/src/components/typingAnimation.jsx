@@ -52,8 +52,9 @@ function AnimatedCodeBlock() {
         language="html"
         style={materialDark}
         customStyle={styles.codeBlock}
-        showLineNumbers
-        wrapLongLines
+        showLineNumbers={false}
+        wrapLongLines={false}
+        PreTag="div"
       >
         {code}
       </SyntaxHighlighter>
@@ -66,21 +67,27 @@ const styles = {
     width: "500px",
     height: "342px",
     margin: "2rem auto",
-    padding: "1rem",
+    padding: "1.5rem",
     borderRadius: "20px",
-    background: "rgba(255, 255, 255, 0.1)",
-    backdropFilter: "blur(12px)",
-    WebkitBackdropFilter: "blur(12px)",
-    boxShadow: `0 0 80px rgba(255, 102, 204, 0.2),
-    0 0 120px rgba(255, 204, 0, 0.1),
-    0 0 160px rgba(51, 153, 255, 0.08)`,
+    background: "rgba(15, 23, 42, 0.8)",
+    backdropFilter: "blur(16px)",
+    WebkitBackdropFilter: "blur(16px)",
+    border: "1px solid rgba(255, 255, 255, 0.1)",
+    boxShadow: `0 0 40px rgba(59, 130, 246, 0.3),
+    0 0 80px rgba(147, 51, 234, 0.2),
+    0 0 120px rgba(16, 185, 129, 0.1)`,
     overflow: "hidden",
+    position: "relative",
   },
   codeBlock: {
     background: "transparent",
     height: "100%",
-    overflow: "auto",
-    fontSize: "14px",
+    overflow: "hidden",
+    fontSize: "13px",
+    fontFamily: "'Fira Code', 'Consolas', 'Monaco', monospace",
+    lineHeight: "1.4",
+    padding: "0",
+    margin: "0",
   },
 };
 
