@@ -28,8 +28,8 @@ const allowedOrigins = [
   "http://localhost:5000",
   "http://localhost:5173",
   "http://localhost:5174",
-  "https://gurukul-ruby.vercel.app/",
-  "https://gurukul-saurabh-mishras-projects-b58d6d3a.vercel.app/"
+  "https://gurukul-ruby.vercel.app",
+  "https://gurukul-saurabh-mishras-projects-b58d6d3a.vercel.app"
 ];
 
 app.use(cors({
