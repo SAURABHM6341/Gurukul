@@ -171,7 +171,7 @@ export default function UserProfile() {
                 if(response?.data?.success) {
                     toast.dismiss();
                     toast.success("Account deletion initiated! A confirmation email has been sent to your registered email address. Your account will be permanently deleted in 3 days unless you cancel the deletion.", {
-                        duration: 8000,
+                        duration: 4000,
                     });
                     setDeleteAccount(true);
 
@@ -188,6 +188,7 @@ export default function UserProfile() {
     }
     const cancelDeleteAccount=async()=>{
     try {
+        toast.loading("Cancelling the request, please wait")
             const response = await apiConnector("PUT", deleteAccount.CANCEL_DELETE_ACCOUNT_API, {
                 Authorization: `Bearer ${token}`
             });

@@ -58,6 +58,10 @@ const Userschema = new mongoose.Schema({
     deletionScheduledAt: {
         type: Date,
     },
-
+    createdAt: {
+        type: Date,
+        default: Date.now,
+    },
+    
 });
 module.exports = mongoose.models.User || mongoose.model('User', Userschema);

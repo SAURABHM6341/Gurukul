@@ -95,7 +95,7 @@
 
 .user-info-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(330px, 1fr));
     gap: 1.5rem;
 }
 
@@ -131,7 +131,7 @@
 .label {
     font-weight: 600;
     color: #94A3B8;
-    min-width: 120px;
+    min-width: 90px;
 }
 
 .value {
@@ -277,7 +277,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 800px) {
     .user-details-container {
         padding: 1rem;
     }

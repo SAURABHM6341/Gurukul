@@ -106,12 +106,9 @@ const UserDetails = () => {
                         </div>
                         <div className="info-item">
                             <span className="label">Join Date:</span>
-                            <span className="value">{new Date(user.createdAt).toLocaleDateString()}</span>
+                            <span className="value">{user?.createdAt?.split('T')[0]}</span>
                         </div>
-                        <div className="info-item">
-                            <span className="label">Last Updated:</span>
-                            <span className="value">{new Date(user.updatedAt).toLocaleDateString()}</span>
-                        </div>
+
                     </div>
 
                     {user.additionalDetails && (

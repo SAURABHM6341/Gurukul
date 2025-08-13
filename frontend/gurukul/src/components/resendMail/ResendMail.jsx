@@ -11,6 +11,8 @@ function ResendMail() {
   }
   const handleResend = async () => {
     try {
+      toast.dismiss();
+      toast.loading("Sending Request...");
       const otp_res = await apiConnector("POST", send_otp.SIGN_OTP_API, null, payload, null);
       if (otp_res.data.success) {
         toast.dismiss();
@@ -30,7 +32,7 @@ function ResendMail() {
       <div className="resend-container">
         <h2 className="resend-title">Check email</h2>
         <p className="resend-subtitle">
-          We have sent the reset email to<br />
+          We have sent the  email to<br />
           <span className="email-highlight">{formData.email}</span>
         </p>
 

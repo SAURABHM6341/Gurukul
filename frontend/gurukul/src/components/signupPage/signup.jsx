@@ -18,6 +18,26 @@ function Signup() {
         confirmPassword: ""
     });
 
+    // --- Password Validation Logic ---
+    const validationRules = {
+        lowercase: /[a-z]/,
+        uppercase: /[A-Z]/,
+        number: /\d/,
+        specialChar: /[^A-Za-z0-9]/,
+        minLength: /.{8,}/
+    };
+
+    const isValid = {
+        lowercase: validationRules.lowercase.test(formData.password),
+        uppercase: validationRules.uppercase.test(formData.password),
+        number: validationRules.number.test(formData.password),
+        specialChar: validationRules.specialChar.test(formData.password),
+        minLength: validationRules.minLength.test(formData.password)
+    };
+
+    const allValid = Object.values(isValid).every(Boolean);
+    const passwordsMatch = formData.password === formData.confirmPassword;
+
     const handleChange = (e) => {
         setFormData((prev) => ({
             ...prev,
@@ -27,6 +47,24 @@ function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+                try {
+        // Validate password criteria
+        if (!allValid) {
+            toast.dismiss();
+            toast.error("Password does not meet all criteria.");
+            return;
+        }
+
+        // Check if passwords match
+        if (!passwordsMatch) {
+            toast.dismiss();
+            toast.error("Passwords do not match.");
+            return;
+        }
+
+        toast.dismiss();
+        toast.loading("Creating account...");
+        
         localStorage.setItem("signupData", JSON.stringify({
             ...formData,
             accType: accType
@@ -34,7 +72,8 @@ function Signup() {
         const payload = {
             email: formData.email
         }
-        try {
+
+            toast.dismiss();
             toast.loading("Sending OTP...");
             const otp_res = await apiConnector("POST", send_otp.SIGN_OTP_API,null, payload, null);
             if (otp_res.data.success) {
@@ -43,7 +82,8 @@ function Signup() {
             }
         } catch (err) {
             toast.dismiss();
-            toast.error(err.otp_res?.data?.message || "Please wait for atleast 5 min before new request");
+            toast.error(err.response?.data?.message );
+            console.log(err);
         }
 
         navigate("/check_email");
@@ -164,6 +204,18 @@ function Signup() {
                                     </div>
                                 </div>
                             </div>
+
+                            {/* Password Validation Display */}
+                            {formData.password && (
+                                <ul className="validation-list">
+                                    <li className={isValid.lowercase ? "valid" : ""}>✅ one lowercase character</li>
+                                    <li className={isValid.uppercase ? "valid" : ""}>✅ one uppercase character</li>
+                                    <li className={isValid.number ? "valid" : ""}>✅ one number</li>
+                                    <li className={isValid.specialChar ? "valid" : ""}>✅ one special character</li>
+                                    <li className={isValid.minLength ? "valid" : ""}>✅ 8 character minimum</li>
+                                    <li className={passwordsMatch && formData.confirmPassword ? "valid" : ""}>✅ passwords match</li>
+                                </ul>
+                            )}
 
                             <button type="submit" className="create-btn">Create Account</button>
                         </form>

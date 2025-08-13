@@ -122,6 +122,18 @@ const CourseBuilderForm = ({ courseData = null, setCourseData, onNext, isEditing
     };
 
     const handleDeleteSection = async (sectionId) => {
+        // Check if this is a temporary section (not saved to server yet)
+        const isTemporary = String(sectionId).startsWith('section');
+        
+        if (isTemporary) {
+            // This is a local/temporary section, just remove from state
+            const updatedContent = courseData.courseContent.filter(s => s._id !== sectionId);
+            setCourseData({ ...courseData, courseContent: updatedContent });
+            toast.success("Section removed");
+            return;
+        }
+
+        // This is a saved section, make API call to delete from server
         try {
             toast.loading("Deleting section...");
             const payload = { sectionId };
@@ -146,7 +158,31 @@ const CourseBuilderForm = ({ courseData = null, setCourseData, onNext, isEditing
     };
 
     const handleDeleteLecture = async (sectionId, lectureId) => {
+        // Check if this is a temporary lecture (not saved to server yet)
+        const isTemporary = !lectureId || String(lectureId).startsWith('sub');
+        
+        if (isTemporary) {
+            // This is a local/temporary lecture, just remove from state
+            const updatedContent = courseData.courseContent.map(section => {
+                if (section._id === sectionId) {
+                    const updatedSubSection = section.subSection.filter(lec => lec._id !== lectureId);
+                    return { ...section, subSection: updatedSubSection };
+                }
+                return section;
+            });
+            setCourseData({ ...courseData, courseContent: updatedContent });
+            toast.success("Lecture removed");
+            
+            // Also remove from video cache if it exists
+            if (videoCache[lectureId]) {
+                const newVideoCache = { ...videoCache };
+                delete newVideoCache[lectureId];
+                setVideoCache(newVideoCache);
+            }
+            return;
+        }
 
+        // This is a saved lecture, make API call to delete from server
         try {
             toast.loading("Deleting lecture...");
             const response = await apiConnector("DELETE", editsubsection.DELETE_SUBSECTION_API + `/${lectureId}`, {

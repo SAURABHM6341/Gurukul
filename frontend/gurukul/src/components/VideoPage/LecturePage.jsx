@@ -569,7 +569,7 @@ const LecturePage = () => {
                     <div className="video-header">
                         <h1 className="video-title">{currentVideo?.title}</h1>
                         <div className="video-meta">
-                            <span className="instructor">By {courseData?.instructor?.firstName} {courseData?.instructor?.lastName}</span>
+                            <span className="instructor">By {courseData?.instructor?.Fname} {courseData?.instructor?.Lname}</span>
                             <span className="duration">Duration: {currentVideo?.timeDuration}</span>
                             <span className="progress">{Math.round(played * 100)}% completed</span>
                         </div>

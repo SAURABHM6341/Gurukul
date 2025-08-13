@@ -32,6 +32,8 @@ function VerifyEmail() {
     navigate('/check_email');
   };
   const handleVerifyOTP = async () => {
+    toast.dismiss();
+    toast.loading("Verifying OTP...");
     const otp = inputs.current.map(input => input.value).join('');
 
     if (otp.length !== 6) {
@@ -55,6 +57,7 @@ function VerifyEmail() {
           otp,
         };
         localStorage.setItem("resetData", JSON.stringify(updatedResetData));
+        toast.dismiss();
         navigate(nextRoute);
       } else if (signupData?.email) {
         // Signup flow

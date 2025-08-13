@@ -13,6 +13,8 @@ const PublishCourseForm = ({ courseData, setCourseData }) => {
     };
     const onSubmit = async () => {
         try {
+            toast.dismiss();
+            toast.loading("Updating course status...");
             const payload = { courseId: courseData._id, status: courseData.status };
             const response = await apiConnector("POST", changestatus.CHANGE_STATUS_API, {
                 Authorization: `Bearer ${token}`
