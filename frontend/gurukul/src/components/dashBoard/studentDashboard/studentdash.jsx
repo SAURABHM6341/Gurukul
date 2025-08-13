@@ -18,7 +18,9 @@ function StuDashboard() {
     });
     const additonalDetailsres = async()=>{
         try {
-            const response = await apiConnector("GET",additonalProfileApi.PROFILE_INFO_API,`Bearer ${token}`);
+            const response = await apiConnector("GET",additonalProfileApi.PROFILE_INFO_API,{
+                Authorization: `Bearer ${token}`
+            });
             if(response.data.success){
                 toast.dismiss()
                 toast.success("profile details fetched");

@@ -28,7 +28,9 @@ const CourseBuilderForm = ({ courseData = null, setCourseData, onNext, isEditing
         const payload = { sectionName: sectionData.sectionName, courseId: courseData._id };
         console.log(courseData);
         try {
-            const response = await apiConnector(method, url, `Bearer ${token}`, payload);
+            const response = await apiConnector(method, url, {
+                Authorization: `Bearer ${token}`
+            }, payload);
             if (response.data.success) {
                 toast.dismiss();
                 toast.success("Lesson Created Successfully, uploading Videos if any");
@@ -89,7 +91,9 @@ const CourseBuilderForm = ({ courseData = null, setCourseData, onNext, isEditing
             }
 
             // Step 4: Make the API call
-            const response = await apiConnector(method, url, `Bearer ${token}`, payload);
+            const response = await apiConnector(method, url, {
+                Authorization: `Bearer ${token}`
+            }, payload);
 
             if (response?.data?.success) {
                 toast.success("Lecture saved.");
@@ -121,7 +125,9 @@ const CourseBuilderForm = ({ courseData = null, setCourseData, onNext, isEditing
         try {
             toast.loading("Deleting section...");
             const payload = { sectionId };
-            const response = await apiConnector("DELETE", editsection.DELETE_SECTION_API + `/${courseData._id}`, `Bearer ${token}`, payload);
+            const response = await apiConnector("DELETE", editsection.DELETE_SECTION_API + `/${courseData._id}`,{
+                Authorization: `Bearer ${token}`
+            }, payload);
             if (response?.data?.success) {
                 toast.dismiss();
                 toast.success("Section deleted successfully");
@@ -143,7 +149,9 @@ const CourseBuilderForm = ({ courseData = null, setCourseData, onNext, isEditing
 
         try {
             toast.loading("Deleting lecture...");
-            const response = await apiConnector("DELETE", editsubsection.DELETE_SUBSECTION_API + `/${lectureId}`, `Bearer ${token}`, { sectionId });
+            const response = await apiConnector("DELETE", editsubsection.DELETE_SUBSECTION_API + `/${lectureId}`, {
+                Authorization: `Bearer ${token}`
+            }, { sectionId });
             if (response?.data?.success) {
                 toast.dismiss();
                 toast.success("Lecture deleted successfully");

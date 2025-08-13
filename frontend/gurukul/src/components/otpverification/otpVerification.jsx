@@ -69,7 +69,7 @@ function VerifyEmail() {
         };
         apiUrl = verify_otp.SIGN_OTP_VERIFY_API;
         nextRoute = "/login";
-        const verification_res = await apiConnector("POST", apiUrl, {}, payload, null);
+        const verification_res = await apiConnector("POST", apiUrl, null, payload, null);
 
         if (verification_res.data.success) {
           toast.dismiss();

@@ -74,12 +74,24 @@ function EnterNewPassword() {
     const toastId = toast.loading("Updating...");
 
     try {
-      const emailToUse = isResetFlow ? resetData.email : user.email;
+      const emailToUse = isResetFlow ? resetData.email : user?.email;
+
+      if (!emailToUse) {
+        toast.error("Email not found. Please try logging in again.");
+        return;
+      }
+
+      console.log("API Call Debug Info:", {
+        isResetFlow,
+        emailToUse,
+        hasToken: !!token,
+        resetData: isResetFlow ? resetData : "N/A"
+      });
 
       const payload = {
         email: emailToUse,
-        newpassword: newPassword,
-        confirmPassword: confirmNewPassword,
+        newpassword: newPassword, // For reset flow
+        confirmPassword: confirmNewPassword, // For reset flow
       };
 
       if (isResetFlow) {
@@ -87,6 +99,11 @@ function EnterNewPassword() {
         payload.purpose = resetData.purpose; // ✅ ADD THIS
       } else {
         payload.oldPassword = oldPassword;
+        // For change password, backend expects different field names
+        payload.newPassword = newPassword; // Backend expects 'newPassword'
+        payload.confirmNewPassword = confirmNewPassword;
+        delete payload.newpassword; // Remove reset flow field
+        delete payload.confirmPassword; // Remove reset flow field
       }
 
       const response = await apiConnector(
@@ -94,7 +111,9 @@ function EnterNewPassword() {
         isResetFlow
           ? resetpassentry.RESET_PASS_ENTRY_API
           : changePassword.CHANGE_PASSWORD_API,
-        isResetFlow ? null : `Bearer ${token}`,
+        isResetFlow ? null : {
+                Authorization: `Bearer ${token}`
+            },
         payload
       );
 
@@ -115,7 +134,8 @@ function EnterNewPassword() {
 
     } catch (error) {
       console.log("CHANGE PASSWORD API ERROR:", error);
-      toast.error(error?.response?.data?.message || "Could Not Change Password");
+      console.log("Error response:", error?.response?.data);
+      toast.error(error?.response?.data?.message || error?.message || "Could Not Change Password");
     }
 
     toast.dismiss(toastId);

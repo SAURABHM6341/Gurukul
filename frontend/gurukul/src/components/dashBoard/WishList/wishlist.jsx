@@ -3,8 +3,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import { removeFromCart } from '../../../context/slices/cartslice'; // Make sure the path is correct
 import './wishlist.css';
 import { apiConnector } from '../../../service/apiconnector';
-import { getCartCourses } from '../../../service/apis';
+import { getCartCourses, capturePayment, verifySignapi } from '../../../service/apis';
 import toast from 'react-hot-toast';
+import { setUser } from '../../../context/slices/profileSlice';
+
+const RAZORPAY_KEY = import.meta.env.VITE_RAZORPAY_KEY;
 
 
 
@@ -29,7 +32,9 @@ const Wishlist = () => {
                 .map(course => course._id)
         }
             console.log(cart);
-            const response = await apiConnector("POST", getCartCourses.CART_COURSES_API, `Bearer ${token}`, payload);
+            const response = await apiConnector("POST", getCartCourses.CART_COURSES_API, {
+                Authorization: `Bearer ${token}`
+            }, payload);
             if (response?.data?.success) {
                 toast.dismiss();
                 toast.success("cart items fetched");
@@ -56,6 +61,103 @@ const Wishlist = () => {
     const handleBack = () => {
         setCheckout(false);
     }
+
+    const handlePaymentSubmit = async (e) => {
+        e.preventDefault();
+        
+        if (courses.length === 0) {
+            toast.error("No courses in cart");
+            return;
+        }
+
+        try {
+            // Get course IDs from the courses array
+            const courseIds = courses.map(course => course._id);
+            
+            const payload = {
+                courses: courseIds,
+            };
+            
+            const response = await apiConnector("POST", capturePayment.PAYMENT_API, {
+                Authorization: `Bearer ${token}`
+            }, payload);
+            
+            if (response.data.success) {
+                toast.success(response.data.message);
+            }
+            
+            const data = response?.data;
+            const options = {
+                key: RAZORPAY_KEY,
+                amount: total * 100, // Convert to paisa
+                currency: "INR",
+                name: "Gurukul - Multiple Courses",
+                description: `Payment for ${courses.length} course(s)`,
+                order_id: data.order,
+                notes: {
+                    courseIds: JSON.stringify(courseIds), // Store as JSON string array
+                    userId: user._id,
+                },
+                prefill: {
+                    name: `${user.Fname} ${user.Lname}`,
+                    email: user.email,
+                },
+                handler: async function (response) {
+                    try {
+                        // Call verification API with the response from Razorpay
+                        const verifyResponse = await apiConnector("POST", verifySignapi.VERIFY_PAY_API, {
+                            'Content-Type': 'application/json'
+                        }, {
+                            razorpay_payment_id: response.razorpay_payment_id,
+                            razorpay_order_id: response.razorpay_order_id,
+                            razorpay_signature: response.razorpay_signature,
+                        });
+                        
+                        if (verifyResponse.data.success) {
+                            toast.success("Payment successful! All courses enrolled.");
+                            
+                            // Update user's courses in Redux store
+                            const updatedUser = {
+                                ...user,
+                                courses: [...(user.courses || []), ...courseIds]
+                            };
+                            dispatch(setUser(updatedUser));
+                            
+                            // Update localStorage as well
+                            localStorage.setItem("user", JSON.stringify(updatedUser));
+                            
+                            // Remove all courses from cart
+                            courseIds.forEach(courseId => {
+                                dispatch(removeFromCart(courseId));
+                            });
+                            
+                            // Reset checkout state
+                            setCheckout(false);
+                            setCourses([]);
+                            
+                        } else {
+                            toast.error("Payment verification failed");
+                        }
+                    } catch (error) {
+                        console.error("Payment verification error:", error);
+                        toast.error("Payment verification failed");
+                    }
+                },
+                modal: {
+                    ondismiss: function () {
+                        toast.error("Payment cancelled");
+                    }
+                }
+            };
+
+            const razorpay = new window.Razorpay(options);
+            razorpay.open();
+            
+        } catch (err) {
+            console.error("Error initiating payment:", err);
+            toast.error("Payment failed. Try again.");
+        }
+    };
 
 
     return (
@@ -135,7 +237,7 @@ const Wishlist = () => {
                                 <h2>Payment Details</h2>
                                 <p>Complete your purchase details and providing your payment details to us.</p>
                             </div>
-                            <form className="payment-form">
+                            <form className="payment-form" onSubmit={handlePaymentSubmit}>
                                 <div className="form-group">
                                     <label htmlFor="fullName">
                                         Full Name <span className="asterisk">*</span>

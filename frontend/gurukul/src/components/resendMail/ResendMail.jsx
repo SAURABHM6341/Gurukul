@@ -11,7 +11,7 @@ function ResendMail() {
   }
   const handleResend = async () => {
     try {
-      const otp_res = await apiConnector("POST", send_otp.SIGN_OTP_API, {}, payload, null);
+      const otp_res = await apiConnector("POST", send_otp.SIGN_OTP_API, null, payload, null);
       if (otp_res.data.success) {
         toast.dismiss();
         toast.success("OTP resend successfully"); 

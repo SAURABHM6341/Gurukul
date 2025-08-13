@@ -88,7 +88,9 @@ const CourseInformationForm = ({ courseData = null, setCourseData, onNext, isEdi
                     console.log("running till here")
                     payload.append("thumbnail", thumbnailfile);
                 }
-                const res = await apiConnector("PUT", `${deleteEditCourse.UPDATE_COURSE_API}/${courseData._id}`, `Bearer ${token}`, payload);
+                const res = await apiConnector("PUT", `${deleteEditCourse.UPDATE_COURSE_API}/${courseData._id}`, {
+                Authorization: `Bearer ${token}`
+            }, payload);
                 if (res?.data?.success) {
                     setCourseData({ ...res.data.course, thumbnailfile });
                     toast.dismiss();
@@ -120,7 +122,9 @@ const CourseInformationForm = ({ courseData = null, setCourseData, onNext, isEdi
             if (thumbnailfile) payload.append("thumbnail", thumbnailfile);
 
             try {
-                const res = await apiConnector("POST", createCourse.CREATE_COURSE_API, `Bearer ${token}`, payload);
+                const res = await apiConnector("POST", createCourse.CREATE_COURSE_API,{
+                Authorization: `Bearer ${token}`
+            }, payload);
                 toast.dismiss();
                 if (res?.data?.success) {
                     toast.success("Course created successfully. Proceeding...");

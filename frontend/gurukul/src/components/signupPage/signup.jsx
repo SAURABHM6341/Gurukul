@@ -1,5 +1,5 @@
 import React, { use, useState } from "react";
-import "./Signup.css";
+import "./signup.css";
 import { useNavigate } from "react-router-dom";
 import { send_otp } from '../../service/apis'
 import { apiConnector } from "../../service/apiconnector";
@@ -35,7 +35,8 @@ function Signup() {
             email: formData.email
         }
         try {
-            const otp_res = await apiConnector("POST", send_otp.SIGN_OTP_API, {}, payload, null);
+            toast.loading("Sending OTP...");
+            const otp_res = await apiConnector("POST", send_otp.SIGN_OTP_API,null, payload, null);
             if (otp_res.data.success) {
                 toast.dismiss();
                 toast.success("OTP sent successfully");

@@ -19,7 +19,9 @@ const MyCourses = () => {
     const fetchmyCourses = async () => {
         try {
             toast.loading("Fetching Courses")
-            const res = await apiConnector("GET", FetchMyCourses.MY_COURSE_API, `Bearer ${token}`);
+            const res = await apiConnector("GET", FetchMyCourses.MY_COURSE_API, {
+                Authorization: `Bearer ${token}`
+            });
             if (res.data.success) {
                 console.log(res.data?.allEnrolled?.courses)
                 toast.dismiss();
@@ -48,7 +50,9 @@ const MyCourses = () => {
             if (window.confirm("Are you sure you want to delete this course?")) {
                 const payload = { courseId };
                 console.log("payload", payload);
-                const res = await apiConnector("DELETE", deleteEditCourse.DELETE_COURSE_API, `Bearer ${token}`, payload);
+                const res = await apiConnector("DELETE", deleteEditCourse.DELETE_COURSE_API, {
+                Authorization: `Bearer ${token}`
+            }, payload);
                 if (res.data.success) {
                     toast.success("Course deleted successfully");
                     fetchmyCourses(); // Refresh the course list

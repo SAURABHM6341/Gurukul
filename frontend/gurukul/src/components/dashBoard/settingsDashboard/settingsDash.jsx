@@ -27,7 +27,9 @@ export default function UserProfile() {
 
     const additonalDetailsres = async () => {
         try {
-            const response = await apiConnector("GET", additonalProfileApi.PROFILE_INFO_API, `Bearer ${token}`);
+            const response = await apiConnector("GET", additonalProfileApi.PROFILE_INFO_API, {
+                Authorization: `Bearer ${token}`
+            });
             if (response.data.success) {
                 const details = response.data.userDetails.additionalDetails;
                 toast.dismiss();
@@ -64,7 +66,9 @@ export default function UserProfile() {
             const payload = {
                 ...formData
             };
-            await apiConnector('PUT', additonalProfileApiUpdate.PROFILE_INFO_UPDATE_API, `Bearer ${token}`, payload);
+            await apiConnector('PUT', additonalProfileApiUpdate.PROFILE_INFO_UPDATE_API, {
+                Authorization: `Bearer ${token}`
+            }, payload);
             toast.dismiss();
             toast.success("Profile updated successfully");
         } catch (error) {
@@ -81,7 +85,7 @@ export default function UserProfile() {
 
 
     const handlePassChange = () => {
-        navigate('/change_password');
+        navigate('/changePassword');
     };
 
     if (!user || !formData) {
@@ -102,7 +106,9 @@ export default function UserProfile() {
         formData1.append("image", file);
 
         try {
-            const response = await apiConnector("PUT", updateUserImage.UPDATE_API_USER_IMAGE, `Bearer ${token}`, formData1);
+            const response = await apiConnector("PUT", updateUserImage.UPDATE_API_USER_IMAGE, {
+                Authorization: `Bearer ${token}`
+            }, formData1);
 
             if (response?.data?.success) {
                 toast.dismiss();
@@ -131,7 +137,9 @@ export default function UserProfile() {
                 Lname : user.Lname,
             }
 
-            const response = await apiConnector("PUT", removeUserImage.REMOVE_API_USER_IMAGE, `Bearer ${token}`,payload);
+            const response = await apiConnector("PUT", removeUserImage.REMOVE_API_USER_IMAGE, {
+                Authorization: `Bearer ${token}`
+            },payload);
 
             if (response?.data?.success) {
                 toast.dismiss();
@@ -157,7 +165,9 @@ export default function UserProfile() {
             try{
                 toast.dismiss();
                 toast.loading("Initiating account deletion...");
-                const response = await apiConnector("PUT", deleteAccount.DELETE_ACCOUNT_API, `Bearer ${token}`);
+                const response = await apiConnector("PUT", deleteAccount.DELETE_ACCOUNT_API, {
+                Authorization: `Bearer ${token}`
+            });
                 if(response?.data?.success) {
                     toast.dismiss();
                     toast.success("Account deletion initiated! A confirmation email has been sent to your registered email address. Your account will be permanently deleted in 3 days unless you cancel the deletion.", {
@@ -178,7 +188,9 @@ export default function UserProfile() {
     }
     const cancelDeleteAccount=async()=>{
     try {
-            const response = await apiConnector("PUT", deleteAccount.CANCEL_DELETE_ACCOUNT_API, `Bearer ${token}`);
+            const response = await apiConnector("PUT", deleteAccount.CANCEL_DELETE_ACCOUNT_API, {
+                Authorization: `Bearer ${token}`
+            });
             if(response?.data?.success) {
                 toast.dismiss();
                 toast.success("Account deletion cancelled");

@@ -13,20 +13,27 @@ function GetAllCourse() {
     const navigate = useNavigate();
     const fetchallCourses = async() =>{
     try{
-        const toastId = toast.loading("Fetching Courses")
+        console.log("Fetching courses with token:", !!token);
+        toast.loading("Fetching Courses");
         const res = await apiConnector("GET", getallcourses.GET_ALL_COURSES_API, {
             Authorization: `Bearer ${token}`
         });
+        console.log("API Response:", res);
         if(res.data.success){
         console.log(res.data?.courses)
-        toast.dismiss(toastId);
+        toast.dismiss();
         toast.success("course fetched");
         setCourSe(res.data?.courses);
+    } else {
+        console.log("API returned success: false", res.data);
+        toast.dismiss();
+        toast.error(res.data?.message || "Failed to fetch courses");
     }
     }catch(err){
-        console.log("dikkat h ");
-        toast.dismiss(toastId);
-        toast.error("course not fetched");
+        console.log("API Error:", err);
+        console.log("Error response:", err?.response?.data);
+        toast.dismiss();
+        toast.error(err?.response?.data?.message || "course not fetched");
         setCourSe([]);
     }
 }

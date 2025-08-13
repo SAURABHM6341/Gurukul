@@ -15,7 +15,7 @@ function EnrolledCourses() {
     const token = useSelector((state)=> state.auth?.token);
     const fetchEnrolled = async()=>{ 
         try{
-            const response = await apiConnector("GET",getEnrolledCourses.ENROLLED_COURSES_API,`Bearer ${token}`)
+            const response = await apiConnector("GET",getEnrolledCourses.ENROLLED_COURSES_API,{Authorization: `Bearer ${token}`})
             if(response.data.success){
                 toast.dismiss();
                 toast.success("Courses Fetched Successfully");

@@ -3,8 +3,10 @@ import './newCourse.css';
 import { changestatus } from '../../../service/apis'
 import { apiConnector } from '../../../service/apiconnector';
 import toast from 'react-hot-toast';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 const PublishCourseForm = ({ courseData, setCourseData }) => {
+    const token = useSelector((state) => state.auth?.token);
     const navigate = useNavigate();
     const handlePublishChange = (e) => {
         setCourseData({ ...courseData, status: e.target.checked ? 'published' : 'draft' });
@@ -12,7 +14,9 @@ const PublishCourseForm = ({ courseData, setCourseData }) => {
     const onSubmit = async () => {
         try {
             const payload = { courseId: courseData._id, status: courseData.status };
-            const response = await apiConnector("POST", changestatus.CHANGE_STATUS_API, null, payload);
+            const response = await apiConnector("POST", changestatus.CHANGE_STATUS_API, {
+                Authorization: `Bearer ${token}`
+            }, payload);
             if (response.data.success) {
                 toast.dismiss();
                 toast.success("course is saved as per preference");

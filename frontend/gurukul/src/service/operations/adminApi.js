@@ -16,8 +16,8 @@ export const getAllUsers = async (token) => {
     const toastId = toast.loading("Loading users...");
     let result = [];
     try {
-        const response = await apiConnector("GET", GET_ALL_USERS_API, null, {
-            Authorization: `Bearer ${token}`,
+        const response = await apiConnector("GET", GET_ALL_USERS_API, {
+            Authorization: `Bearer ${token}`
         });
 
         if (!response?.data?.success) {
@@ -43,7 +43,7 @@ export const getAllStudents = async (token) => {
     const toastId = toast.loading("Loading students...");
     let result = [];
     try {
-        const response = await apiConnector("GET", GET_ALL_STUDENTS_API, null, {
+        const response = await apiConnector("GET", GET_ALL_STUDENTS_API, {
             Authorization: `Bearer ${token}`,
         });
 
@@ -71,7 +71,7 @@ export const getAllInstructors = async (token) => {
     let result = [];
     try {
         console.log("Calling GET_ALL_INSTRUCTORS_API:", GET_ALL_INSTRUCTORS_API);
-        const response = await apiConnector("GET", GET_ALL_INSTRUCTORS_API, null, {
+        const response = await apiConnector("GET", GET_ALL_INSTRUCTORS_API, {
             Authorization: `Bearer ${token}`,
         });
 
@@ -101,7 +101,7 @@ export const getUserDetails = async (userId, token) => {
     const toastId = toast.loading("Loading user details...");
     let result = null;
     try {
-        const response = await apiConnector("GET", `${GET_USER_DETAILS_API}/${userId}`, null, {
+        const response = await apiConnector("GET", `${GET_USER_DETAILS_API}/${userId}`, {
             Authorization: `Bearer ${token}`,
         });
 

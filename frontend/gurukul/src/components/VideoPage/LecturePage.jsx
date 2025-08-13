@@ -51,7 +51,9 @@ const LecturePage = () => {
             try {
                 setLoading(true);
                 const url = `${getFullCourseByid.FULL_COURSE_ID_API}/${id}`;
-                const res = await apiConnector("GET", url, `Bearer ${token}`);
+                const res = await apiConnector("GET", url, {
+                Authorization: `Bearer ${token}`
+            });
 
                 if (res.data.success) {
                     setCourseData(res.data.course);
@@ -167,9 +169,10 @@ const LecturePage = () => {
                 rating: reviewData.rating,
                 review: reviewData.reviewText
             };
-            
-            const res = await apiConnector("POST", submitReview.SUBMIT_REVIEW_API, `Bearer ${token}`, payload);
-            
+            const res = await apiConnector("POST", submitReview.SUBMIT_REVIEW_API, {
+                Authorization: `Bearer ${token}`
+            }, payload);
+
             if (res.data.success) {
                 toast.dismiss();
                 toast.success("Thank you for your review!");
